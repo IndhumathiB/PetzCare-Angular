@@ -1,0 +1,872 @@
+﻿
+<div class="scrollable container-fluid" ng-controller="ManageCustomerController">
+    <div class=row>
+        <div class=col-sm-12>
+            <div class="page-headers cus-panels-with-pad">
+                <div class="block-options pull-right">
+                    <button type=button class=sec-cus-buttons data-ng-click="clearFields()" data-toggle=modal data-target="#newCustomer"> <i class="fa fa-plus"></i> New Customer </button>
+                </div>
+                <h3>Manage Customers</h3>
+            </div>
+
+            <!---- New Customer Add ---->
+            <!-- Modal -->
+            <div class="modal fade" id="newCustomer" tabindex=-1 role=dialog aria-labelledby=myModalLabel>
+                <div class=modal-dialog role=document>
+                    <div class=modal-content>
+                        <div class="modal-header cus-bg ng-scope">
+                            <button type=button class=close data-dismiss=modal aria-label=Close> <span aria-hidden=true>×</span> <span class=sr-only>Close</span> </button>
+                            <h4 class="modal-title ng-binding">Add New Customer</h4>
+                        </div>
+                        <div class=modal-body>
+                            <form name="customerForm" novalidate>
+                                <div class="row">
+                                    <div class="col-md-12 col-lg-12">
+                                        <div class=form-group>
+                                            <label for="">Title<span class=required> *</span></label>
+                                            <div class="control-group" ng-class="{true: 'error'}[submitted && customerForm.title.$invalid]">
+                                                <select class="form-control" ng-disabled="tiTlename" name="title" ng-model="selectedtitlename" ng-options="c.ld_id as c.ld_name for c in titleValues" required>
+                                                    <option value="" disabled selected style='display:none;'>
+                                                        -- Select Title --
+                                                    </option>
+                                                </select>
+                                                <span style="color:red" ng-show="submitted && customerForm.title.$error.required">Select Title.</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class=row>
+                                    <div class="col-md-6 col-lg-6">
+                                        <div class=form-group>
+                                            <label for="">First Name<span class=required> *</span></label>
+                                            <div class="control-group" ng-class="{true: 'error'}[submitted && customerForm.firstName.$invalid]">
+                                                <input name="firstName" ng-model="firstName" class=form-control required>
+                                                <span style="color:red" ng-show="submitted && customerForm.firstName.$error.required">Enter First Name.</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-6">
+                                        <div class=form-group>
+                                            <label for="">Last Name</label>
+                                            <div class="control-group" ng-class="{true: 'error'}[submitted && customerForm.lastName.$invalid]">
+                                                <input type="text" name=lastName ng-model="lastName" class=form-control required>
+                                                <span style="color:red" ng-show="submitted && customerForm.lastName.$error.required">Enter Last Name.</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class=row>
+                                    <div class="col-md-6 col-lg-6">
+                                        <div class=form-group>
+                                            <label for="">Address<span class=required> *</span></label>
+                                            <div class="control-group" ng-class="{true: 'error'}[submitted && customerForm.address.$invalid]">
+                                                <input type="text" name="address" ng-model="address" class=form-control required>
+                                                <span style="color:red" ng-show="submitted && customerForm.address.$error.required">Enter Address.</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-6">
+                                        <div class=form-group>
+                                            <label for="">Zipcode</label>
+                                            <div class="control-group" ng-class="{true: 'error'}[submitted && customerForm.zip.$invalid]">
+                                                <input type="text" name="zip" ng-model="zip" class=form-control required>
+                                                <span style="color:red" ng-show="submitted && customerForm.zip.$error.required">Enter Zipcode.</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class=row>
+                                    <div class="col-md-6 col-lg-6">
+                                        <div class=form-group>
+                                            <label for="">Country<span class=required> *</span></label>
+                                            <div class="control-group" ng-class="{true: 'error'}[submitted && customerForm.country.$invalid]">
+                                                <select class="form-control" ng-disabled="Countryname" name="country" ng-change="findstate()" ng-model="selectedcountryValue" ng-options="d.ld_id as d.ld_name for d in country" required></select>
+                                                <span style="color:red" ng-show="submitted && customerForm.country.$error.required">Select Country.</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-6">
+                                        <div class=form-group>
+                                            <label for="">State<span class=required> *</span></label>
+                                            <div class="control-group" ng-class="{true: 'error'}[submitted && customerForm.state.$invalid]">
+                                                <select class="form-control" ng-disabled="Statename" name="state" ng-change="findcity()" ng-model="selectedstateValue" ng-options="st.ld_id as st.ld_name for st in stateval" required></select>
+                                                <span style="color:red" ng-show="submitted && customerForm.state.$error.required">Select State.</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class=row>
+                                    <div class="col-md-6 col-lg-6">
+                                        <div class=form-group>
+                                            <label for="">City<span class=required> *</span></label>
+                                            <div class="control-group" ng-class="{true: 'error'}[submitted && customerForm.city.$invalid]">
+                                                <select class="form-control" ng-disabled="Cityname" name="city" ng-model="selectedcity" ng-options="c.ld_id as c.ld_name for c in cityval" required></select>
+                                                <span style="color:red" ng-show="submitted && customerForm.city.$error.required">Select City.</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-6">
+                                        <div class=form-group>
+                                            <label for="">Mobile Number<span class=required> *</span></label>
+                                            <div class="control-group" ng-class="{true: 'error'}[submitted && customerForm.mobile.$invalid]">
+                                                <input type="text" name="mobile" ng-model="mobile" class=form-control required ng-pattern="/^[0-9]{10,11}$/">
+                                                <span style="color:red" ng-show="submitted && customerForm.mobile.$error.required">Enter Mobile Number.</span>
+                                                <span style="color:red" ng-show="customerForm.mobile.$error.pattern">Phone Number is Invalid</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class=row>
+                                    <div class="col-md-6 col-lg-6">
+                                        <div class=form-group>
+                                            <label for="">Landline</label>
+                                            <div class="control-group" ng-class="{true: 'error'}[submitted && customerForm.landline.$invalid]">
+                                                <input type="text" name="landline" ng-model="landline" class=form-control ng-pattern="/^[0-9]{6,10}$/" required>
+                                                <span style="color:red" ng-show="submitted && customerForm.landline.$error.required">Enter Phone Number</span>
+                                                <span style="color:red" ng-show="customerForm.landline.$error.pattern">Phone Number is Invalid</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-6">
+                                        <div class=form-group>
+                                            <label for="">Fax<span class=required> *</span></label>
+                                            <div class="control-group" ng-class="{true: 'error'}[submitted && customerForm.fax.$invalid]">
+                                                <input type="text" name="fax" ng-model="fax" class=form-control required>
+                                                <span style="color:red" ng-show="submitted && customerForm.fax.$error.required">Select Fax.</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class=row>
+                                    <div class="col-md-6 col-lg-6">
+                                        <div class=form-group>
+                                            <label for="">Email<span class=required> *</span></label>
+                                            <div class="control-group" ng-class="{true: 'error'}[submitted && customerForm.email.$invalid]">
+                                                <input type="email" name="email" ng-model="email" class=form-control required>
+                                                <span style="color:red" ng-show="submitted && customerForm.email.$error.required">Enter Email.</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-6">
+                                        <div class=form-group>
+                                            <label for="">Referred By</label>
+                                            <div class="control-group" ng-class="{true: 'error'}[submitted && customerForm.referrer.$invalid]">
+                                                <input type="text" name="referrer" ng-model="referrer" class=form-control required>
+                                                <span style="color:red" ng-show="submitted && customerForm.referrer.$error.required">Enter Referred.</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mar-top15">
+                                    <div class="col-md-12 col-lg-12">
+                                        <div class=form-group>
+
+                                            <div class="control-group" ng-class="{true: 'error'}[submitted && customerForm.premium.$invalid]">
+
+                                                <input type="checkbox" name="premium" ng-model="premium" ng-true-value="'Y'" ng-false-value="'N'" id="premium" class="mar-0-10" required>
+                                                <label for="premium">Premium Customer</label>
+                                                <span style="color:red" ng-show="submitted && customerForm.premium.$error.required">Select Premium Customer.</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 col-lg-12">
+                                        <div class=form-group>
+
+                                            <div class="control-group" ng-class="{true: 'error'}[submitted && customerForm.reminder.$invalid]">
+                                                <input type="checkbox" name="reminder" ng-model="reminder" ng-true-value="'Y'" ng-false-value="'N'" id="remain" class="mar-0-10">
+                                                <label for="remain">Reminder </label>
+                                                <span style="color:red" ng-show="submitted && customerForm.reminder.$error.required">Select Reminder.</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class=modal-footer>
+                            <button type=button class="btn btn-default" data-dismiss=modal>Close</button>
+                            <button type="submit" class="btn btn-primary" ng-click="submitted=true; custadd();" data-dismiss="modal">Add</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- .page-header End -->
+            <div class=contents>
+                <div class=main-box>
+                    <div class=row>
+                        <div class=col-lg-12>
+                            <div style=min-height:1220px>
+                                <!-- Dashboard Header -->
+                                <!-- For an image header add the class 'content-header-media' and an image as in the following example -->
+                                <!-- END Dashboard Header -->
+                                <!-- Datatables Content -->
+                                <div class="block full mar-top15 cus-panels-with-pad lisiting">
+                                    <div class="table-responsive mar-top15">
+                                        <div id=TblStaff_wrapper class=dataTables_wrapper role=grid>
+                                            <div class=row>
+                                                <div class=col-sm-6>
+                                                    <ul class="user-select-enable reset">
+                                                        <li data-toggle=tooltip title="Filter Customer">
+                                                            <button href="#target" type=button class="btn btn-hove" data-toggle=collapse><i class="fa fa-filter"></i></button>
+                                                        </li>
+                                                        <!--<li>
+                                                            <button type="button" class="btn btn-hove"><i class="fa fa-edit"></i></button>
+                                                        </li>-->
+                                                        <li  data-toggle=tooltip title="Delete Customer">
+                                                            <button type=button class="btn btn-default btn-hove" ng-click="CUSTOMERdelete()"><i class="fa fa-trash-o"></i></button>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                                <div class="col-md-offset-3 col-md-3 col-sm-6 col-xs-7">
+                                                    <div class=dataTables_filter id=TblStaff_filter>
+                                                        <label style=width:100%>
+                                                            <div class=input-group>
+                                                                <input aria-controls=TblStaff class=form-control placeholder=Search ng-model="finduser"> <span class=input-group-addon><i class="fa fa-search"></i></span>
+                                                            </div>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            @*Loader spinner for the managecustomer *@
+                                            <div id="managecustomerloader" class="overlays" style="display: block;">
+                                                <img src="~/images/spinningcurser.gif" style="position:absolute;z-index: 99; top:50%; left:50%; margin-top:-70px; margin-left:-70px; height:60px;  width:60px;" />
+                                            </div>
+
+                                            <table id=TblStaff class="table table-vcenter table-condensed table-bordered dataTable center" aria-describedby=TblStaff_info>
+                                                <thead>
+                                                    <tr role=row>
+                                                        <th width=5% class=sorting role=columnheader tabindex=0 aria-controls=TblStaff rowspan=1 colspan=1 aria-label="
+                                                                Name
+                                                            : activate to sort column ascending" style="width: 2px">Select
+                                                        <th width=15% class=sorting role=columnheader tabindex=0 aria-controls=TblStaff rowspan=1 colspan=1 aria-label="
+                                                                Name
+                                                            : activate to sort column ascending" style="width: 132px" ng-click="customerSort(asc=!asc,'first_name');">Name<i class="fa fa-sort"></i>
+
+<th class=sorting role=columnheader tabindex=0 aria-controls=TblStaff rowspan=1 colspan=1 aria-label="
+                                                                Email
+                                                            : activate to sort column ascending" style="width: 280px" ng-click="customerSort(asc=!asc,'email_1');">Email<i class="fa fa-sort"></i>
+<th width="" class=sorting_disabled role=columnheader rowspan=1 colspan=1 aria-label="
+                                                                Phone Number
+                                                            " style="width: 188px">Contact
+                                                        
+                                                        <th width="" class=sorting_disabled role=columnheader rowspan=1 colspan=1 aria-label="
+                                                                Phone Number
+                                                            " style="width: 188px">Current Dues
+                                                        <th width="" class=sorting_disabled role=columnheader rowspan=1 colspan=1 aria-label="
+                                                                Phone Number
+                                                            " style="width: 228px">Action
+                                                    <tr id="target" class=collapse>
+                                                        <td>
+                                                        <td>
+                                                            <div>
+                                                                <input placeholder=Name class=form-control ng-model="firstname">
+                                                            </div>
+
+                                                        <td>
+                                                            <div>
+                                                                <input placeholder=Email class=form-control ng-model="email1">
+                                                            </div>
+                                                        <td>
+                                                            <div>
+                                                                <input type=tel placeholder="Phone Number" class=form-control ng-model="phone1">
+                                                            </div>
+                                                        <td>
+                                                            <select class="form-control fontawesome-select" ng-model="selection">
+                                                                <option value="">-- Select -- </option>
+                                                                <option value="Y">&#xf00c; Active </option>
+                                                                <option value="N">&#xf00d; InActive </option>
+                                                            </select>
+                                                        <td>
+
+
+                                                <tbody id=tbody-staff role=alert aria-live=polite aria-relevant=all>
+                                                    <tr class=odd ng-repeat="customers in custdetails | filter:finduser | filter:{email_1:email1,phone_1:phone1,first_name:firstname,is_premium:selection} | pagination : currentPage*itemsPerPage | limitTo: itemsPerPage" ng-click="custmrfltr(customers.customer_id,customers.communication_id);petfltr(customers.customer_id);appointfltr(customers.customer_id);remove(customers.customer_id);petsnew(customers.customer_id)">
+                                                        <td style=display:none class="text-center sorting_1">
+                                                        <td><input type="checkbox" name="Delete" ng-model="delete" ng-true-value="'Y'" ng-false-value="'N'" ng-click="CUSTOMER(customers.customer_id,$index)" class="mar-0-10" required>
+                                                        <td>{{customers.first_name + " " + customers.middle_name +" "+ customers.last_name}}
+                                                        <td>{{customers.email_1}}
+                                                        <td>{{customers.phone_1}}
+
+
+
+                                                        <td>
+                                                            <div ng-if="customers.is_premium == 'Y' || customers.is_premium == 'y'"><i class="fa fa-check"></i></div>
+                                                            <div ng-if="customers.is_premium == 'N' || customers.is_premium == 'n'"><i class="fa fa-times"></i></div>
+                                                        <td>
+                                                            <ul class="user-select-enable reset">
+                                                                <li>
+                                                                    <button type=button class="btn btn-hove" data-toggle="modal" data-target="#customprofile" title="Customer profile"><i class="fa fa-user"></i></button>
+                                                                </li>
+                                                                <li>
+                                                                    <button type=button class="btn btn-hove" data-toggle="modal" data-target="#petlist" title="Pet profile"><i class="fa fa-paw"></i></button>
+                                                                </li>
+                                                                <li>
+                                                                    <button type=button class="btn btn-hove" data-toggle="modal" data-target="#appoinment" title="Appointment list"><i class="fa fa-calendar"></i></button>
+                                                                </li>
+                                                                <li>
+                                                                    <button type=button ng-click="clearPetsfield()" class="btn btn-hove" data-toggle="modal" data-target="#addnewpetID" title="Add New Pet"><i class="fa fa-plus"></i></button>
+                                                                </li>
+                                                            </ul>
+
+
+
+</table>
+                                            <div class="pagination-div text-right">
+                                                <ul class="pagination">
+                                                    <li ng-class="DisablePrevPage()">
+                                                        <a href="" ng-click="prevPage()">« Prev</a>
+                                                    </li>
+                                                    <li ng-repeat="n in range()" ng-class="{active: n == currentPage}" ng-click="setPage(n)">
+                                                        <a href="">{{n+1}}</a>
+                                                    </li>
+                                                    <li ng-class="DisableNextPage()">
+                                                        <a href="" ng-click="nextPage()">Next »</a>
+
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- END Datatables Content -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- .content End -->
+            <!--- Custome Profile Modal ---->
+            <div class="modal fade" id="customprofile" tabindex=-1 role=dialog aria-labelledby=myModalLabel>
+                <div class=modal-dialog role=document>
+                    <div class=modal-content>
+                        <div class="modal-header cus-bg ng-scope">
+                            <button type=button class=close data-dismiss=modal aria-label=Close> <span aria-hidden=true>×</span> <span class=sr-only>Close</span> </button>
+                            <h4 class="modal-title ng-binding">Customer Profile Details</h4>
+                        </div>
+                        <div class=modal-body>
+                            <div class="table-responsive mar-top15">
+                                <table id=tbl_profile class="table table-borderless table-striped">
+                                    <tbody>
+                                        <tr>
+                                            <td style="width:40%;">
+                                                <label>Name</label>
+                                            <td>{{cust.first_name + " " + cust.middle_name +" "+ cust.last_name}}
+                                        <tr>
+                                            <td>
+                                                <label>Permanent Address</label>
+                                            <td><a id=a_name>{{cust.address_1}}</a>
+                                        <tr>
+                                            <td>
+                                                <label>Temporary Address</label>
+                                            <td> {{cust.address_2}}
+                                        <tr>
+                                            <td>
+                                                <label>Email</label>
+                                            <td> {{cust.email_1}}
+                                        <tr>
+                                            <td>
+                                                <label>Conduct Number</label>
+                                            <td> {{cust.phone_1}}
+                                        <tr>
+                                            <td>
+                                                <label>Referer Name</label>
+                                            <td>{{cust.referred_by}}
+                                        <tr>
+                                            <td>
+                                                <label>Notes</label>
+                                            <td> {{cust.Notes}}
+
+                                </table>
+                            </div>
+                        </div>
+                        <div class=modal-footer>
+                            <button type=button class="btn btn-default" data-dismiss=modal>Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!---- Pet list Model ----->
+            <div class="modal fade" id="petlist" tabindex=-1 role=dialog aria-labelledby=myModalLabel>
+                <div class=modal-dialog role=document>
+                    <div class=modal-content>
+                        <div class="modal-header cus-bg ng-scope">
+                            <button type=button class=close data-dismiss=modal aria-label=Close> <span aria-hidden=true>×</span> <span class=sr-only>Close</span> </button>
+                            <h4 class="modal-title ng-binding">Pet Info List</h4>
+                        </div>
+                        <div class=modal-body>
+                            <!-- .page-options End -->
+                            <div class=contents>
+                                <div class=row>
+                                    <div class=" col-xs-2 col-sm-2 text-center"><strong>Image</strong></div>
+                                    <div class="col-xs-3 col-sm-3 single-w-lh"> <strong>Name</strong> </div>
+                                    <div class="col-xs-2 col-sm-2 single-w-lh"> <strong>Pet ID</strong> </div>
+                                    <div class="col-xs-3 col-sm-3 single-w-lh"> <strong>Pet Type</strong> </div>
+                                    <div class="col-xs-2 col-sm-2 single-w-lh"> <strong>Action</strong> </div>
+                                </div>
+                                <div class="row lisiting pet-imgtarget" ng-repeat="petdatas in pets | pagination2 : currentPage2*itemsPerPage2 | limitTo: itemsPerPage2" ng-click="petimage(petdatas.pet_id)">
+                                    <div class="col-xs-2 col-sm-2 text-center" data-toggle=collapse data-target="{{ '#petimage' + petdatas.pet_id }}">
+                                        <img src=~/images/401daac3.pet-image.png class=img-circle alt="User image">
+                                    </div>
+                                    <div class="col-xs-3 col-sm-3 single-w-lh margin-t-b"> <span>{{petdatas.pet_name}}</span> </div>
+                                    <div class="col-xs-2 col-sm-2 single-w-lh margin-t-b"> <span> {{petdatas.registration_no}}</span> </div>
+                                    <div class="col-xs-3 col-sm-3 single-w-lh margin-t-b"> <span>{{petdatas.type_name}}</span> </div>
+                                    <div class="col-xs-2 col-sm-2 single-w-lh margin-t-b">
+                                        <div class=inline-options>  <span class="btn btn-xs btn-primary" data-toggle="collapse" data-target="{{ '#collapseExample' +  petdatas.pet_id }}">view</span> </div>
+                                    </div>
+                                    <div class=row>
+                                        <div class=col-sm-12>
+                                            <div class=collapse id="{{ 'collapseExample' + petdatas.pet_id }}">
+                                                <div class=well>
+                                                    <div>
+                                                        <ul class=list-group>
+                                                            <li class=list-group-item>
+                                                                <div>
+                                                                    <label for="">Pet Name :</label>{{petdatas.pet_name}}
+                                                                </div>
+                                                            </li>
+                                                            <li class=list-group-item>
+                                                                <div>
+                                                                    <label for="">Registration No :</label> {{petdatas.registration_no}}
+                                                                </div>
+                                                            </li>
+                                                            <li class=list-group-item>
+                                                                <div>
+                                                                    <label for="">Pet Type :</label> <span class=ng-binding>{{petdatas.type_name}}</span>
+                                                                </div>
+                                                            </li>
+                                                            <li class=list-group-item>
+                                                                <div>
+                                                                    <label for="">Weight :</label> <span class=ng-binding>{{petdatas.weight}}</span>
+                                                                </div>
+                                                            </li>
+                                                            <li class=list-group-item>
+                                                                <div>
+                                                                    <label for="">Size :</label> <span class=ng-binding>{{petdatas.size_name}}</span>
+                                                                </div>
+                                                            </li>
+                                                            <li class=list-group-item>
+                                                                <div>
+                                                                    <label for="">Gender :</label> <span class=ng-binding>{{petdatas.gender_name}}</span>
+                                                                </div>
+                                                            </li>
+                                                            <li class=list-group-item>
+                                                                <div>
+                                                                    <label for="">Date of Birth :</label> <span class=ng-binding>{{petdatas.dob}}</span>
+                                                                </div>
+                                                            </li>
+                                                            <li class=list-group-item>
+                                                                <div>
+                                                                    <label for="">Color :</label> <span class=ng-binding>{{petdatas.color_name}}</span>
+                                                                </div>
+                                                            </li>
+                                                            <li class=list-group-item>
+                                                                <div>
+                                                                    <label for="">Breed :</label> <span class=ng-binding>{{petdatas.breed_name}}</span>
+                                                                </div>
+                                                            </li>
+                                                            <li class=list-group-item>
+                                                                <div>
+                                                                    <label for="">Age :</label>{{petdatas.age}}
+                                                                </div>
+                                                            </li>
+                                                            <li class=list-group-item>
+                                                                <div>
+                                                                    <label for="">Chip No :</label>{{petdatas.chip_no}}
+                                                                </div>
+                                                            </li>
+                                                            <li class=list-group-item>
+                                                                <div>
+                                                                    <label for="">Collar Size :</label>{{petdatas.collar_size}}
+                                                                </div>
+                                                            </li>
+                                                            <li class=list-group-item>
+                                                                <div>
+                                                                    <label for="">Notes :</label>{{petdatas.notes}}
+                                                                </div>
+                                                            </li>
+                                                            <li class=list-group-item>
+                                                                <div>
+                                                                    <label for="">Temper Type :</label>{{petdatas.temper_type_name}}
+                                                                </div>
+                                                            </li>
+
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class=row id="petimage">
+                                        <div class=col-sm-12>
+                                            <div class=collapse id="{{ 'petimage' + petdatas.pet_id }}">
+                                                <div class=well>
+                                                    <ul class="list-group">
+
+                                                        <li class=list-group-item ng-repeat="pimages in petimgs" ng-show="pimages.file_data.length != 0"> <img ng-src="data:image/JPEG;base64,{{pimages.file_data}}" class="img-circle" style="width:120px;height:90px;" alt="User image"> </li>
+                                                        <li class=list-group-item ng-if="pimages.file_data.length == 0"><img src="~/images/401daac3.pet-image.png" class=img-circle alt="User image">There is no image</li>
+                                                    </ul>
+
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="pagination-div text-right">
+                                    <ul class="pagination">
+                                        <li ng-class="DisablePrevPage2()">
+                                            <a href="" ng-click="prevPage2()">« Prev</a>
+                                        </li>
+                                        <li ng-repeat="n2 in range2()" ng-class="{active: n2 == currentPage2}" ng-click="setPage2(n2)">
+                                            <a href="">{{n2+1}}</a>
+                                        </li>
+                                        <li ng-class="DisableNextPage2()">
+                                            <a href="" ng-click="nextPage2()">Next »</a>
+
+                                        </li>
+                                    </ul>
+                                </div>
+
+                            </div>
+                            <!-- .content End -->
+                        </div>
+                        <div class=modal-footer>
+                            <button type=button class="btn btn-default" data-dismiss=modal>Close</button>
+                            @*<button type=button class="btn btn-primary">Add Pet</button>*@
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!--- Add New Pet --->
+            <div class="modal fade" id=addnewpetID tabindex=-1 role=dialog aria-labelledby=myModalLabel>
+                <div class=modal-dialog role=document>
+                    <div class=modal-content>
+                        <div class="modal-header cus-bg ng-scope">
+                            <button type=button class=close data-dismiss=modal aria-label=Close> <span aria-hidden=true>×</span> <span class=sr-only>Close</span> </button>
+                            <h4 class="modal-title ng-binding">Add a New Pet</h4>
+                        </div>
+                        <div class=modal-body>
+                            <div class=row>
+                                @*<div class=col-sm-3>
+                                    <div class=dz-default><img ng-src="{{data}}" height="150" width="100" /> <span>Drop files here to upload</span> </div>
+                                    <div class="text-center pad-5">
+
+                                        <input type="file" id="file" name="file"/>
+                                        <br>
+                                        <button type=button ng-click="addphoto()" class=pri-cus-buttons>Upload</button>
+                                    </div>
+                                </div>*@                               
+                                <div class=col-sm-12>
+                                    <form name="petAddForm">
+                                        <fieldset class=per-info>
+                                            <!--<legend>Personal Information</legend>-->
+                                            <div class=row>
+                                                <div class=col-sm-6>
+                                                    <div class=form-group>
+                                                        <label for=pname>Pet Name<span class=required> *</span></label>
+                                                        <div class="control-group" ng-class="{true: 'error'}[submitted && petAddForm.pname.$invalid]">
+                                                            <input class=form-control id=pname ng-model="pname" name="pname" required>
+                                                            <span style="color:red" ng-show="submitted && petAddForm.pname.$error.required">Pet Name is required.</span>
+                                                        </div>
+                                                     </div>
+                                                </div>
+                                                <div class=col-sm-6>
+                                                    <div class=form-group>
+                                                        <label for=p-id>Pet Age<span class=required> *</span></label>
+                                                        <div class="control-group" ng-class="{true: 'error'}[submitted && petAddForm.petage.$invalid]">
+                                                            <input class=form-control id=p-id ng-model="petage" name="petage" required>
+                                                            <span style="color:red" ng-show="submitted && petAddForm.petage.$error.required">Pet Age is required.</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class=row>
+                                                <div class=col-sm-6>
+                                                    <div class=form-group>
+                                                        <label for=c-id>Registration NO <span class=required> *</span></label>
+                                                        <div class="control-group" ng-class="{true: 'error'}[submitted && petAddForm.regno.$invalid]">
+                                                            <input class=form-control id=regno ng-model="regno" name="regno" required>
+                                                            <span style="color:red" ng-show="submitted && petAddForm.regno.$error.required">Registration NO is required.</span>
+                                                        </div>
+                                                        </div>
+                                                </div>
+                                                <div class=col-sm-6>
+                                                    <div class=form-group>
+                                                        <label for=collarsize>Collar Size <span class=required> *</span></label>
+                                                        <div class="control-group" ng-class="{true: 'error'}[submitted && petAddForm.collarsize.$invalid]">
+                                                            <input class=form-control id=collarsize ng-model="collarsize" name="collarsize" required>
+                                                            <span style="color:red" ng-show="submitted && petAddForm.collarsize.$error.required">Collar Size is required.</span>
+                                                        </div>
+                                                        </div>
+                                                </div>
+                                            </div>
+                                            <div class=row>
+                                                <div class=col-sm-6>
+                                                    <div class=form-group>
+                                                        <label for=d-birth>Date of Birth <span class=required> *</span></label>
+                                                        <div class="control-group" ng-class="{true: 'error'}[submitted && petAddForm.petdob.$invalid]">
+                                                            <input type="date" class=form-control id=d-birth ng-model="petdob" name="petdob" required>
+                                                            <span style="color:red" ng-show="submitted && petAddForm.petdob.$error.required">Date of Birth is required.</span>
+                                                        </div>
+                                                        </div>
+                                                </div>
+                                                <div class=col-sm-6>
+                                                    <div class=form-group>
+                                                        <label for=pchip>Chip</label>
+                                                        <input class=form-control id=pchip ng-model="petchip" name="petchip">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class=row>
+                                                <div class=col-sm-6>
+                                                    <div class=form-group>
+                                                        <label for="">Weight <span class=required> *</span> </label>
+                                                        <div class="control-group" ng-class="{true: 'error'}[submitted && petAddForm.petweight.$invalid]">
+                                                            <input class=form-control id=Weight ng-model="petweight" name="petweight" required>
+                                                            <span style="color:red" ng-show="submitted && petAddForm.petweight.$error.required">Weightis required.</span>
+                                                        </div>
+
+                                                        </div>
+                                                </div>
+                                                <div class=col-sm-6>
+                                                    <div class=form-group>
+                                                        <label for=p-color>Notes</label>
+                                                        <input type="text" class=form-control id=notes ng-model="notes" name="notes">
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                            <div class=row>
+                                                <div class=col-sm-6>
+                                                    <div class=form-group>
+                                                        <label for="">Select Gender <span class=required> *</span></label>
+                                                        <div class="control-group" ng-class="{true: 'error'}[submitted && petAddForm.gender.$invalid]">
+                                                            <select class=form-control ng-model="petsgender" name="gender" ng-options="gender.ld_id as gender.ld_name for gender in pgender" required></select>
+                                                            <span style="color:red" ng-show="submitted && petAddForm.pname.$error.required">Select Gender is required.</span>
+                                                        </div>
+
+                                                        </div>
+                                                </div>
+
+                                                <div class=col-sm-6>
+                                                    <div class=form-group>
+                                                        <label for="">Select Pet Breed <span class=required> *</span></label>
+                                                        <div class="control-group" ng-class="{true: 'error'}[submitted && petAddForm.pbreed.$invalid]">
+                                                            <select class=form-control ng-model="petsbreed" name="pbreed" ng-options="breed.ld_id as breed.ld_name for breed in pbreed" required></select>
+                                                            <span style="color:red" ng-show="submitted && petAddForm.pbreed.$error.required">Select Pet Breed is required.</span>
+                                                        </div>
+                                                        </div>
+                                                </div>
+                                            </div>
+                                            <div class=row>
+                                                <div class=col-sm-6>
+                                                    <div class=form-group>
+                                                        <label for="">Select Pet Type <span class=required> *</span></label>
+                                                        <div class="control-group" ng-class="{true: 'error'}[submitted && petAddForm.ptype.$invalid]">
+                                                            <select class=form-control ng-model="petstype" name="ptype" ng-options="type.ld_id as type.ld_name for type in ptype" required></select>
+                                                            <span style="color:red" ng-show="submitted && petAddForm.ptype.$error.required">Pet Name is required.</span>
+                                                        </div>
+                                                        </div>
+                                                </div>
+
+                                                <div class=col-sm-6>
+                                                    <div class=form-group>
+                                                        <label for="">Select Pet Color <span class=required> *</span></label>
+                                                        <div class="control-group" ng-class="{true: 'error'}[submitted && petAddForm.pcolor.$invalid]">
+                                                            <select class=form-control ng-model="petscolor" name="pcolor" ng-options="color.ld_id as color.ld_name for color in pcolor" required></select>
+                                                            <span style="color:red" ng-show="submitted && petAddForm.pcolor.$error.required">Select Pet Color is required.</span>
+                                                        </div>
+                                                        </div>
+                                                </div>
+                                            </div>
+                                            <div class=row>
+                                                <div class=col-sm-6>
+                                                    <div class=form-group>
+                                                        <label for="">Select Pet Temper</label>
+                                                        <div class="control-group" ng-class="{true: 'error'}[submitted && petAddForm.ptempertype.$invalid]">
+                                                            <select class=form-control ng-model="petstempertype" name="ptempertype" ng-options="temper.ld_id as temper.ld_name for temper in ptempertype" required></select>
+                                                            <span style="color:red" ng-show="submitted && petAddForm.ptempertype.$error.required">Select Pet Temper is required.</span>
+                                                        </div>
+                                                        </div>
+                                                </div>
+                                                <div class=col-sm-6>
+                                                    <div class=form-group>
+                                                        <label for="">Select Pet Size<span class="required">*</span></label>
+                                                        <div class="control-group" ng-class="{true: 'error'}[submitted && petAddForm.psize.$invalid]">
+                                                            <select class=form-control ng-model="petssize" name="psize" ng-options="size.ld_id as size.ld_name for size in psize" required></select>
+                                                            <span style="color:red" ng-show="submitted && petAddForm.psize.$error.required">Select Pet Size is required.</span>
+                                                        </div>
+                                                        </div>
+                                                </div>
+                                            </div>
+                                            <div class="row mar-top15">
+                                                <div class="col-md-12 col-lg-12">
+                                                    <div class=form-group>
+
+                                                        <div class="control-group" ng-class="{true: 'error'}[submitted && customerForm.decreased.$invalid]">
+
+                                                            <input type="checkbox" name="decreased" ng-model="decreased" ng-true-value="'Y'" ng-false-value="'N'" id="decreased" class="mar-0-10" required>
+                                                            <label for="premium">Decreased</label>
+                                                            <span style="color:red" ng-show="submitted && customerForm.decreased.$error.required">Select Premium Customer.</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12 col-lg-12">
+                                                    <div class=form-group>
+
+                                                        <div class="control-group" ng-class="{true: 'error'}[submitted && customerForm.mixbreed.$invalid]">
+                                                            <input type="checkbox" name="mixbreed" ng-model="mixbreed" ng-true-value="'Y'" ng-false-value="'N'" id="mixbreed" class="mar-0-10" required>
+                                                            <label for="remain">Mixed Breed </label>
+                                                            <span style="color:red" ng-show="submitted && customerForm.mixbreed.$error.required">Select Mixed Breed</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </fieldset>
+                                    </form>
+                                </div>
+                                <div class="col-sm-12">
+                                    <form action="/upload-target" class="dropzone"></form>
+                                    @*<div class="dz-default">
+                                       
+                                    </div>*@
+                                    @*<div class="text-center pad-5">*@
+
+                                        @*<input type="file" id="file" name="file" />
+                                        <br>
+                                        <button type=button ng-click="addphoto()" class=pri-cus-buttons>Upload</button>*@
+                                    @*</div>*@
+                                </div>
+                            </div>
+                        </div>
+                        <div class=modal-footer>
+                            <button type=button class="btn btn-default" data-dismiss=modal>Close</button>
+                            <button type="submit" class="btn btn-primary" ng-click="submitted=true; petadd()" data-dismiss="modal">Add</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <!---- Appoinment List ----->
+            <div class="modal fade" id="appoinment" tabindex=-1 role=dialog aria-labelledby=myModalLabel>
+                <div class=modal-dialog role=document>
+                    <div class=modal-content>
+                        <div class="modal-header cus-bg ng-scope">
+                            <button type=button class=close data-dismiss=modal aria-label=Close> <span aria-hidden=true>×</span> <span class=sr-only>Close</span> </button>
+                            <h4 class="modal-title ng-binding">List Of Appoinments</h4>
+                        </div>
+                        <div class=modal-body>
+                            <!-- .page-options End -->
+                            <div class=contents>
+                                <div class=row>
+
+                                    <div class="col-sm-3 single-w-lh"> <strong>Services</strong> </div>
+                                    <div class="col-sm-3 single-w-lh"> <strong>Service Type</strong> </div>
+                                    <div class="col-sm-3 single-w-lh"> <strong>Status</strong> </div>
+                                    <div class="col-sm-3 single-w-lh"> <strong>Action</strong> </div>
+                                </div>
+                                <div class="row lisiting" ng-repeat="appoinments in appoints | pagination2 : currentPage1*itemsPerPage1 | limitTo: itemsPerPage1">
+
+                                    <div class="col-sm-3 single-w-lh margin-t-b"> <span>{{appoinments.appointment_name}}</span> </div>
+                                    <div class="col-sm-3 single-w-lh margin-t-b"> <span>{{appoinments.service_name}}</span> </div>
+                                    <div class="col-sm-3 single-w-lh margin-t-b"> <span>{{appoinments.status_name}}</span> </div>
+                                    <div class="col-sm-3 single-w-lh margin-t-b">
+                                        <div class=inline-options> <span class="btn btn-xs btn-primary" data-toggle=collapse data-target="{{ '#collapseexample1' + appoinments.appointment_id }}" aria-expanded=false aria-controls=collapseExample>view</span> </div>
+                                    </div>
+                                    <div class=row>
+                                        <div class=col-sm-12>
+                                            <div class=collapse id="{{ 'collapseexample1' + appoinments.appointment_id }}">
+                                                <div class=well>
+                                                    <div>
+                                                        <ul class=list-group>
+                                                            <li class=list-group-item>
+                                                                <div>
+                                                                    <label for="">Customer Name :</label>{{appoinments.customer_name }}
+                                                                </div>
+                                                            </li>
+
+                                                            <li class=list-group-item>
+                                                                <div>
+                                                                    <label for="">Pet Name :</label> <span class=ng-binding>{{appoinments.pet_name }}</span>
+                                                                </div>
+                                                            </li>
+                                                            <li class=list-group-item>
+                                                                <div>
+                                                                    <label for="">Pickup Date :</label> <span class=ng-binding>{{appoinments.pickup_date }}</span>
+                                                                </div>
+                                                            </li>
+                                                            <li class=list-group-item>
+                                                                <div>
+                                                                    <label for="">Status Name :</label> <span class=ng-binding>{{appoinments.status_name }}</span>
+                                                                </div>
+                                                            </li>
+                                                            <li class=list-group-item>
+                                                                <div>
+                                                                    <label for="">Delivery Date :</label> <span class=ng-binding>{{appoinments.delivery_date }}</span>
+                                                                </div>
+                                                            </li>
+
+                                                            <li class=list-group-item>
+                                                                <div>
+                                                                    <label for="">Notes :</label> <span class=ng-binding>{{appoinments.notes }}</span>
+                                                                </div>
+                                                            </li>
+
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="pagination-div text-right">
+                                    <ul class="pagination">
+                                        <li ng-class="DisablePrevPage1()">
+                                            <a href="" ng-click="prevPage1()">« Prev</a>
+                                        </li>
+                                        <li ng-repeat="n1 in range1()" ng-class="{active: n1 == currentPage1}" ng-click="setPage1(n1)">
+                                            <a href="">{{n1+1}}</a>
+                                        </li>
+                                        <li ng-class="DisableNextPage1()">
+                                            <a href="" ng-click="nextPage1()">Next »</a>
+
+                                        </li>
+                                    </ul>
+                                </div>
+
+                            </div>
+                            <!-- .content End -->
+                        </div>
+                        <div class=modal-footer>
+                            <button type=button class="btn btn-default" data-dismiss=modal>Close</button>
+                            @*<button type=button class="btn btn-primary">Add Appointment</button>*@
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!---- Model End  -->
+
+
+
+        </div>
+    </div>
+</div>
+<footer class=footer-wrapper>
+    <div class=row>
+        <div class="col-sm-12 col-md-8">
+            <p class=mar-0-10>© Copyright 2015 <a href=#>Petzcare</a>. All Rights Reserved.</p>
+        </div>
+    </div>
+</footer>

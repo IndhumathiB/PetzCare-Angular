@@ -1,0 +1,556 @@
+﻿<div class="scrollable container-fluid" ng-controller="ManageCompanyController">
+    <div class=row>
+        <div class=col-sm-12>
+            <div class="page-headers cus-panels-with-pad">
+                <div class="block-options pull-right">
+                    <button type=button class=sec-cus-buttons ng-click="ClearCompany()" data-toggle=modal data-target=#myModal> <i class="fa fa-plus"></i> New Company </button>
+                    <!-- Modal -->
+                    <div class="modal fade" id=myModal tabindex=-1 role=dialog aria-labelledby=myModalLabel>
+                        <div class=modal-dialog role=document>
+                            <div class=modal-content>
+                                <div class="modal-header cus-bg ng-scope">
+                                    <button type=button class=close data-dismiss=modal aria-label=Close> <span aria-hidden=true>×</span> <span class=sr-only>Close</span> </button>
+                                    <h4 class="modal-title ng-binding">Add New Company</h4>
+                                </div>
+                                <div class=modal-body>
+                                    <form name="companyForm">
+                                        <div class=row>                                           
+                                            <div class="col-md-12 col-lg-12">
+                                                <div class=form-group>
+                                                    <label for="">Company Type</label>
+                                                    <div class="control-group" ng-class=" {true: 'error'}[submitted &&  companyForm.compcompany.$invalid]">
+                                                        <select class=form-control ng-model="selectedcompnTyp" name="compcompany" ng-change="state()" ng-options="compny.ld_id as compny.ld_name for compny in comPany" required>
+                                                            <option value="" disabled selected style='display:none;'>-- Select Company Type --</option>
+                                                        </select>
+                                                        <span style="color:red" ng-show=" submitted && companyForm.compcompany.$error.required">Company Type is required.</span>
+                                                    </div>
+                                                    </div>
+                                            </div>
+                                        </div>
+
+                                        <div class=row>
+                                            <div class="col-md-6 col-lg-6">
+                                                <div class=form-group>
+                                                    <label for="">Website<span class=required> *</span></label>
+                                                    <div class="control-group" ng-class=" {true: 'error'}[submitted &&  companyForm.compurl.$invalid]">
+                                                        <input class=form-control required name="compurl" ng-model="compurl">
+                                                        <span style="color:red" ng-show=" submitted && companyForm.compurl.$error.required">Website is required.</span>
+                                                    </div>
+                                                    </div>
+                                            </div>
+                                            <div class="col-md-6 col-lg-6">
+                                                <div class=form-group>
+                                                    <label for="">Company Name<span class=required> *</span></label>
+                                                    <div class="control-group" ng-class=" {true: 'error'}[submitted &&  companyForm.comname.$invalid]">
+                                                        <input class=form-control required name="comname" ng-model="comname" ng-pattern="/^[ a-zA-Z]{1,29}$/">
+                                                        <span style="color:red" ng-show=" submitted && companyForm.comname.$error.required">Company Name is required.</span>
+                                                        <span style="color:red" ng-show="companyForm.comname.$error.pattern">Company Name is Invalid.</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                                @*<div class="col-md-6 col-lg-6">
+                                                    <div class=form-group>
+                                                        <label for="">Address Type</label>
+                                                        <div class="control-group" ng-class=" {true: 'error'}[submitted &&  companyForm.compaddress.$invalid]">
+                                                            <select class=form-control ng-model="selectedsddres" name="compaddress" ng-options="ad.ld_id as ad.ld_name for ad in addRess" required>
+                                                                <option value="" disabled selected style='display:none;'>-- Select Address Type --</option>
+                                                            </select>
+                                                            <span style="color:red" ng-show=" submitted && companyForm.compaddress.$error.required">Address Type is required.</span>
+                                                        </div>
+                                                        </div>
+                                                </div>*@
+                                            
+                                        </div>
+                                        <div class=row>
+                                            <div class="col-md-6 col-lg-6">
+                                                <div class=form-group>
+                                                    <label for="">Address1<span class=required> *</span></label>
+                                                    <div class="control-group" ng-class=" {true: 'error'}[submitted &&  companyForm.comppaddr.$invalid]">
+                                                        <input type="text" class=form-control name="comppaddr" ng-model="comppaddr" required>
+                                                        <span style="color:red" ng-show=" submitted && companyForm.comppaddr.$error.required">Address is required.</span>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 col-lg-6">
+                                                <div class=form-group>
+                                                    <label for="">Address2</label>
+                                                    <div class="control-group" ng-class=" {true: 'error'}[submitted &&  companyForm.comptaddr.$invalid]">
+                                                        <input type="text" class=form-control name="comptaddr" ng-model="comptaddr">
+                                                        <span style="color:red" ng-show=" submitted && companyForm.comptaddr.$error.required"> Address is required.</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class=row>
+                                            <div class="col-md-6 col-lg-6">
+                                                <div class=form-group>
+                                                    <div class=form-group>
+                                                        <label for="">Phone Number<span class=required> *</span></label>
+                                                        <div class="control-group" ng-class=" {true: 'error'}[submitted &&  companyForm.compphno.$invalid]">
+                                                            <input type="text" class=form-control name="compphno" ng-model="compphno" ng-pattern="/^[+0-9]{10,13}$/" required>
+                                                            <span style="color:red" ng-show=" submitted && companyForm.compphno.$error.required">Phone Number is required.</span>
+                                                            <span style="color:red" ng-show="companyForm.compphno.$error.pattern">Phone Number is Invalid.</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 col-lg-6">
+                                                <div class=form-group>
+                                                    <div class=form-group>
+                                                        <label for="">Contact Person<span class=required> *</span></label>
+                                                        <div class="control-group" ng-class=" {true: 'error'}[submitted &&  companyForm.conperson.$invalid]">
+                                                            <input type="text" class=form-control name="conperson" ng-model="conperson" required ng-pattern="/^[ a-zA-Z]{1,19}$/">
+                                                            <span style="color:red" ng-show=" submitted && companyForm.conperson.$error.required">Contact Person is required.</span>
+                                                            <span style="color:red" ng-show="companyForm.conperson.$error.pattern">Contact Person is Invalid.</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class=row>
+                                            <div class="col-md-6 col-lg-6">
+                                                <div class=form-group>
+                                                    <label for="">Country<span class=required> *</span></label>
+                                                    <div class="control-group" ng-class=" {true: 'error'}[submitted &&  companyForm.compcountry.$invalid]">
+                                                        <select class=form-control ng-model="selectedcontrytyp" name="compcountry" ng-change="state()" ng-options="contry.ld_id as contry.ld_name for contry in contryTyp" required>
+                                                            <option value="" disabled selected style='display:none;'>-- Select Country --</option>
+                                                        </select>
+                                                        <span style="color:red" ng-show=" submitted && companyForm.compcountry.$error.required">Country is required.</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 col-lg-6">
+                                                <div class=form-group>
+                                                    <label for="">State<span class=required> *</span></label>
+                                                    <div class="control-group" ng-class=" {true: 'error'}[submitted &&  companyForm.compstate.$invalid]">
+                                                        <select class=form-control ng-model="selectedstateTyp" name="compstate" ng-change="city()" ng-options="stat.ld_id as stat.ld_name for stat in stateTyp" required>
+                                                            <option value="" disabled selected style='display:none;'>-- Select State --</option>
+                                                        </select>
+                                                        <span style="color:red" ng-show=" submitted && companyForm.compstate.$error.required">State is required.</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class=row>
+                                            <div class="col-md-6 col-lg-6">
+                                                <div class=form-group>
+                                                    <label for="">City<span class=required> *</span></label>
+                                                    <div class="control-group" ng-class=" {true: 'error'}[submitted &&  companyForm.compcity.$invalid]">
+                                                        <select class=form-control ng-model="selectedcityTyp" name="compcity" ng-options="cit.ld_id as cit.ld_name for cit in cityTyp" required>
+                                                            <option value="" disabled selected style='display:none;'>-- Select City --</option>
+                                                        </select>
+                                                        <span style="color:red" ng-show=" submitted && companyForm.compcity.$error.required">City is required.</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 col-lg-6">
+                                                <div class=form-group>
+                                                    <label for="">Zipcode<span class=required> *</span></label>
+                                                    <div class="control-group" ng-class=" {true: 'error'}[submitted &&  companyForm.compzip.$invalid]">
+                                                        <input type="text" class=form-control name="compzip" ng-model="compzip" ng-pattern="/^[0-9]{2,10}$/" required>
+                                                        <span style="color:red" ng-show=" submitted && companyForm.compzip.$error.required">Zipcode is required.</span>
+                                                        <span style="color:red" ng-show="companyForm.compzip.$error.pattern">Zipcode is Invalid.</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class=row>
+                                            <div class="col-md-6 col-lg-6">
+                                                <div class=form-group>
+                                                    <label for="">Email ID<span class=required> *</span></label>
+                                                    <div class="control-group" ng-class=" {true: 'error'}[submitted &&  companyForm.compemail.$invalid]">
+                                                        <input type="email" name="compemail" ng-model="compemail" class=form-control required>
+                                                        <span style="color:red" ng-show=" submitted && companyForm.compemail.$error.required">Email ID is required.</span>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 col-lg-6">
+                                                <div class=form-group>
+                                                    <label for="">Fax</label>
+                                                    <div class="control-group" ng-class=" {true: 'error'}[submitted &&  companyForm.compfax.$invalid]">
+                                                        <input type="text" name="compfax" ng-model="compfax" class=form-control ng-pattern="/^[0-9]{2,10}$/">
+                                                        <span style="color:red" ng-show=" submitted && companyForm.compfax.$error.required">Fax is required.</span>
+                                                        <span style="color:red" ng-show="companyForm.compfax.$error.pattern">Fax is Invalid.</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class=row>
+                                            <div class="col-md-12 col-lg-12">
+                                                <div class=form-group>
+                                                    <label for="">Description</label>
+                                                    <textarea name="compdesc" ng-model="compdesc" class=form-control rows=3></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                    </form>
+                                </div>
+                                <div class=modal-footer>
+                                    <button type=button class="btn btn-default" data-dismiss=modal>Close</button>
+                                    <button type=button class="btn btn-primary" ng-click="AddCompany()">Add</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <h3>Manage Company</h3>
+            </div>
+            <!-- .page-header End -->
+            <div class=contents>
+                <div class=main-box>
+                    <div class=row>
+                        <div class=col-lg-12>
+                            <div style=min-height:1220px>
+                                <!-- Dashboard Header -->
+                                <!-- For an image header add the class 'content-header-media' and an image as in the following example -->
+                                <!-- END Dashboard Header -->
+                                <!-- Datatables Content -->
+                                <div class="block full mar-top15 cus-panels-with-pad lisiting">
+                                    <div class="table-responsive mar-top15">
+                                        <div id=TblStaff_wrapper class=dataTables_wrapper role=grid>
+                                            <div class=row>
+                                                <div class="col-sm-6 col-xs-5">
+                                                    <div id=TblStaff_length class=dataTables_length>
+                                                        <label>
+                                                            <select name=TblStaff_length aria-controls=TblStaff class=form-control ng-model="itemsPerPage" ng-change="pageCount()" ng-options="valuE for valuE in Vaalues"></select>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-offset-3 col-md-3 col-sm-6 col-xs-7">
+                                                    <div class=dataTables_filter id=TblStaff_filter>
+                                                        <label style=width:100%>
+                                                            <div class=input-group>
+                                                                <input aria-controls=TblStaff class=form-control placeholder=Search ng-model="findcompany"> <span class=input-group-addon><i class="fa fa-search"></i></span>
+                                                            </div>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            @*Loader spinner for the Manage Company *@
+                                            <div id="companyloader" class="overlays" style="display: block;">
+                                                <img src="~/images/spinningcurser.gif" style="position:absolute;z-index: 99; top:30%; left:50%; margin-top:-70px; margin-left:-70px; height:50px;  width:50px;" />
+                                            </div>
+                                            <table id=TblStaff class="table table-vcenter table-condensed table-bordered dataTable table-striped" aria-describedby=TblStaff_info>
+                                                <thead>
+                                                    <tr role=row>
+                                                        <th style="display: none; width: 0px" class="text-center sorting_asc">
+                                                        <th class="text-center sorting_disabled" style="width: 110px" ng-click="ManagecompanySort(asc=!asc,'company_name');"> Company Name  <i class="fa fa-sort"></i>
+                                                        <th width=15% class="sorting text-center" style="width: 132px" ng-click="ManagecompanySort(asc=!asc,'company_type_name');"> Company Type  <i class="fa fa-sort"></i>
+                                                        <th class="sorting text-center" role=columnheader style="width: 260px" ng-click="ManagecompanySort(asc=!asc,'url');"> Website  <i class="fa fa-sort"></i>
+                                                        <th class="sorting_disabled text-center" style="width: 130px"> Contact Person
+                                                        <th class="text-center sorting_disabled" style="width: 150px"> Action
+                                                <tbody id=tbody-staff role=alert aria-live=polite aria-relevant=all>
+                                                    <tr class=odd ng-repeat="companydetails in Companies | pagination : currentPage*itemsPerPage | limitTo: itemsPerPage | filter:findcompany" ng-click="GetCompany(companydetails.company_id,companydetails.communication_id)">
+
+                                                        <td style=display:none class="text-center sorting_1">
+                                                        <td class=text-center>{{companydetails.company_name}}
+                                                        <td>{{companydetails.company_type_name}}
+                                                        <td><a target="_blank" href="{{companydetails.url}}">{{companydetails.url}}</a>
+                                                        <td class=text-center>{{companydetails.contact_person}}
+                                                        <td class=text-center>
+                                                            <ul class="user-select-enable reset">
+                                                                <li data-toggle=modal data-target=#company-detail>
+                                                                    <button type=button class="btn btn-hove" data-toggle=tooltip title="View Company Details"><i class="fa fa-eye"></i></button>
+                                                                </li>
+                                                                <li data-toggle=modal data-target=#edit-detail>
+                                                                    <button type=button class="btn btn-hove" ng-click="ClearUpdateCompany();Editcompany(companydetails.company_id,companydetails.communication_id)" data-toggle=tooltip title="Edit Company Details"><i class="fa fa-pencil-square-o"></i></button>
+                                                                </li>
+                                                                <li data-toggle=modal data-target=#delete>
+                                                                    <button type=button class="btn btn-hove" data-toggle=tooltip title="Remove Company" ng-click="companydelete(companydetails.company_id,companydetails.communication_id,$index)"><i class="fa fa-trash-o"></i></button>
+                                                                </li>
+                                                            </ul>
+
+                                            </table>
+                                            <div class="pagination-div text-right">
+                                                <ul class="pagination">
+                                                    <li ng-class="DisablePrevPage()">
+                                                        <a href="" ng-click="prevPage()">« Prev</a>
+                                                    </li>
+                                                    <li ng-repeat="n in range()" ng-class="{active: n == currentPage}" ng-click="setPage(n)">
+                                                        <a href="">{{n+1}}</a>
+                                                    </li>
+                                                    <li ng-class="DisableNextPage()">
+                                                        <a href="" ng-click="nextPage()">Next »</a>
+
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- END Datatables Content -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!---- Edit Company Details ---->
+            <div class="modal fade" id=edit-detail tabindex=-1 role=dialog aria-labelledby=myModalLabel>
+                <div class=modal-dialog role=document>
+                    <div class=modal-content>
+                        <div class="modal-header cus-bg ng-scope">
+                            <button type=button class=close data-dismiss=modal aria-label=Close> <span aria-hidden=true>×</span> <span class=sr-only>Close</span> </button>
+                            <h4 class="modal-title ng-binding">Edit Company Details</h4>
+                        </div>
+                        <div class=modal-body>
+                            <form name="companyUpdateForm" novalidate>
+                                <div class=row>                                   
+                                    <div class="col-md-12 col-lg-12">
+                                        <div class=form-group>
+                                            <label for="">Company Type</label>
+                                            <div class="control-group" ng-class=" {true: 'error'}[submitted &&  companyUpdateForm.Updatecompcompany.$invalid]">
+                                                <select class=form-control ng-model="UpdateselectedcompnTyp" name="Updatecompcompany" ng-change="state()" ng-options="compny.ld_id as compny.ld_name for compny in comPany" required></select>
+                                                <span style="color:red" ng-show=" submitted && companyUpdateForm.Updatecompcompany.$error.required">Company Type is required.</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class=row>
+                                    <div class="col-md-6 col-lg-6">
+                                        <div class=form-group>
+                                            <label for="">Company Name<span class=required> *</span></label>
+                                            <div class="control-group" ng-class=" {true: 'error'}[submitted &&  companyUpdateForm.Updatecomname.$invalid]">
+                                                <input class=form-control required name="Updatecomname" ng-model="Updatecomname" ng-pattern="/^[ a-zA-Z]{1,55}$/">
+                                                <span style="color:red" ng-show=" submitted && companyUpdateForm.Updatecomname.$error.required">Company Name is required.</span>
+                                                <span style="color:red" ng-show="companyUpdateForm.Updatecomname.$error.pattern">Company Name is Invalid.</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-6">
+                                        <div class=form-group>
+                                            <label for="">Website<span class=required> *</span></label>
+                                            <div class="control-group" ng-class=" {true: 'error'}[submitted &&  companyUpdateForm.Updatecompurl.$invalid]">
+                                                <input class=form-control required name="Updatecompurl" ng-model="Updatecompurl">
+                                                <span style="color:red" ng-show=" submitted && companyUpdateForm.Updatecompurl.$error.required">Website is required.</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    @*<div class="col-md-6 col-lg-6">
+                                        <div class=form-group>
+                                            <label for="">Address Type</label>
+                                            <div class="control-group" ng-class=" {true: 'error'}[submitted &&  companyUpdateForm.Updatecompcountry.$invalid]">
+                                                <select class=form-control ng-model="Updateselectedsddres" name="Updatecompcountry" ng-options="ad.ld_id as ad.ld_name for ad in addRess" required></select>
+                                                <span style="color:red" ng-show=" submitted && companyUpdateForm.Updatecompcountry.$error.required">Address Type is required.</span>
+                                            </div>
+                                        </div>
+                                    </div>*@
+
+                                </div>
+                                <div class=row>
+                                    <div class="col-md-6 col-lg-6">
+                                        <div class=form-group>
+                                            <label for="">Address1<span class=required> *</span></label>
+                                            <div class="control-group" ng-class=" {true: 'error'}[submitted &&  companyUpdateForm.Updatecomppaddr.$invalid]">
+                                                <input type="text" class=form-control name="Updatecomppaddr" ng-model="Updatecomppaddr" required>
+                                                <span style="color:red" ng-show=" submitted && companyUpdateForm.Updatecomppaddr.$error.required">Address is required.</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-6">
+                                        <div class=form-group>
+                                            <label for="">Address2<span class=required> *</span></label>
+                                            <div class="control-group" ng-class=" {true: 'error'}[submitted &&  companyUpdateForm.Updatecomptaddr.$invalid]">
+                                                <input type="text" class=form-control name="Updatecomptaddr" ng-model="Updatecomptaddr">
+                                                <span style="color:red" ng-show=" submitted && companyUpdateForm.Updatecomptaddr.$error.required">Temporary Address is required.</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class=row>
+                                    <div class="col-md-6 col-lg-6">
+                                        <div class=form-group>
+                                            <div class=form-group>
+                                                <label for="">Phone Number<span class=required> *</span></label>
+                                                <div class="control-group" ng-class=" {true: 'error'}[submitted &&  companyUpdateForm.Updatecompphno.$invalid]">
+                                                    <input type="text" class=form-control name="Updatecompphno" ng-model="Updatecompphno" ng-pattern="/^[+0-9]{10,13}$/" required>
+                                                    <span style="color:red" ng-show=" submitted && companyUpdateForm.Updatecompphno.$error.required">Phone Number is required.</span>
+                                                    <span style="color:red" ng-show="companyUpdateForm.Updatecompphno.$error.pattern">Phone Number is Invalid.</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-6">
+                                        <div class=form-group>
+                                            <div class=form-group>
+                                                <label for="">Contact Person<span class=required> *</span></label>
+                                                <div class="control-group" ng-class=" {true: 'error'}[submitted &&  companyUpdateForm.Updateconperson.$invalid]">
+                                                    <input type="text" class=form-control name="Updateconperson" ng-model="Updateconperson" required ng-pattern="/^[ a-zA-Z]{2,30}$/">
+                                                    <span style="color:red" ng-show=" submitted && companyUpdateForm.conperson.$error.required">Contact Person is required.</span>
+                                                    <span style="color:red" ng-show="companyUpdateForm.conperson.$error.pattern">Contact Person is Invalid.</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class=row>
+                                    <div class="col-md-6 col-lg-6">
+                                        <div class=form-group>
+                                            <label for="">Country</label>
+                                            <div class="control-group" ng-class=" {true: 'error'}[submitted &&  companyUpdateForm.Updatecompcountry.$invalid]">
+                                                <select class=form-control ng-model="Updateselectedcontrytyp" name="Updatecompcountry"  ng-options="contry.ld_id as contry.ld_name for contry in contryTyp" required></select>
+                                                <span style="color:red" ng-show=" submitted && companyUpdateForm.Updatecompcountry.$error.required">Country is required.</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-6">
+                                        <div class=form-group>
+                                            <label for="">State</label>
+                                            <div class="control-group" ng-class=" {true: 'error'}[submitted &&  companyUpdateForm.Updatecompstate.$invalid]">
+                                                <select class=form-control ng-model="UpdateselectedstateTyp" name="Updatecompstate"  ng-options="stat.ld_id as stat.ld_name for stat in stateTyp" required></select>
+                                                <span style="color:red" ng-show=" submitted && companyUpdateForm.Updatecompstate.$error.required">State is required.</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class=row>
+                                    <div class="col-md-6 col-lg-6">
+                                        <div class=form-group>
+                                            <label for="">City</label>
+                                            <div class="control-group" ng-class=" {true: 'error'}[submitted &&  companyUpdateForm.Updatecompcity.$invalid]">
+                                                <select class=form-control ng-model="UpdateselectedcityTyp" name="Updatecompcity" ng-options="cit.ld_id as cit.ld_name for cit in cityTyp" required></select>
+                                                <span style="color:red" ng-show=" submitted && companyUpdateForm.Updatecompcity.$error.required">City is required.</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-6">
+                                        <div class=form-group>
+                                            <label for="">Zipcode<span class=required> *</span></label>
+                                            <div class="control-group" ng-class=" {true: 'error'}[submitted &&  companyUpdateForm.Updatecompzip.$invalid]">
+                                                <input type="text" class=form-control name="Updatecompzip" ng-model="Updatecompzip" ng-pattern="/^[0-9]{2,10}$/" required>
+                                                <span style="color:red" ng-show=" submitted && companyUpdateForm.Updatecompzip.$error.required">Zipcode is required.</span>
+                                                <span style="color:red" ng-show="companyUpdateForm.Updatecompzip.$error.pattern">Zipcode is Invalid.</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class=row>
+                                   
+                                    <div class="col-md-6 col-lg-6">
+                                        <div class=form-group>
+                                            <label for="">Fax</label>
+                                            <div class="control-group" ng-class=" {true: 'error'}[submitted &&  companyUpdateForm.Updatecompfax.$invalid]">
+                                                <input type="text" name="Updatecompfax" ng-model="Updatecompfax" class=form-control ng-pattern="/^[0-9]{2,}$/" required>
+                                                <span style="color:red" ng-show=" submitted && companyUpdateForm.Updatecompfax.$error.required">Fax is required.</span>
+                                                <span style="color:red" ng-show="companyUpdateForm.Updatecompfax.$error.pattern">Fax is Invalid.</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-6">
+                                        <div class=form-group>
+                                            <label for="">Emai ID</label>
+                                            <div class="control-group" ng-class=" {true: 'error'}[submitted &&  companyUpdateForm.Updatecompemail.$invalid]">
+                                                <input type="email" name="Updatecompemail" ng-model="Updatecompemail" class=form-control required>
+                                                <span style="color:red" ng-show=" submitted && companyUpdateForm.Updatecompemail.$error.required">Email ID is required.</span>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class=row>
+                                    <div class="col-md-12 col-lg-12">
+                                        <div class=form-group>
+                                            <label for="">Description</label>
+                                            <textarea name="Updatecompdesc" ng-model="Updatecompdesc" class=form-control rows=3></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </form>
+                        </div>
+                        <div class=modal-footer>
+                            <button type=button class="btn btn-default" data-dismiss=modal>Close</button>
+                            <button type=button class="btn btn-primary" ng-click="UpdateCompany()">Update</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!---- View Company Details ---->
+            <div class="modal fade" id=company-detail tabindex=-1 role=dialog aria-labelledby=myModalLabel>
+                <div class=modal-dialog role=document>
+                    <div class=modal-content>
+                        <div class="modal-header cus-bg ng-scope">
+                            <button type=button class=close data-dismiss=modal aria-label=Close> <span aria-hidden=true>×</span> <span class=sr-only>Close</span> </button>
+                            <h4 class="modal-title ng-binding">Company Details</h4>
+                        </div>
+                        <div class=modal-body>
+                            <div class="table-responsive mar-top15">
+                                <table id=tbl_profile class="table table-borderless table-striped">
+                                    <tbody>
+                                       
+                                        <tr>
+                                            <td>
+                                                <label>Name</label>
+                                            <td>{{company.company_name}}
+                                        <tr>
+                                            <td>
+                                                <label>Type</label>
+                                            <td>{{company.company_type_name}}
+                                        <tr>
+                                            <td>
+                                                <label>Description</label>
+                                            <td>{{company.company_desc}}
+                                        <tr>
+                                            <td>
+                                                <label>Address</label>
+                                            <td>{{company.address_1}}
+                                        
+                                        <tr>
+                                            <td>
+                                                <label>City</label>
+                                            <td>{{company.city_name}}
+                                        <tr>
+                                            <td>
+                                                <label>State</label>
+                                            <td>{{company.state_name}}
+                                        <tr>
+                                            <td>
+                                                <label>Country</label>
+                                            <td>{{company.country_name}}
+                                       
+                                        <tr>
+                                            <td>
+                                                <label>Phone NO</label>
+                                            <td>{{company.phone_1}}
+                                        <tr>
+                                            <td>
+                                                <label>Email ID</label>
+                                            <td>{{company.email_1}}
+                                        <tr>
+                                            <td>
+                                                <label>Zip Code</label>
+                                            <td>{{company.zip_code}}
+                                        <tr>
+                                            <td>
+                                                <label>Website</label>
+                                            <td> <span><a id=a_name>{{company.url}}</a></span>
+
+</table>
+                            </div>
+                        </div>
+                        <div class=modal-footer>
+                            <button type=button class="btn btn-default" data-dismiss=modal>Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- .content End -->
+        </div>
+    </div>
+</div>
+<footer class=footer-wrapper>
+    <div class=row>
+        <div class="col-sm-12 col-md-8">
+            <p class=mar-0-10>© Copyright 2015 <a href=#>Petzcare</a>. All Rights Reserved.</p>
+        </div>
+    </div>
+</footer>
+
+

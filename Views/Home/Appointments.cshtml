@@ -1,0 +1,1085 @@
+﻿
+<div class="scrollable container-fluid" ng-controller="AppointmentsController">
+    <div class=row>
+        <div class=col-sm-12>
+            <div class="page-headers cus-panels-with-pad">
+                <div class="block-options pull-right">
+                    <button type=button class=sec-cus-buttons ng-click="clearAppointment()"  data-toggle=modal data-target="#myModal"> <i class="fa fa-plus"></i> New Appointment </button>
+                    <!-- Modal -->
+                    <div class="modal fade" id="myModal" tabindex=-1 role=dialog aria-labelledby=myModalLabel>
+                        <div class=modal-dialog role=document>
+                            <div class=modal-content>
+                                <div class="modal-header cus-bg ng-scope">
+                                    <button type=button class=close data-dismiss=modal aria-label=Close> <span aria-hidden=true>×</span> <span class=sr-only>Close</span> </button>
+                                    <h4 class="modal-title ng-binding">Add New Appointment</h4>
+                                </div>
+                                <div class=modal-body>
+                                    <form name="appointmentForm">
+                                        <div class=row>
+                                            <div class="col-md-6 col-lg-6">
+                                                <div class=form-group>
+                                                    <label for="">Customer Name<span class=required> *</span></label>
+                                                    <div class="control-group" ng-class=" {true: 'error'}[submitted && submitted && appointmentForm.custnam.$invalid]">
+                                                        <select class=form-control id="addappointmentID" name="custnam" ng-model="custnam" ng-change="pets(custnam)" ng-options="custorids.customer_id as custorids.first_name for custorids in customrids" required>
+                                                        <option value="" disabled selected style='display:none;'>-- Select Customer Name --</option></select>
+                                                        <span style="color:red" ng-show="submitted && appointmentForm.custnam.$error.required">Select Customer Name</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 col-lg-6">
+                                                <div class=form-group>
+                                                    <label for="">Pet Name<span class="required">*</span></label>
+                                                    <div class="control-group" ng-class=" {true: 'error'}[submitted && submitted && appointmentForm.petnm.$invalid]">
+                                                        <select class=form-control ng-model="petnm" name="petnm" ng-options="petcusters.pet_id as petcusters.pet_name for petcusters in petcustomers" required>
+                                                        <option value="" disabled selected style='display:none;'>-- Select Pet Name --</option></select>
+                                                        <span style="color:red" ng-show="submitted && appointmentForm.petnm.$error.required">Pet Name is required.</span>
+                                                    </div>
+                                                    </div>
+                                            </div>
+                                        </div>
+                                        <div class="select-groom">
+                                            <div class=row>
+                                                <div class="col-md-6 col-lg-6">
+                                                    <div class=form-group>
+                                                        <label for="">Service <span class=required> *</span></label>
+                                                        <div class="control-group" ng-class=" {true: 'error'}[submitted && submitted && appointmentForm.servetype.$invalid]">
+                                                            <select class=form-control id="addappointmentID" ng-disabled="servicenamevalue"  ng-model="servetype" ng-change="modify()" name="servetype" ng-options="service as service.ld_name for service in svctype" required>
+                                                                <option value="" disabled selected style='display:none;'>-- Select Service --</option>
+                                                            </select>
+                                                            <span style="color:red" ng-show="submitted && appointmentForm.servetype.$error.required">Service is required.</span>
+                                                        </div>
+                                                         </div>
+                                                </div>
+                                                <div class="col-md-6 col-lg-6">
+                                                    <div class=form-group>
+                                                        <label for="">Service Type<span class="required">*</span></label>
+                                                        <div class="control-group" ng-class=" {true: 'error'}[submitted && submitted && appointmentForm.statustype1.$invalid]">
+                                                            <select class=form-control ng-model="statustype1" ng-disabled="serviceTypeName" name="statustype1" ng-options="stype.service_id as stype.service_name for stype in sertype" required>
+                                                            <option value="" disabled selected style='display:none;'>-- Select Service Type --</option></select>
+                                                            <span style="color:red" ng-show="submitted && appointmentForm.statustype1.$error.required">Service Type is required.</span>
+                                                        </div>
+                                                         </div>
+                                                </div>
+                                            </div>
+                                            <div class="row boarding" ng-show="serviceText != 'Grooming'">
+                                                <div class="col-md-6 col-lg-6">
+                                                    <div class=form-group>
+                                                        <label for="">Start Date<span class="required">*</span></label>
+                                                        <div class="control-group" ng-class=" {true: 'error'}[submitted && submitted && appointmentForm.sttdat.$invalid]">
+                                                            <input type="date" class=form-control ng-model="sttdat" name="sttdat" required ng-change='checkErr(sttdat,enndt,pickupdat,dedate,appnt)'>
+                                                            <span style="color:red" ng-show="submitted && appointmentForm.sttdat.$error.required">Start Date is required.</span>
+                                                            <span style="color:red">{{errMessage1}}</span></div>
+                                                         </div>
+
+                                                </div>
+                                                <div class="col-md-6 col-lg-6">
+                                                    <div class=form-group>
+                                                        <label for="">End Date<span class="required">*</span></label>
+                                                        <div class="control-group" ng-class=" {true: 'error'}[submitted && submitted && appointmentForm.enndt.$invalid]">
+                                                            <input type="date" class=form-control ng-model="enndt" name="enndt" required ng-change='checkErr(sttdat,enndt,pickupdat,dedate,appnt)'>
+                                                            <span style="color:red" ng-show="submitted && appointmentForm.enndt.$error.required">End Date is required.</span>
+                                                            <span style="color:red" >{{errMessage2}}</span></div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 col-lg-6">
+                                                    <div class=form-group>
+                                                        <label for="">Chargeable days<span class=required> *</span></label>
+                                                        <div class="control-group" ng-class=" {true: 'error'}[submitted && submitted && appointmentForm.chrgdas.$invalid]">
+                                                            <input class=form-control ng-model="chrgdas" name="chrgdas" required ng-pattern="/^[0-9]{1,3}$/">
+                                                            <span style="color:red" ng-show="submitted && appointmentForm.chrgdas.$error.required">Chargeable days is required</span>
+                                                            <span style="color:red" ng-show="appointmentForm.chrgdas.$error.pattern">Chargeable days is Invalid</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 col-lg-6">
+                                                    <div class="pad-15-0">
+                                                        <div>
+                                                            <label>
+                                                                <div class="control-group" ng-class=" {true: 'error'}[submitted && submitted && appointmentForm.bokwhlrun.$invalid]">
+                                                                    <input type=checkbox ng-model="bokwhlrun" name="bokwhlrun" ng-true-value="'Y'" ng-false-value="'N'" class=check>Bookwholerun
+                                                                    <span style="color:red" ng-show="submitted && appointmentForm.bokwhlrun.$error.required">Bookwholerun is required</span>
+                                                                </div>
+                                         </label>
+                                                        </div>
+                                                        <div>
+                                                            <label>
+                                                                <div class="control-group" ng-class=" {true: 'error'}[submitted && submitted && appointmentForm.remin.$invalid]">
+                                                                    <input type=checkbox ng-model="remin" name="remin" ng-true-value="'Y'" ng-false-value="'N'" class="check">Reminder
+                                                                    <span style="color:red" ng-show="submitted && appointmentForm.remin.$error.required">Reminder is required.</span>
+                                                                </div>
+                                         </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row grooming" ng-show="serviceText == 'Grooming'">
+                                                <div class="col-md-6 col-lg-6">
+                                                    <div class="mar-top15 pad-15-0">
+                                                        <div>
+                                                            <label>
+                                                                <div class="control-group" ng-class=" {true: 'error'}[submitted && submitted && appointmentForm.recurr.$invalid]">
+                                                                    <input type=checkbox ng-model="recurr" name="recurr" ng-true-value="'Y'" ng-false-value="'N'" class=check>Recurring
+                                                                    <span style="color:red" ng-show="submitted && appointmentForm.recurr.$error.required">Recurring is required.</span>
+                                                                </div>
+</label>
+                                                        </div>
+                                                        
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 col-lg-6">
+                                                    <div class="mar-top15 pad-15-0">
+                                                        
+                                                        <div>
+                                                            <label>
+                                                                <div class="control-group" ng-class=" {true: 'error'}[submitted && submitted && appointmentForm.remin.$invalid]">
+                                                                    <input type=checkbox ng-model="remin" class="check" name="remin" ng-true-value="'Y'" ng-false-value="'N'">Reminder
+                                                                    <span style="color:red" ng-show="submitted && appointmentForm.remin.$error.required">Reminder is required</span>
+                                                                </div>
+</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row groom-hide" ng-show="serviceText == 'Grooming'">
+                                                <div class="col-md-6 col-lg-6">
+                                                    <div class=form-group>
+                                                        <label for="">Groomer<span class=required> *</span></label>
+                                                        <div class="control-group" ng-class=" {true: 'error'}[submitted && submitted && appointmentForm.gromeval.$invalid]">
+                                                            <select class="form-control test12" ng-model="gromeval" name="gromeval" ng-options="grmomer.employee_id as grmomer.first_name for grmomer in groomers" required>
+                                                                <option value="" disabled selected style='display:none;'>-- Select Groomer --</option>
+                                                            </select>
+                                                            <span style="color:red" ng-show="submitted && appointmentForm.gromeval.$error.required">Select Groomer</span>
+                                                        </div>
+                                                        </div>
+                                                </div>
+                                                <div class="col-md-6 col-lg-6">
+                                                    <div class=form-group>
+                                                        <label for="">Groom Style<span class=required> *</span></label>
+                                                        <div class="control-group" ng-class=" {true: 'error'}[submitted && submitted && appointmentForm.gromstyl1.$invalid]">
+                                                            <select class=form-control ng-model="gromstyl1" name="gromstyl1" ng-options="gromsty.ld_id as gromsty.ld_name for gromsty in groomstyle" required>
+                                                                <option value="" disabled selected style='display:none;'>-- Select Groom Style --</option>
+                                                            </select>
+                                                            <span style="color:red" ng-show="submitted && appointmentForm.gromstyl1.$error.required">Select Groom Style </span>
+                                                        </div>
+                                                        </div>
+                                                </div>
+                                                <div class="col-md-6 col-lg-6">
+                                                    <div class=form-group>
+                                                        <label for="">Appointment Date<span class=required> *</span></label>
+                                                        <div class="control-group" ng-class=" {true: 'error'}[submitted && submitted && appointmentForm.appnt.$invalid]">
+                                                            <input type="date" class=form-control ng-model="appnt" name="appnt" ng-change='checkErr(sttdat,enndt,pickupdat,dedate,appnt)' required>
+                                                            <span style="color:red" ng-show="submitted && appointmentForm.appnt.$error.required">Appointment Date is required</span>
+                                                            <span style="color:red">{{errMessage5}}</span>
+                                                        </div>
+                                                        </div>
+                                                </div>
+                                                <div class="col-md-6 col-lg-6">
+                                                    <div class=form-group>
+                                                        <label for="">Estimated Duration<span class=required> *</span></label>
+                                                        <div class="control-group" ng-class=" {true: 'error'}[submitted && submitted && appointmentForm.estimat.$invalid]">
+                                                            <input class=form-control ng-model="estimat" name="estimat" required ng-pattern="/^[0-9]{1,3}$/">
+                                                            <span style="color:red" ng-show="submitted && appointmentForm.estimat.$error.required">Estimated Duration is required</span>
+                                                            <span style="color:red" ng-show="appointmentForm.estimat.$error.pattern">Estimated Duration is Invalid</span>
+                                                        </div>
+                                                        </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class=row>
+                                            <div class="col-md-6 col-lg-6">
+                                                <div class=mar-10-0>
+                                                    <div>
+                                                        <label>
+                                                            <input type=checkbox ng-model="pick" name="pick" class=check ng-true-value="'Y'" ng-false-value="'N'">Pickup Date
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 col-lg-6">
+                                                <div class=mar-10-0>
+                                                    <div>
+                                                        <label>
+                                                            <input type=checkbox ng-model="delvry" name="delvry" ng-true-value="'Y'" ng-false-value="'N'" class=check>Delivery Date
+                                                        </label>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class=row>
+                                            <div class="col-md-6 col-lg-6">
+                                                <div class=form-group ng-show="pick == 'Y'">
+                                                    <label for="">Pickup Date</label>
+                                                    
+                                              
+                                                    <div class="control-group" ng-class=" {true: 'error'}[submitted && submitted && appointmentForm.pickupdat.$invalid]">
+                                                        <input type="date" class=form-control ng-model="pickupdat" ng-change='checkErr(sttdat,enndt,pickupdat,dedate,appnt)' name="pickupdat">
+                                                        <span style="color:red">{{errMessage4}}</span>
+                                                    </div></div>
+
+                                            </div>
+                                            <div class="col-md-6 col-lg-6">
+                                                <div class=form-group ng-show="delvry == 'Y'">
+                                                    <label for="">Delivery Date</label>
+                                                    <div class="control-group" ng-class=" {true: 'error'}[submitted && submitted && appointmentForm.dedate.$invalid]">
+                                                        <input type="date" class=form-control ng-model="dedate" ng-change='checkErr(sttdat,enndt,pickupdat,dedate,appnt)' name="dedate">
+                                                        <span style="color:red">{{errMessage3}}</span>
+                                                    </div></div>
+                                            </div>
+                                        </div>
+                                        <div class=row>
+                                            <div class="col-md-12 col-lg-12">
+                                                <div class=form-group>
+                                                    <label for="">Status<span class=required> *</span></label>
+                                                    <div class="control-group" ng-class=" {true: 'error'}[submitted && submitted && appointmentForm.stus1.$invalid]">
+                                                        <select class=form-control ng-model="stus1" name="stus1" ng-options="stusval.ld_id as stusval.ld_name for stusval in statusval" required>
+                                                        <option value="" disabled selected style='display:none;'>-- Select Status --</option></select>
+                                                        <span style="color:red" ng-show="submitted && appointmentForm.stus1.$error.required">Status is required.</span>
+                                                    </div>
+                                                 </div>
+                                            </div>
+                                        </div>
+                                        <div class=row>
+                                            <div class="col-md-12 col-lg-12">
+                                                <div class=form-group>
+                                                    <label for="">Notes</label>
+                                                    <textarea class=form-control ng-model="adnotes" name="adnotes" rows=3></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class=modal-footer>
+                                    <button type=button class="btn btn-default" data-dismiss=modal>Close</button>
+                                    <button type="button" class="btn btn-primary" ng-click="newAppoint()">Add</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <h3>Manage Appointment List</h3>
+            </div>
+            <!-- .page-header End -->
+            <div class=contents>
+                <div class=main-box>
+                    <div class=row>
+                        <div class=col-lg-12>
+                            <div style=min-height:1220px>
+                                <!-- Dashboard Header -->
+                                <!-- For an image header add the class 'content-header-media' and an image as in the following example -->
+                                <!-- END Dashboard Header -->
+                                <!-- Datatables Content -->
+                                <div class="block full mar-top15 cus-panels-with-pad lisiting">
+                                    <div class="table-responsive mar-top15">
+                                        <div id=TblStaff_wrapper class=dataTables_wrapper role=grid>
+                                            <div class=row>
+                                                <div class=col-sm-6>
+                                                    <ul class="user-select-enable reset">
+                                                        <li data-toggle=tooltip title="Filter Customer">
+                                                            <button href=#target type=button class="btn btn-hove" ng-click="clearfilter()" data-toggle=collapse><i class="fa fa-filter"></i></button>
+                                                        </li>
+                                                        
+                                                    </ul>
+                                                </div>
+                                                <div class="col-md-offset-2 col-md-4 col-sm-6 col-xs-7">
+                                                    <div class=row>
+                                                        <div class="col-md-offset-5 col-md-7 col-lg-offset-6 col-lg-6">
+                                                            <label class=pad-5-0>
+                                                                <button role=button data-toggle=collapse href=#advance aria-expanded=false aria-controls=collapseExample class="sec-cus-buttons back-blue"> Advanced Search </button>
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div class=collapse id=advance>
+                                                    <div class=well>
+                                                        <div class=row>
+                                                            
+                                                            <div class=col-md-3>
+                                                                <div>
+                                                                    <input placeholder="Customer Name" name="custname" ng-model="fcustname" class=form-control>
+                                                                </div>
+                                                            </div>
+                                                            <div class=col-md-3>
+                                                                <div>
+                                                                    <input placeholder="Pet Name" name="petname" ng-model="fpetname" class=form-control>
+                                                                </div>
+                                                            </div>
+                                                            <div class=col-md-3>
+                                                                <div>
+                                                                    <select class=form-control id="addappointmentID"  ng-model="servetype" ng-change="modify()" name="servetype" ng-options="service as service.ld_name for service in svctype">
+                                                                        <option value="" selected style='display:none;'>-- Select Appointment Type --</option>
+
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                            <div class=col-md-3>
+                                                                <div>
+                                                                    <select class=form-control ng-model="statufilt" name="statustype1" ng-options="stype.service_name as stype.service_name for stype in sertype"></select>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mar-top15">
+                                                            @*<div class=col-md-3>
+                                                                <div>
+                                                                    <input type="date" placeholder=Date name="pickdate" ng-model="fdate" class=form-control>
+                                                                </div>
+                                                            </div>*@
+                                                            <div class=col-md-3>
+                                                                <div>
+                                                                    <input placeholder="Active Appointment" name="activeapt" ng-model="factive" class=form-control>
+                                                                </div>
+                                                            </div>
+                                                            <div class="pull-right mar-top15">
+                                                                <button type=button class="btn btn-primary" ng-click="filtrappoints()">Search</button>
+                                                                <button type=button class="btn btn-primary" ng-click="filtrclearappoints()">Clear</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            @*Loader spinner for the Appointment *@
+                                            <div id="appointmentloader" class="overlays" style="display: block;">
+                                                <img src="~/images/spinningcurser.gif" style="position:absolute;z-index: 99; top:30%; left:50%; margin-top:-70px; margin-left:-70px; height:50px;  width:50px;" />
+                                            </div>
+                                            <!---- Table Content Start ----->
+                                            <table id=TblStaff class="table table-vcenter table-condensed table-bordered dataTable center table-striped" aria-describedby=TblStaff_info>
+                                                <thead>
+                                                    <tr role=row>
+                                                        @*<th width=5% class=sorting role=columnheader tabindex=0 aria-controls=TblStaff rowspan=1 colspan=1 aria-label="
+                                                                Name
+                                                            : activate to sort column ascending" style="width: 2px">Select*@
+                                                        <th width=15% class=sorting role=columnheader tabindex=0 aria-controls=TblStaff rowspan=1 colspan=1 aria-label="
+                                                                    Name
+                                                                : activate to sort column ascending" style="width: 150px" ng-click="AppointmentSort(asc=!asc,'customer_name');">Customer Name<i class="fa fa-sort"></i>
+                                                        <th width="" class=sorting_disabled role=columnheader rowspan=1 colspan=1 aria-label="
+                                                                    Phone Number
+                                                                " style="width: 188px" ng-click="AppointmentSort(asc=!asc,'pet_name');">Pet Name<i class="fa fa-sort"></i>
+                                                        <th class=sorting role=columnheader tabindex=0 aria-controls=TblStaff rowspan=1 colspan=1 aria-label="
+                                                                    Email
+                                                                : activate to sort column ascending" style="width: 188px">Service
+                                                        <th width="" class=sorting_disabled role=columnheader rowspan=1 colspan=1 aria-label="
+                                                                    Phone Number
+                                                                " style="width: 188px" ng-click="AppointmentSort(asc=!asc,'service_name');">Service Type<i class="fa fa-sort"></i>
+                                                        <th width="" class=sorting_disabled role=columnheader rowspan=1 colspan=1 aria-label="
+                                                                    Phone Number
+                                                                " style="width: 188px">Date
+                                                        <th width="" class=sorting_disabled role=columnheader rowspan=1 colspan=1 aria-label="
+                                                                    Phone Number
+                                                                " style="width: 140px" ng-click="AppointmentSort(asc=!asc,'status_name');">Status<i class="fa fa-sort"></i>
+                                                        <th width="" class=sorting_disabled role=columnheader rowspan=1 colspan=1 aria-label="
+                                                                    Phone Number
+                                                                " style="width: 250px">Action
+                                                    <tr id="target" class=collapse>
+                                                        
+                                                        <td>
+                                                            <div>
+                                                                <input placeholder="Customer Name" name="custname" ng-model="custname" class=form-control>
+                                                            </div>
+                                                        <td>
+                                                            <div>
+                                                                <input placeholder="Pet Name" name="petname" ng-model="petname" class=form-control>
+                                                            </div>
+                                                        <td>
+                                                            <div>
+                                                                <input placeholder=Service name="service" ng-model="service" class=form-control>
+                                                            </div>
+                                                        <td>
+                                                            <div>
+                                                                <input placeholder="Service Type" name="servicetype" ng-model="servicetype" class=form-control>
+                                                            </div>
+                                                        <td>
+                                                            <div>
+                                                                @*<input type=tel placeholder=Date name="pickdate" ng-model="pickdate" class=form-control>*@
+                                                                @*<input date-range-picker class="form-control date-picker" placeholder=Date type="text" ng-model="datePicker.date"   min="'2015-01-01'" max="'2025-12-30'" readonly/>*@
+                                                                <input id="daterange" date-range-picker class="form-control date-picker" ng-change="filters()" type="text" placeholder=Date ng-model="datePicker" />
+                                                            </div>
+
+                                                        <td>
+                                                            </td>
+                                                        <td></td>
+
+                                                <tbody id=tbody-staff role=alert aria-live=polite aria-relevant=all>
+                                                    <tr class=odd ng-repeat="appointments in appointdetails | filter:{customer_name:custname,pet_name:petname,appointment_name:service,service_name:servicetype} | pagination : currentPage*itemsPerPage | limitTo: itemsPerPage" ng-click="appoinfltr(appointments.appointment_name,appointments.appointment_id,appointments.customer_id,appointments.service_id,appointments.invoice_number);">
+                                                        <td style=display:none class="text-center sorting_1">
+                                                        @*<td><input type="checkbox" name="Appointdelete" ng-model="appointments.Appointdelete" ng-click="AppointMent(appointments.appointment_id,appointments.appointment_name,$index)" class="mar-0-10">*@
+                                                        <td>{{appointments.customer_name}}
+                                                        <td>{{appointments.pet_name}}
+                                                        <td>{{appointments.appointment_name}}
+                                                        <td>{{appointments.service_name}}
+                                                        <td>{{appointments.pickup_date}}
+                                                        <td>{{appointments.status_name}}
+                                                        <td>
+                                                            <ul class="user-select-enable reset">
+                                                                <li>
+                                                                    <button type=button class="btn btn-hove" data-toggle="modal" data-target="#appointmentdetail" title="View Detail"><i class="fa fa-eye"></i></button>
+                                                                </li>
+                                                                <li>
+                                                                    <button type=button class="btn btn-hove" ng-click="ClearAdditionalService()" data-toggle="modal" data-target="#addtionalappdetail" title="Additional Service"><i class="fa fa-cart-plus"></i></button>
+                                                                </li>
+                                                                <li>
+                                                                    <button type=button class="btn btn-hove" data-toggle=modal data-target="#invoiceID" title="Invoice Detail"><i class="fa fa-folder-open-o"></i></button>
+                                                                </li>
+                                                                @*<li data-toggle=modal data-target=#>
+                                                                    <button type=button class="btn btn-hove" data-toggle=tooltip title="Follow up"><i class="fa fa-thumbs-o-up"></i></button>
+                                                                </li>*@
+                                                                <li>
+                                                                    <button type=button data-toggle=modal title="Delete Appointment" class="btn btn-hove" ng-click="APPOINTdelete(appointments.appointment_id,appointments.appointment_name,$index)"><i class="fa fa-trash-o"></i></button>
+                                                                </li>
+                                                            </ul>
+
+</table>
+                                            <div class="pagination-div text-right">
+                                                <ul class="pagination">
+                                                    <li ng-class="DisablePrevPage()">
+                                                        <a href="" ng-click="prevPage()">« Prev</a>
+                                                    </li>
+                                                    <li ng-repeat="n in range()" ng-class="{active: n == currentPage}" ng-click="setPage(n)">
+                                                        <a href="">{{n+1}}</a>
+                                                    </li>
+                                                    <li ng-class="DisableNextPage()">
+                                                        <a href="" ng-click="nextPage()">Next »</a>
+
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- END Datatables Content -->
+
+
+                                <!-- Inoice generated Modal -->
+                                <div class="modal fade" id=invoiceID tabindex=-1 role=dialog aria-labelledby=myModalLabel>
+                                    <div class="modal-dialog modal-lg" role=document>
+                                        <div class=modal-content>
+                                            <div class=modal-body>
+                                                <form>
+                                                    <fieldset>
+                                                        <legend>
+                                                            <div class="row clearfix">
+                                                                <div class="col-md-6 col-lg-6">
+                                                                    <div class="pull-left img-mar-l">
+                                                                        <a class=logo title=Petzcare href=#><img src=~/images/9a9e2fdc.petzcare.png style="width:110%; height:60px" alt=Petzcare></a>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-6 col-lg-6">
+                                                                    <div class="pull-right pad-0-10">
+                                                                        <h3 class=text-uppercase>Invoice</h3>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </legend>
+
+
+                                                        <div class="row clearfix" ng-repeat="seinvda in invoice">
+                                                            <div class="col-md-6 col-lg-6">
+                                                                <div class="pull-left pad-0-10"> <address> <strong>{{seinvda.customer_name}}</strong><br>{{seinvda.address_1}} <br> <abbr title=Phone>Phone No: </abbr>{{seinvda.phone_1}}<br> </address> </div>
+                                                            </div>
+                                                            <div class="col-md-6 col-lg-6">
+                                                                <div class=pull-right>
+                                                                    <div><strong>Invoice No :</strong>{{seinvda.invoice_number}}</div>
+                                                                    <div class=pad-5-0><strong>Invoice Date :</strong>{{seinvda.invoice_date}}</div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+
+                                                        <div class="row pad-0-15">
+                                                            <div ng-repeat="seinvda in invoice">
+                                                                <div ng-repeat="iNvoice in seinvda.ServiceList">
+                                                                    <div class="col-md-3 col-lg-3"> <strong>Pet Name :</strong> <span>{{seinvda.pet_name}}</span> </div>
+                                                                    <div class="col-md-4 col-lg-4"> <strong>Service Name :</strong> <span>{{iNvoice.appoitment_type_name}}</span> </div>
+                                                                    <div class="col-md-5 col-lg-5"> <strong>Appointment Date :</strong> <span>{{iNvoice.appointment_date}}</span> </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div ng-repeat="seinvda in invoice">
+                                                            <div class="table-responsive mar-top15">
+                                                                <div id=TblStaff_wrapper class=dataTables_wrapper role=grid>
+                                                                    <table id=TblStaff class="table table-vcenter table-condensed table-bordered dataTable" aria-describedby=TblStaff_info>
+                                                                        <thead>
+                                                                            <tr role="row text-center">
+                                                                                <th class="text-center sorting_disabled" role=columnheader style="width: 110px"> Service No
+                                                                                <th width=15% class=sorting role=columnheader style="width: 330px"> Service Description
+                                                                                <th width="" class=sorting_disabled role=columnheader style="width: 132px">Duration
+                                                                                <th class=sorting_disabled role=columnheader style="width: 129px">
+                                                                                <th>Total</th></tr>
+                                                                        </thead>
+                                                                        <tbody id=tbody-staff role=alert aria-live=polite aria-relevant=all>
+                                                                            <tr class=odd ng-repeat="iNvoice in seinvda.ServiceList">
+                                                                                <td>{{iNvoice.service_id}}
+                                                                                <td class=text-left>{{iNvoice.service_name}}
+                                                                                <td>{{iNvoice.chargaeble_days}}
+                                                                                <td>
+                                                                                <td class=text-right>{{iNvoice.service_rate | currency:'&#8377;'}}
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td></td>
+                                                                                <td></td>
+                                                                                <td></td>
+                                                                                <td></td>
+                                                                                <td></td>
+
+                                                                            </tr>
+                                                                            <tr class=odd ng-repeat="seinvda in invoice">
+                                                                                <td>
+                                                                                <td>
+                                                                                <td>
+                                                                                <td class="text-left">Sub Total</td>
+                                                                                <td class=text-right>{{seinvda.gross_amount | currency:'&#8377;'}}
+                                                                          <tr class=odd>
+                                                                                <td>
+                                                                                <td>
+                                                                                <td>
+                                                                                <td class="text-left">Tax({{seinvda.taxpercent_name}} %)
+                                                                                <td class=text-right>{{seinvda.tax_amount | currency:'&#8377;'}}
+                                                                          <tr class=odd ng-repeat="seinvda in invoice">
+                                                                                <td>
+                                                                                <td>
+                                                                                <td>
+                                                                                <td class="text-left">Discount({{seinvda.discount_percent}} %)
+                                                                                <td class=text-right>{{seinvda.discount_amount | currency:'&#8377;'}}
+                                                                        <tr class=odd>
+                                                                                <td>
+                                                                                <td>
+                                                                                <td>
+                                                                                <td class="text-left">Total Amount
+                                                                                <td class=text-right>{{seinvda.total_amount | currency:'&#8377;'}}
+                                                                     </tbody>
+
+
+
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="row pad-0-15">
+                                                                <div class=col-sm-12> <i class="fa fa-check-square sky-blue"></i> <strong>Payment Method :</strong> <span>{{seinvda.payment_type_name}}</span> </div>
+                                                            </div>
+                                                        </div>
+                                                    </fieldset>
+                                                </form>
+                                            </div>
+                                            <div class=modal-footer>
+                                                <button type=button class="btn btn-default" data-dismiss=modal>Close</button>
+                                                @*<button type=button class="btn btn-default" ng-click="ConfrmEmail()">Email</button>*@
+                                                <button type=button class="btn btn-primary">Print</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+
+
+
+
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- .content End -->
+            <!-- Modal -->
+            <!-- Appointment Details -->
+            <div class="modal fade" id="appointmentdetail" tabindex=-1 role=dialog aria-labelledby=myModalLabel>
+                <div class=modal-dialog role=document>
+                    <div class=modal-content>
+                        <div class="modal-header cus-bg ng-scope">
+                            <button type=button class=close data-dismiss=modal aria-label=Close> <span aria-hidden=true>×</span> <span class=sr-only>Close</span> </button>
+                            <h4 class="modal-title ng-binding">Appointment Details</h4>
+                        </div>
+                        <div class=modal-body>
+                            <form name="AppointmentdetailsForm">    
+                                                         
+                                <div class=row>
+                                    <div class="col-md-6 col-lg-6">
+                                        <div class=form-group>
+                                            <label for="">Customer Name<span class=required> *</span></label>
+                                            <input class=form-control ng-model="appointment.customer_name" readonly="readonly" name="cname" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-6">
+                                        <div class=form-group>
+                                            <label for="">Service Name</label>
+                                            <input class=form-control ng-model="appointment.service_name" readonly="readonly" name="pname">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <fieldset>
+                                    <legend>Service List</legend>                                   
+                                    <div class=row>
+                                        <div class="col-xs-3 col-sm-3 single-w-lh text-center"> <strong>Service</strong> </div>
+                                        <div class="col-xs-3 col-sm-3 single-w-lh text-center"> <strong>Service Type</strong> </div>
+                                        <div class="col-xs-3 col-sm-3 single-w-lh text-center"> <strong>Date</strong> </div>
+                                        <div class="col-xs-3 col-sm-3 single-w-lh text-center"> <strong>Action</strong> </div>
+                                    </div>                                  
+                                    <div ng-show="sername == 'Boarding'" class=row ng-repeat="brmdata in brdappsedetails">
+                                        <div class="col-xs-3 col-sm-3 single-w-lh margin-t-b text-center"> <span>{{brmdata.appointment_name}} </span></div>
+                                        <div class="col-xs-3 col-sm-3 single-w-lh margin-t-b text-center"> <span>{{brmdata.service_type_name}} </span></div>
+                                        <div class="col-xs-3 col-sm-3 single-w-lh margin-t-b text-center"><span>{{brmdata.appointment_date}} </span></div>
+                                        <div class="col-xs-3 col-sm-3 single-w-lh mar-top10 text-center user-select-enable">
+                                            <span> <button class="btn btn-hove" type=button data-toggle=collapse title="View Service" data-target ="{{ '#appcollapseExample' +  brmdata.asBr_appid }}" aria-expanded=false aria-controls=collapseExample><i class="fa fa-street-view"></i></button> </span>
+                                            <span> <button type=button class="btn btn-hove" data-toggle=tooltip title="Delete Service" ng-click="deltdATA(brmdata.asBr_appid,brmdata.asGr_appid,brmdata.appointment_name,$index)"><i class="fa fa-times"></i></button> </span>
+                                        </div>
+                                        <div class=row>
+                                            <div class=col-sm-12>
+                                                <div class="collapse" id="{{ 'appcollapseExample' +  brmdata.asBr_appid }}">
+                                                    <div class=well>
+                                                       
+                                                        <ul class=list-group>
+                                                            <li class=list-group-item>
+                                                                <div>
+                                                                    <label for="">Service :</label> <span class=ng-binding>{{brmdata.appointment_name}} </span>
+                                                                </div>
+
+                                                            </li>
+                                                            <li class=list-group-item>
+                                                                <div>
+                                                                    <label for="">Service Type :</label> <span class=ng-binding>{{brmdata.service_type_name}} </span>
+                                                                </div>
+
+                                                            </li>
+                                                            <li class=list-group-item>
+                                                                <div>
+                                                                    <label for="">Date :</label> <span class=ng-binding>{{brmdata.appointment_date}} </span>
+                                                                    @*<input type="date" ng-model="datevalue" />*@ 
+                                                                </div>
+                                                            </li>
+                                                            <li class=list-group-item>
+                                                                <div>
+                                                                    <label for="">Duration :</label> <span class=ng-binding>{{brmdata.estimated_duration}} </span>
+                                                                </div>
+                                                            </li>
+                                                            <li class=list-group-item>
+                                                                <div>
+                                                                    <label for="">Pickup :</label> <span class=ng-binding>{{brmdata.is_pickup}} </span>
+                                                                </div>
+                                                            </li>
+                                                            <li class=list-group-item>
+                                                                <div>
+                                                                    <label for="">Pickup Date :</label> <span class=ng-binding>{{brmdata.pickup_date}} </span>
+                                                                </div>
+                                                            </li>
+                                                            <li class=list-group-item>
+                                                                <div>
+                                                                    <label for="">Delivery :</label> <span class=ng-binding>{{brmdata.is_delivery}} </span>
+                                                                </div>
+                                                            </li>
+                                                            <li class=list-group-item>
+                                                                <div>
+                                                                    <label for="">Delivery Date :</label> <span class=ng-binding>{{brmdata.delivery_date}} </span>
+                                                                </div>
+                                                            </li>
+                                                            
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                       
+                                    </div>
+                                    <div ng-show="sername == 'Grooming'" class=row ng-repeat="grmdata in grmappsedetails">
+                                        <div class="col-xs-3 col-sm-3 single-w-lh margin-t-b text-center"> <span>{{grmdata.appointment_name}} </span></div>
+                                        <div class="col-xs-3 col-sm-3 single-w-lh margin-t-b text-center"> <span>{{grmdata.service_type_name}} </span></div>
+                                        <div class="col-xs-3 col-sm-3 single-w-lh margin-t-b text-center"><span>{{grmdata.appointment_date}} </span></div>
+                                        <div class="col-xs-3 col-sm-3 single-w-lh mar-top10 text-center user-select-enable">
+                                            <span> <button class="btn btn-hove" type=button data-toggle=collapse data-target="{{'#appcollapseExample' +  grmdata.asGr_appid}}" aria-expanded=false aria-controls=collapseExample><i class="fa fa-street-view"></i></button> </span>
+                                            <span> <button type=button class="btn btn-hove" data-toggle=tooltip title=Cancel ng-click="deltdATA(grmdata.asBr_appid,grmdata.asGr_appid,grmdata.appointment_name,$index)"><i class="fa fa-times"></i></button> </span>
+                                        </div>
+                                        <div class=row>
+                                            <div class=col-sm-12>
+                                                <div class="collapse" id="{{'appcollapseExample' +  grmdata.asGr_appid}}">
+                                                    <div class=well>
+
+                                                        <ul class=list-group>
+                                                            <li class=list-group-item>
+                                                                <div>
+                                                                    <label for="">Service :</label> <span class=ng-binding>{{grmdata.appointment_name}} </span>
+                                                                </div>
+
+                                                            </li>
+                                                            <li class=list-group-item>
+                                                                <div>
+                                                                    <label for="">Service Type :</label> <span class=ng-binding>{{grmdata.service_type_name}} </span>
+                                                                </div>
+
+                                                            </li>
+                                                            <li class=list-group-item>
+                                                                <div>                                                                  
+                                                                    <label for="">Date :</label> <span class=ng-binding>{{grmdata.appointment_date}}</span>
+                                                                    @*<input type="date" ng-model="datevalue1" />*@ 
+                                                                </div>
+                                                            </li>
+                                                            <li class=list-group-item>
+                                                                <div>
+                                                                    <label for="">Duration :</label> <span class=ng-binding>{{grmdata.estimated_duration}} </span>
+                                                                </div>
+                                                            </li>
+                                                            <li class=list-group-item>
+                                                                <div>
+                                                                    <label for="">Pickup :</label> <span class=ng-binding>{{grmdata.is_pickup}} </span>
+                                                                </div>
+                                                            </li>
+                                                            <li class=list-group-item>
+                                                                <div>
+                                                                    <label for="">Pickup Date :</label> <span class=ng-binding>{{grmdata.pickup_date}} </span>
+                                                                </div>
+                                                            </li>
+                                                            <li class=list-group-item>
+                                                                <div>
+                                                                    <label for="">Delivery :</label> <span class=ng-binding>{{grmdata.is_delivery}} </span>
+                                                                </div>
+                                                            </li>
+                                                            <li class=list-group-item>
+                                                                <div>
+                                                                    <label for="">Delivery Date :</label> <span class=ng-binding>{{grmdata.delivery_date}} </span>
+                                                                </div>
+                                                            </li>
+
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                       
+                                    </div>                                     
+                                                           
+                                </fieldset>
+                                
+                            </form>
+                        </div>
+                        <div class=modal-footer>
+                            <button type=button ng-disabled="!datevalue" class="btn btn-primary" data-dismiss=modal>Notify</button>
+                            <button type=button class="btn btn-default" data-dismiss=modal>Cancel</button>
+                            <button type=button class="btn btn-primary" ng-click="COnfrmAppoint()">Confirm</button>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+
+
+            <!--End Appointent details-->
+            <!--Additional Appointment Details -->
+            <div class="modal fade" id="addtionalappdetail" tabindex=-1 role=dialog aria-labelledby=myModalLabel>
+                <div class=modal-dialog role=document>
+                    <div class=modal-content>
+                        <div class="modal-header cus-bg ng-scope">
+                            <button type=button class=close data-dismiss=modal aria-label=Close> <span aria-hidden=true>×</span> <span class=sr-only>Close</span> </button>
+                            <h4 class="modal-title ng-binding">Additional Appointment Details</h4>
+                        </div>
+                        <div class=modal-body>
+                            <div class=row>
+                                <div class=col-sm-12>
+                                    <div>
+                                        <div>
+                                            <div>
+                                                <ul class=list-group>
+                                                    <li class=list-group-item>
+                                                        <div>
+                                                            <label for="">Customer Name :</label> <span>{{appointment.customer_name}} </span>
+                                                        </div>
+                                                    </li>
+                                                    <li class=list-group-item>
+                                                        <div>
+                                                            <label for="">Pet Name :</label> <span>{{appointment.pet_name}}</span>
+                                                        </div>
+                                                    </li>
+                                                    <li class=list-group-item>
+                                                        <div>
+                                                            <label for="">Service :</label> <span>{{appointment.appointment_name}}</span>
+                                                        </div>
+                                                    </li>
+                                                    <li class=list-group-item>
+                                                        <div>
+                                                            <label for="">Service Type :</label> <span>{{appointment.service_name}}</span>
+                                                        </div>
+                                                    </li>
+                                                    <li class=list-group-item>
+                                                        <div>
+                                                            <label for="">Pickup Date :</label> <span>{{appointment.pickup_date}}</span>
+                                                        </div>
+                                                    </li>
+                                                    <li class=list-group-item>
+                                                        <div>
+                                                            <label for="">Delivery Date :</label> <span>{{appointment.delivery_date}}</span>
+                                                        </div>
+                                                    </li>
+                                                    <li class=list-group-item>
+                                                        <div>
+                                                            <label for="">Status :</label> <span>{{appointment.status_name}}</span>
+                                                        </div>
+                                                    </li>
+                                                    <li class=list-group-item>
+                                                        <div>
+                                                            <label for="">Notes :</label> <span>{{appointment.notes}}</span>
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <form name="addtioanForm">
+                                <fieldset>
+                                    <legend>Add Addtional Service</legend>
+                                    <div class=select-groom>
+                                        <div class=row>
+                                            <div class="col-md-6 col-lg-6">
+                                                <div class=form-group>
+                                                    <label for="">Customer Name<span class=required> *</span></label>
+                                                    @*<div class="control-group" ng-class=" {true: 'error'}[submitted && submitted && addtioanForm.custnm.$invalid]">*@
+                                                        <input type="text" ng-model="appointment.customer_name" readonly="readonly" name="custnm" class=form-control>
+                                                        @*<span style="color:red" ng-show="submitted && addtioanForm.custnam.$error.required">Select Reminder is required.</span>*@
+                                                    @*</div>*@
+                                                    </div>
+                                            </div>
+                                            <div class="col-md-6 col-lg-6">
+                                                <div class=form-group>
+                                                    <label for="">Pet Name<span class=required> *</span></label>
+                                                    <div class="control-group" ng-class=" {true: 'error'}[submitted && submitted && addtioanForm.serpetnm.$invalid]">
+                                                        <select class=form-control ng-model="serpetnm" name="serpetnm" ng-options="petcusters.pet_id as petcusters.pet_name for petcusters in petcustomers" required>
+                                                            <option value="" disabled selected style='display:none;'>-- Select Pet Name --</option>
+                                                        </select>                                                       
+                                                        <span style="color:red" ng-show="submitted && addtioanForm.serpetnm.$error.required">Select Pet Name</span>
+                                                    </div>
+                                                    </div>
+                                            </div>
+                                        </div>
+                                        <div class=row>
+                                            <div class="col-md-6 col-lg-6">
+                                                <div class=form-group>
+                                                    <label for="">Service</label>
+                                                    @*<select class=form-control id="addappointmentID" ng-model="servetype" ng-change="modify()" name="servetype" ng-options="service as service.ld_name for service in svctype">*@
+                                                    <input type="text" ng-model="appointment.appointment_name" readonly="readonly" name="servetype" class=form-control required>
+                                                    @*</select>*@
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 col-lg-6">
+                                                <div class=form-group>
+                                                    <label for="">Service Type<span class=required> *</span></label>
+                                                    <div class="control-group" ng-class=" {true: 'error'}[submitted && submitted && appointmentForm.addtioanForm.$invalid]">
+                                                        <select class=form-control ng-model="serstatustype4" name="serstatustype3" ng-options="stype.service_id as stype.service_name for stype in sertype11" required>
+                                                            <option value="" disabled selected style='display:none;'>-- Select Service Type --</option>
+                                                        </select>
+                                                        
+                                                        <span style="color:red" ng-show="submitted && addtioanForm.addtioanForm.$error.required">Select Service Type</span>
+                                                    </div>
+                                                    </div>
+                                            </div>
+                                        </div>
+                                        <div class="row boarding-viewhide" ng-show="appointment.appointment_name != 'Grooming'">
+                                            <div class="col-md-6 col-lg-6">
+                                                <div class=form-group>
+                                                    <label for="">Start Date<span class=required> *</span></label>
+                                                    <div class="control-group" ng-class=" {true: 'error'}[submitted && submitted && addtioanForm.serstartdate.$invalid]">
+                                                        <input type="date" ng-model="serstartdate" name="serstartdate" class=form-control required ng-change='checkErr(serstartdate,serenddate,serpickdate,serdeldate,serappindate)'>
+                                                        <span style="color:red">{{errMessage1}}</span><span style="color:red" ng-show="submitted && addtioanForm.serstartdate.$error.required">Start Date is required</span>
+                                                    </div>
+                                                    </div>
+                                            </div>
+                                            <div class="col-md-6 col-lg-6">
+                                                <div class=form-group>
+                                                    <label for="">End Date<span class=required> *</span></label>
+                                                    <div class="control-group" ng-class=" {true: 'error'}[submitted && submitted && addtioanForm.serenddate.$invalid]">
+                                                        <input type="date" ng-model="serenddate" name="serenddate" class=form-control required ng-change='checkErr(serstartdate,serenddate,serpickdate,serdeldate,serappindate)'>
+                                                        <span style="color:red" ng-show="submitted && addtioanForm.serenddate.$error.required">End Date is required</span>
+                                                        <span style="color:red">{{errMessage2}}</span> </div>
+                                                    </div>
+                                            </div>
+                                            <div class="col-md-6 col-lg-6">
+                                                <div class=form-group>
+                                                    <label for="">Chargeable days<span class=required> *</span></label>
+                                                    <div class="control-group" ng-class=" {true: 'error'}[submitted && submitted && addtioanForm.serchargeday.$invalid]">
+                                                        <input type="number" class=form-control ng-model="serchargeday" name="serchargeday" required ng-pattern="/^[0-9]{1,3}$/">
+                                                        <span style="color:red" ng-show="submitted && addtioanForm.serchargeday.$error.required">Chargeable days is required</span>
+                                                        <span style="color:red" ng-show="addtioanForm.serchargeday.$error.pattern">Chargeable days is Invalid</span></div>
+                                                    </div>
+
+                                            </div>
+                                            <div class="col-md-6 col-lg-6">
+                                                <div class="mar-top15 pad-15-0">
+                                                    <div>
+                                                        <label>
+                                                            <div class="control-group" ng-class=" {true: 'error'}[submitted && submitted && addtioanForm.serbookrun.$invalid]">
+                                                                <input type=checkbox ng-model="serbookrun" name="serbookrun" class=check ng-true-value="'Y'" ng-false-value="'N'">Bookwholerun
+                                                                <span style="color:red" ng-show="submitted && addtioanForm.serbookrun.$error.required">Bookwholerun is required</span>
+                                                            </div>
+</label>
+                                                    </div>
+                                                    <div>
+                                                        <label>
+                                                            <div class="control-group" ng-class=" {true: 'error'}[submitted && submitted && addtioanForm.petnm.$invalid]">
+                                                                <input type=checkbox ng-model="serremin" name="serremin" ng-true-value="'Y'" ng-false-value="'N'" class="check">Reminder
+                                                                <span style="color:red" ng-show="submitted && addtioanForm.serremin.$error.required"> Reminder is required</span>
+                                                            </div>
+</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row groom-viewhide" ng-show="appointment.appointment_name == 'Grooming'">
+                                            <div class="col-md-6 col-lg-6">
+                                                <div class=form-group>
+                                                    <label for="">Groomer<span class=required> *</span></label>
+                                                    <div class="control-group" ng-class=" {true: 'error'}[submitted && submitted && addtioanForm.sergroomer.$invalid]">
+                                                        <select class="form-control test12" ng-model="sergroomer" name="sergroomer" ng-options="gromes.employee_id as gromes.first_name for gromes in groomers" required>
+                                                            <option value="" disabled selected style='display:none;'>-- Select Groomer --</option>
+                                                        </select>
+                                                       
+                                                        <span style="color:red" ng-show="submitted && addtioanForm.sergroomer.$error.required">Select Groomer</span>
+                                                    </div>
+                                                    </div>
+                                            </div>
+                                            <div class="col-md-6 col-lg-6">
+                                                <div class=form-group>
+                                                    <label for="">Groom Style<span class=required> *</span></label>
+                                                    <div class="control-group" ng-class=" {true: 'error'}[submitted && submitted && addtioanForm.sergroomstyl.$invalid]">
+                                                        <select class=form-control ng-model="sergroomstyl" name="sergroomstyl" ng-options="gromsty.ld_id as gromsty.ld_name for gromsty in groomstyle" required>
+                                                            <option value="" disabled selected style='display:none;'>-- Select Groom Style --</option>
+                                                        </select>
+                                                        <span style="color:red" ng-show="submitted && addtioanForm.sergroomstyl.$error.required">Select Groom Style</span>
+                                                    </div>
+                                                    </div>
+                                            </div>
+                                            <div class="col-md-6 col-lg-6">
+                                                <div class=form-group>
+                                                    <label for="">Appointment Date<span class=required> *</span></label>
+                                                    <div class="control-group" ng-class=" {true: 'error'}[submitted && submitted && addtioanForm.serappindate.$invalid]">
+                                                        <input type="date" class=form-control ng-model="serappindate" name="serappindate" required ng-change='checkErr(serstartdate,serenddate,serpickdate,serdeldate,serappindate)'>
+                                                        <span style="color:red" ng-show="submitted && addtioanForm.serappindate.$error.required">Appointment Date is required</span>
+                                                        <span style="color:red">{{errMessage5}}</span></div>
+                                                    </div>
+                                            </div>
+                                            <div class="col-md-6 col-lg-6">
+                                                <div class=form-group>
+                                                    <label for="">Estimated Duration<span class=required> *</span></label>
+                                                    <div class="control-group" ng-class=" {true: 'error'}[submitted && submitted && addtioanForm.serestimate.$invalid]">
+                                                        <input class=form-control ng-model="serestimate" name="serestimate" required ng-pattern="/^[0-9]{1,3}$/">
+                                                        <span style="color:red" ng-show="submitted && addtioanForm.serestimate.$error.required">Estimated Duration is required</span>
+                                                        <span style="color:red" ng-show="appointmentForm.serestimate.$error.pattern">Estimated Duration is Invalid</span></div>
+                                                    </div>
+                                            </div>
+                                            <div class="col-md-6 col-lg-6">
+                                                <div class="mar-top15 pad-15-0">
+                                                    <div>
+                                                        <label>
+                                                            <input type=checkbox ng-model="serrecurr" name="serrecurr" ng-true-value="'Y'" ng-false-value="'N'" class=check>Recurring
+                                                        </label>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 col-lg-6">
+                                                <div class="mar-top15 pad-15-0">
+
+                                                    <div>
+                                                        <label>
+                                                            <input type=checkbox ng-model="serremin" class="check" name="serremin" ng-true-value="'Y'" ng-false-value="'N'" >Reminder
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class=row>
+                                        <div class="col-md-6 col-lg-6">
+                                            <div class=mar-10-0>
+                                                <div>
+                                                    <label>
+                                                        <input type=checkbox ng-model="serpickup" name="serpickup" ng-true-value="'Y'" ng-false-value="'N'" class=check>Pickup Date
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-lg-6">
+                                            <div class=mar-10-0>
+                                                <div>
+                                                    <label>
+                                                        <input type=checkbox ng-model="serdelivery" name="serdelivery" ng-true-value="'Y'" ng-false-value="'N'" class=check>Delivery Date
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class=row>
+                                        <div class="col-md-6 col-lg-6">
+                                            <div class=form-group ng-show="serpickup == 'Y'">
+                                                <label for="">Pickup Date</label>
+                                                <div class="control-group" ng-class=" {true: 'error'}[submitted && submitted && addtioanForm.serstartdate.$invalid]">
+                                                    <input type="date" ng-model="serpickdate" name="serpickdate" class=form-control  ng-change='checkErr(serstartdate,serenddate,serpickdate,serdeldate,serappindate)'>
+                                                    <span style="color:red">{{errMessage4}}</span></div>
+                                                </div>
+                                        </div>
+                                        <div class="col-md-6 col-lg-6">
+                                            <div class=form-group ng-show="serdelivery == 'Y'">
+                                                <label for="">Delivery Date</label>
+                                                <div class="control-group" ng-class=" {true: 'error'}[submitted && submitted && addtioanForm.serstartdate.$invalid]">
+                                                    <input type="date" ng-model="serdeldate" name="serdeldate" class=form-control  ng-change='checkErr(serstartdate,serenddate,serpickdate,serdeldate,serappindate)'>
+                                                    <span style="color:red">{{errMessage3}}</span>
+                                                </div></div>
+                                        </div>
+                                    </div>
+                                    <div class=row>
+                                        <div class="col-md-12 col-lg-12">
+                                            <div class=form-group>
+                                                <label for="">Status<span class=required> *</span></label>
+                                                <div class="control-group" ng-class=" {true: 'error'}[submitted && submitted && addtioanForm.serstatus.$invalid]">
+                                                    <select class=form-control ng-model="serstatus" name="serstatus" ng-options="stusval.ld_id as stusval.ld_name for stusval in statusval" required>
+                                                        <option value="" disabled selected style='display:none;'>-- Select Status --</option>
+                                                    </select>
+                                                    <span style="color:red" ng-show="submitted && addtioanForm.serstatus.$error.required">Select Reminder is required.</span>
+                                                </div>
+                                                </div>
+                                        </div>
+                                    </div>
+                                    <div class=row>
+                                        <div class="col-md-12 col-lg-12">
+                                            <div class=form-group>
+                                                <label for="">Notes</label>
+                                                <textarea class=form-control ng-model="sernotes" name="sernotes" rows=3></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </form>
+                        </div>
+                        <div class=modal-footer>
+                            <button type=button class="btn btn-default" data-dismiss=modal>Cancel</button>
+                            <button type=button class="btn btn-primary" ng-click="additionalAppService()">Add</button>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--End Add Additional Appoinments -->
+
+        </div>
+    </div>
+</div>
+<footer class=footer-wrapper>
+    <div class=row>
+        <div class="col-sm-12 col-md-8">
+            <p class=mar-0-10>© Copyright 2015 <a href=#>Petzcare</a>. All Rights Reserved.</p>
+        </div>
+    </div>
+</footer>
+
+
+
+
+
+
+

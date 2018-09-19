@@ -1,0 +1,593 @@
+﻿
+@section scripts{
+
+<script src="~/Scripts/vendor/fbe20327.modernizr.js"></script>
+<script src="~/Scripts/dc2f9ab9.vendor.js"></script>
+<script src="~/Scripts/ddb9e352.main.js"></script>
+<script src="~/Content/bower_components/wowjs/dist/wow.min.js"></script>
+<script src="~/App_Controllers/SignInController.js"></script>
+}
+
+<script type="text/javascript">
+    function signUp() {
+        loadAlllookupDetails();
+        document.getElementById("signUp").style.display = "block";
+        document.getElementById("signIn").style.display = "none";
+        document.getElementById("forgetpassword").style.display = "none";
+    }
+    function signIn() {
+        document.getElementById("signIn").style.display = "block";
+        document.getElementById("signUp").style.display = "none";
+        document.getElementById("forgetpassword").style.display = "none";
+    }
+    function forgetPassword() {
+        document.getElementById("forgetpassword").style.display = "block";
+        document.getElementById("signUp").style.display = "none";
+        document.getElementById("signIn").style.display = "none";
+    }
+   
+    function loadAlllookupDetails() {
+
+        var companyTypes = [];
+        jQuery.ajax({
+            type: "GET",
+            url: "http://166.62.84.37/PetzCareWSQA/Lookup.svc/GetAllLookupDetails",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data, status, jqXHR) {
+                var len = data.length;
+
+                $('#Title').append($('<option>').text("--Select--").attr('value', ""));
+                $('#designation').append($('<option>').text("--Select--").attr('value', ""));
+                $('#department').append($('<option>').text("--Select--").attr('value', ""));
+                $('#empType').append($('<option>').text("--Select--").attr('value', ""));
+                $('#country').append($('<option>').text("").attr('value', ""));
+                
+                for (var i = 0; i < len; i++) {
+
+                    if (data[i].lm_name == 'Title') {
+                        $('#Title').append($('<option>').text(data[i].ld_name).attr('value', data[i].ld_id));
+
+                    }
+                    if (data[i].lm_name == 'Country') {
+                        $('#country').append($('<option>').text(data[i].ld_name).attr('value', data[i].ld_id));
+                        
+                    }
+                    if (data[i].lm_name == 'Company Type') {
+                        companyTypes.push(data[i]);
+
+                    }
+                    if (data[i].lm_name == 'Employment Type') {
+                        $('#empType').append($('<option>').text(data[i].ld_name).attr('value', data[i].ld_id));
+                        
+                    }
+                    if (data[i].lm_name == 'Department') {
+                        $('#department').append($('<option>').text(data[i].ld_name).attr('value', data[i].ld_id));
+                        
+                    }
+                    if (data[i].lm_name == 'Designation') {
+                        $('#designation').append($('<option>').text(data[i].ld_name).attr('value', data[i].ld_id));
+
+                    }
+
+                }
+
+                //console.log(companyTypes);
+            },
+
+            error: function (jqXHR, status) {
+                // error handler
+            }
+        });
+
+
+        var companyTypeId =0;
+        
+        for(var r=0; r <companyTypes.length; r++)
+        {
+            if(companyTypes[r].ld_name =='Pet Service Company')
+            {
+                companyTypeId = companyTypes[r].ld_id;
+            }
+        }
+
+        jQuery.ajax({
+            type: "POST",
+            url: "http://166.62.84.37/PetzCareWSQA/Company.svc/GetCompanyByType",
+            data:{"company_typeid":249},
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data, status, jqXHR) {
+                var len = data.length;
+
+                $('#CompanyName').append($('<option>').text("--Select--").attr('value', ""));              
+
+                for (var i = 0; i < len; i++) {
+
+                   // if (data[i].lm_name == 'Title') {
+                    $('#CompanyName').append($('<option>').text(data[i].company_name).attr('value', data[i].company_id));
+
+                    //}
+                    //if (data[i].lm_name == 'Country') {
+                    //    $('#country').append($('<option>').text(data[i].ld_name).attr('value', data[i].ld_id));
+
+                    //}
+                    //if (data[i].lm_name == 'Company Type') {
+                    //    companyTypes.push(data[i]);
+
+                    //}
+                    //if (data[i].lm_name == 'Employment Type') {
+                    //    $('#empType').append($('<option>').text(data[i].ld_name).attr('value', data[i].ld_id));
+
+                    //}
+                    //if (data[i].lm_name == 'Department') {
+                    //    $('#department').append($('<option>').text(data[i].ld_name).attr('value', data[i].ld_id));
+
+                    //}
+                    //if (data[i].lm_name == 'Designation') {
+                    //    $('#designation').append($('<option>').text(data[i].ld_name).attr('value', data[i].ld_id));
+
+                    //}
+
+                }
+
+                //console.log(companyTypes);
+            },
+
+            error: function (jqXHR, status) {
+                // error handler
+            }
+        });
+    }
+
+    function getState() {
+
+
+        var sel = document.getElementById('country');
+        var sv = sel.options[sel.selectedIndex].value ;
+
+        document.getElementById("state").options.length = 0;
+        $('#state').append($('<option>').text("").attr('value', ""));
+        jQuery.ajax({
+            type: "POST",
+            url: "http://166.62.84.37/PetzCareWSQA/Lookup.svc/GetAllLookupDetailByParentId",
+            contentType: "application/json;",
+            data: '{ "ld_id":' + sv + '}',
+            dataType: "json",
+            success: function (data, status, jqXHR) {               
+                $.each(data, function (i, value) {
+                    $('#state').append($('<option>').text(value.ld_name).attr('value', value.ld_id));
+                });
+            },
+
+            error: function (jqXHR, status) {
+                // error handler
+
+            }
+        });
+    }
+
+    function getCity() {
+
+        var sel = document.getElementById('state');
+        var sv = sel.options[sel.selectedIndex].value;
+
+        document.getElementById("city").options.length = 0;
+        $('#city').append($('<option>').text("").attr('value', ""));
+        jQuery.ajax({
+            type: "POST",
+            url: "http://166.62.84.37/PetzCareWSQA/Lookup.svc/GetAllLookupDetailByParentId",
+            contentType: "application/json;",
+            data: '{ "ld_id":' + sv + '}',
+            dataType: "json",
+            success: function (data, status, jqXHR) {
+                $.each(data, function (i, value) {
+                    $('#city').append($('<option>').text(value.ld_name).attr('value', value.ld_id));
+                });
+            },
+
+            error: function (jqXHR, status) {
+                // error handler
+
+            }
+        });
+    }
+
+
+</script>
+ @model PetzCareSP.Models.SignIn
+      <div class="wrapper">
+        <div class="header-wrapper">
+           <div class="container">
+                <div class="logo">
+                    <img src="~/images/9a9e2fdc.petzcare.png" style="width:100px; height:60px;"/>
+                </div>
+            </div>
+        </div>    
+          <main class="sign-bg">
+
+              @* LogIn Section*@
+              <div class="sign-in" id="signIn">
+                  <div class="container wow">
+                      <div class="row">
+                          <div class="col-sm-12">
+                              <div class="row">
+                                  <div class="col-lg-5 col-lg-offset-4">
+    <div class="wow bounceIn sign-box cus-panels-with-pad">
+        @{
+            using (Html.BeginForm("LoggedIn", "LogIn", FormMethod.Post))
+            {
+                <fieldset>
+                    <legend>Sign in</legend>
+                    <div class="form-group">
+                        <label for="username">Email or Username</label>
+                        <input type="text" name="UserName" class="form-control" id="username" value="" required />
+                        <span class="required hidden">Validation Error</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="pass">Password</label>
+                        <input type="password" name="password" class="form-control" id="pass" value="" required />
+                        <span class="required hidden">Validation Error</span>
+
+                    </div>
+                    <div class="form-group">
+                        <span class="small" style="color: #F00;">@ViewBag.error</span>                        
+                    </div>
+                    <div class="form-group text-center">
+                        <a href="#"><input type="submit" value="Sign In" class="sec-cus-buttons ma-btn sign-btn" /></a>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <label class="checkbox-inline no-padding">
+                                    <div class="icheckbox checkable-success"><input type="checkbox" value="1" rel="icheck" class="checkable-success" /></div> Remember Me
+                                </label>
+                            </div>
+                            <div class="col-xs-6 text-right">
+                                <a href="#" onclick="forgetPassword();" data-no-turbolink="true">Forgot password?</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center mar-10">
+                        Not a member? <a href="#" onclick="signUp();">Signup</a>
+                    </div>
+                </fieldset>
+            }
+        }
+</div>
+
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+
+              @*SignUp Section *@
+              <div class="sign-in" id="signUp" style="display:none">
+                  <div class="container wow">
+                      <div class="row">
+                          <div class="col-sm-12">
+                              <div class="row">
+                                  <div class="wow bounceIn col-lg-7 col-lg-offset-2">
+                                      <div class="sign-box cus-panels-with-pad">
+                                          @*@model PetzCareSP.Models.SignIn*@
+                                          @{
+                                              using (Html.BeginForm("SignUp", "LogIn", FormMethod.Post))
+                                              {
+                                                  <fieldset class="">
+                                                      <legend>Sign Up<sub><br /><small><h10 class="required">*</h10>indicate mandatory field</small></sub></legend>
+                                                      <form>
+                                                          <div class="row">
+                                                              <div class="col-md-6 col-lg-6">
+                                                                  <div class="form-group">
+                                                                      <label for="">Title<span class="required"> *</span></label>
+                                                                      <select class="form-control" id="Title" name="Title"> </select>
+                                                                  </div>
+                                                              </div>
+                                                              <div class="col-md-6 col-lg-6">
+                                                                  <div class="form-group">
+                                                                      <label for="">Company Name</label>
+                                                                      <select class="form-control" id="CompanyName" name="CompanyName"></select>
+                                                                  </div>
+
+                                                              </div>
+                                                          </div>
+
+                                                          <div class="row">
+                                                              <div class="col-md-6 col-lg-6">
+                                                                  <div class="form-group">
+                                                                      <label for="f-name">First Name</label>
+                                                                      <input type="text" name="FirstName" class="form-control" id="f-name" value="@Model.FirstName">
+                                                                      <span class="required hidden">Validation Error</span>
+                                                                  </div>
+                                                              </div>
+                                                              <div class="col-md-6 col-lg-6">
+                                                                  <div class="form-group">
+                                                                      <label for="m-name">Middle Name</label>
+                                                                      <input type="text" name="MiddleName" class="form-control" id="m-name" value="@Model.MiddleName">
+                                                                      <span class="required hidden">Validation Error</span>
+                                                                  </div>
+                                                              </div>
+                                                          </div>
+
+                                                          <div class="row">
+
+                                                              <div class="col-md-6 col-lg-6">
+                                                                  <div class="form-group">
+                                                                      <label for="l-name">Last Name</label>
+                                                                      <input type="text" name="LastName" class="form-control" id="l-name" value="@Model.LastName">
+                                                                      <span class="required hidden">Validation Error</span>
+                                                                  </div>
+                                                              </div>
+                                                              <div class="col-md-6 col-lg-6">
+                                                                  <div class="form-group">
+                                                                      <label for="">EmployeeCode</label>
+                                                                      <input type="text" name="EmployeeCode" class="form-control" value="@Model.EmployeeCode">
+                                                                  </div>
+                                                              </div>
+                                                          </div>
+
+                                                          <div class="row">
+                                                              <div class="col-md-6 col-lg-6">
+                                                                  <div class="form-group">
+                                                                      <label for="">Select Designation</label>
+                                                                      <select class="form-control" id="designation" name="SelectDesignation"></select>
+                                                                  </div>
+                                                              </div>
+                                                              <div class="col-md-6 col-lg-6">
+                                                                  <div class="form-group">
+                                                                      <label for="">Select Department</label>
+                                                                      <select class="form-control" id="department" name="SelectDepartment"></select>
+                                                                  </div>
+                                                              </div>
+                                                          </div>
+
+                                                          <div class="row">
+                                                              <div class="col-md-6 col-lg-6">
+                                                                  <div class="form-group">
+                                                                      <label for="">Employee Type</label>
+                                                                      <select class="form-control" id="empType" name="EmployeeType"></select>
+                                                                  </div>
+                                                              </div>
+                                                              <div class="col-md-6 col-lg-6">
+                                                                  <div class="form-group">
+                                                                      <label for="">Date Of Birth<span class="required"> *</span></label>
+                                                                      <input type="date" name="DateOfBirth" class="form-control" id="" placeholder="Enter Date of Birth" ng-minlength="1" ng-maxlength="50" required="" value="@Model.DateOfBirth">
+                                                                  </div>
+                                                              </div>
+                                                          </div>
+
+                                                          <div class="row">
+                                                              <div class="col-md-6 col-lg-6">
+                                                                  <div class="form-group">
+                                                                      <label for="">Permanent Address<span class="required"> *</span></label>
+                                                                      <input type="text" name="PermanentAddress" class="form-control" required="" value="@Model.PermanentAddress">
+                                                                  </div>
+                                                              </div>
+                                                              <div class="col-md-6 col-lg-6">
+                                                                  <div class="form-group">
+                                                                      <div class="form-group">
+                                                                          <label for="">Temporary Address<span class="required"> *</span></label>
+                                                                          <input type="text" class="form-control" name="TemporaryAddress" required="" value="@Model.TemporaryAddress">
+                                                                      </div>
+                                                                  </div>
+                                                              </div>
+                                                          </div>
+
+                                                          <div class="row">
+                                                              <div class="col-md-6 col-lg-6">
+                                                                  <div class="form-group">
+                                                                      <label for="">Country</label>
+                                                                      <select class="form-control" id="country" name="country" onchange="getState()"></select>
+                                                                  </div>
+                                                              </div>
+                                                              <div class="col-md-6 col-lg-6">
+                                                                  <div class="form-group">
+                                                                      <label for="">State</label>
+                                                                      <select class="form-control" id="state" name="state" onchange="getCity()"></select>
+                                                                  </div>
+                                                              </div>
+                                                          </div>
+
+                                                          <div class="row">
+
+                                                              <div class="col-md-6 col-lg-6">
+                                                                  <div class="form-group">
+                                                                      <label for="">City</label>
+                                                                      <select class="form-control" id="city" name="city"></select>
+                                                                  </div>
+                                                              </div>
+                                                              <div class="col-md-6 col-lg-6">
+                                                                  <div class="form-group">
+                                                                      <label for="">Zipcode<span class="required"> *</span></label>
+                                                                      <input type="text" class="form-control" name="Zipcode" id="" required="" value="@Model.Zipcode">
+                                                                  </div>
+                                                              </div>
+                                                          </div>
+
+                                                          <div class="row">
+                                                              <div class="col-md-6 col-lg-6">
+                                                                  <div class="form-group">
+                                                                      <div class="form-group">
+                                                                          <label for="">Emai ID</label>
+                                                                          <input type="text" name="EmailID" class="form-control" id="" value="@Model.EmailID">
+                                                                      </div>
+
+                                                                  </div>
+                                                              </div>
+                                                              <div class="col-md-6 col-lg-6">
+                                                                  <div class="form-group">
+                                                                      <label for="">Fax</label>
+                                                                      <input type="text" name="Fax" class="form-control" id="" value="@Model.Fax">
+                                                                  </div>
+                                                              </div>
+                                                          </div>
+
+                                                          <div class="row">
+                                                              <div class="col-md-6 col-lg-6">
+                                                                  <div class="form-group">
+                                                                      <label for="">User Name<span class="required"> *</span></label>
+                                                                      <input type="text" name="UserName" class="form-control" id="" required="" value="@Model.UserName">
+                                                                  </div>
+                                                              </div>
+                                                              <div class="col-md-6 col-lg-6">
+                                                                  <div class="form-group">
+                                                                      <label for="">Password</label>
+                                                                      <input type="password" name="Password" class="form-control" id="" value="@Model.Password">
+                                                                  </div>
+                                                              </div>
+                                                          </div>
+
+                                                          <div class="row">
+                                                              <div class="col-md-6 col-lg-6">
+                                                                  <div class="form-group">
+                                                                      <label for="">Security Questions</label>
+                                                                      <select class="form-control" name="SecurityQuestions">
+                                                                          <option>-- Select --</option>
+                                                                          <option selected="selected">Question 1: Select one</option>
+                                                                          <option>In what city did you meet your spouse/significant other?</option>
+                                                                          <option>What was your childhood nickname?</option>
+                                                                          <option>What is the name of your favorite childhood friend?</option>
+                                                                          <option>What street did you live on in third grade?</option>
+                                                                          <option>What is your oldest sibling’s birthday month and year? (e.g., January 1900)</option>
+                                                                          <option>What is the middle name of your oldest child?</option>
+                                                                          <option>What is your oldest sibling’s middle name?</option>
+                                                                          <option>What school did you attend for sixth grade?</option>
+                                                                          <option>What was your childhood phone number including area code? (e.g., 000-000-0000)</option>
+                                                                          <option>What was the name of your first stuffed animal?</option>
+                                                                          <option>In what city or town did your mother and father meet?</option>
+                                                                          <option>What was the last name of your third grade teacher?</option>
+                                                                      </select>
+                                                                      <span class="required hidden">Validation Error</span>
+                                                                  </div>
+                                                              </div>
+                                                              <div class="col-md-6 col-lg-6">
+                                                                  <div class="form-group">
+                                                                      <label for="answer">Answer</label>
+                                                                      <input type="text" name="Answer" class="form-control" id="answer" value="@Model.Answer">
+                                                                      <span class="required hidden">Validation Error</span>
+                                                                  </div>
+                                                              </div>
+                                                          </div>
+                                                          <div class="form-group text-center">
+                                                              <input type="submit" value="Join Now" class="sec-cus-buttons sign-btn ma-btn">
+                                                          </div>
+
+                                                      </form>
+                                                  </fieldset>
+                                              }
+                                          }
+                                      </div>
+                                      <div class="signup-with">
+                                          <div class="text-center">
+                                              <p>Signup With</p>
+                                          </div>
+                                          <div class="form-group">
+                                              <div class="row">
+                                                  <div class="col-xs-6 text-center">
+                                                      <a href="#" class="sec-cus-buttons ma-btn fb-bg-color"><i class="fa fa-facebook"></i>Facebook</a>
+                                                  </div>
+                                                  <div class="col-xs-6 text-center">
+                                                      <a href="#" class="sec-cus-buttons ma-btn tweet-bg-color"><i class="fa fa-twitter"></i>Twitter</a>
+                                                  </div>
+                                              </div>
+                                          </div>
+                                          <div class="text-center mar-10">
+                                              Already have an account?<a href="#" onclick="signIn();">Login</a>
+                                          </div>
+                                      </div>
+
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+
+
+
+              @*Forget Password*@
+              <div class="sign-in" id="forgetpassword" style="display:none">
+                  <div class="container wow">
+                      <div class="row">
+                          <div class="col-sm-12">
+                              <div class="row">
+                                  <div class="col-lg-5 col-lg-offset-4">
+                                      <div class="wow bounceIn sign-box cus-panels-with-pad">
+
+                                          @{
+                                              using (Html.BeginForm("ForgotPassword", "LogIn", FormMethod.Post))
+                                                       {
+                                          <fieldset>
+                                              <legend>Forgot Password</legend>
+                                              <form>
+
+                                                  <div class="form-group">
+                                                      <label for="email">Username</label>
+                                                      <input type="email" name="EmailID" class="form-control" id="email" value="@Model.EmailID">
+                                                      <span class="required hidden">Validation Error</span>
+                                                  </div>
+
+                                                  <div class="form-group">
+                                                      <label for="">Security Questions</label>
+                                                      <select class="form-control">
+                                                          <option>-- Select --</option>
+                                                          <option selected>Question 1: Select one</option>
+                                                          <option>In what city did you meet your spouse/significant other?</option>
+                                                          <option>What was your childhood nickname?</option>
+                                                          <option>What is the name of your favorite childhood friend?</option>
+                                                          <option>What street did you live on in third grade?</option>
+                                                          <option>What is your oldest sibling’s birthday month and year? (e.g., January 1900)</option>
+                                                          <option>What is the middle name of your oldest child?</option>
+                                                          <option>What is your oldest sibling’s middle name?</option>
+                                                          <option>What school did you attend for sixth grade?</option>
+                                                          <option>What was your childhood phone number including area code? (e.g., 000-000-0000)</option>
+                                                          <option>What was the name of your first stuffed animal?</option>
+                                                          <option>In what city or town did your mother and father meet?</option>
+                                                          <option>What was the last name of your third grade teacher?</option>
+                                                      </select> <span class="required hidden">Validation Error</span>
+                                                  </div>
+                                                  <div class="form-group">
+                                                      <label for="answer">Answer</label>
+                                                      <input class="form-control" name="Answer" id="answer1" value="@Model.Answer" />
+                                                      <span class="required hidden">Validation Error</span>
+                                                  </div>
+                                                  <span> <a href=# onclick="signIn();">Return to login</a> </span>
+                                                  <span> <a>Return to login</a> </span>
+                                                  <span class="pull-right">
+                                                      
+                                                      <input type="submit" class="sec-cus-buttons" value="submit" />
+                                                  </span>
+                                              </form>
+                                          </fieldset>
+
+                                               }
+                                          }
+
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+
+          </main>
+
+
+        
+        <footer class="footer-wrapper-signin">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-12 col-md-8">
+                        <p>© Copyright 2015 Petzcare. All Rights Reserved.</p>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+     <script>
+            new WOW().init();
+    </script>

@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<parameters>
+  <parameter name="DefaultConnection-Web.config Connection String" description="DefaultConnection Connection String used in web.config by the application to access the database." defaultValue="Data Source=(LocalDb)\v11.0;Initial Catalog=aspnet-PetzCareSP-20151020123046;Integrated Security=SSPI;AttachDBFilename=|DataDirectory|\aspnet-PetzCareSP-20151020123046.mdf" tags="SqlConnectionString">
+    <parameterEntry kind="XmlFile" scope="E:\\PetzCare\\PetzCareServiceProvider\\WebPage\\indhu\\PetzCareSp_19\.01\.16\\PetzCareSP\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='DefaultConnection']/@connectionString" />
+  </parameter>
+</parameters>

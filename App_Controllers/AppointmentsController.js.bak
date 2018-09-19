@@ -1,0 +1,1085 @@
+﻿
+(function () {
+    'use strict';
+    var app = angular.module('petzCareSP.AppointmentsController', []);
+    app.controller('AppointmentsController', ['$scope', '$http', '$location', '$window' , AppointmentsController]);
+
+    function AppointmentsController($scope, $http, $location, $window) {
+
+      
+        angular.element('#appointmentloader').css('display','block');
+        var timestamp = Number(new Date());
+        $scope.date = "\/Date(" + timestamp + ")\/";
+        $scope.serviceTypeName = true;
+        $scope.servicenamevalue = true;
+       
+        $scope.showconfirmbox = function () {
+            if ($window.confirm("Do you want to continue?"))
+                $scope.result = "Yes";
+            else
+                $scope.result = "No";
+        }
+
+        //Get All Appointments
+        $scope.appointdetails = [];
+
+        $scope.refreshAppointments = function () {
+            $http({
+                method: 'GET',
+                url: 'http://166.62.84.37/PetzCareWS/Appointments.svc/GetAllAppointments',
+                headers: {
+                    "Content-Type": 'application/json',
+                }
+            }).success(function (response) {
+                for (var j = 0; j < response.length; j++) {
+
+                    response[j].pickup_date = integertodate(response[j].pickup_date);
+                }
+                $scope.appointdetails = response;
+            });
+        }
+        setTimeout(function () {
+        $http({
+            method: 'GET',
+            url: 'http://166.62.84.37/PetzCareWS/Appointments.svc/GetAllAppointments',
+            headers: {
+                "Content-Type": 'application/json',
+            }
+        }).success(function (response) {
+            for (var j = 0; j < response.length; j++) {
+
+                response[j].pickup_date = integertodate(response[j].pickup_date);
+            }
+            $scope.appointdetails = response;
+      
+            //Clear Advanced Search
+
+            $scope.filtrclearappoints = function () {
+                $scope.fdate = "";
+                $scope.fcustname = "";
+                $scope.fpetname = "";
+                $scope.factive = "";
+                $scope.statufilt = "";
+                $scope.servetype = "";
+                $scope.appointdetails = response;
+            };
+
+          
+            //Advanced Search
+          
+            $scope.filtrappoints = function () {
+                $scope.servfilt = $scope.servetype.ld_name;
+                var timestamp = Number(new Date($scope.fdate));
+                $scope.f1date = "\/Date(" + timestamp + ")\/";
+              
+                $scope.filtdata = {
+
+                    "customer_name": $scope.fcustname || "",
+                    "pet_name": $scope.fpetname || "",
+                    "status_name": $scope.factive || "",
+                    "appointment_name": $scope.servfilt || "",
+                    "service_name": $scope.statufilt || ""
+                    
+                }
+
+                $http({
+                    method: 'POST',
+                    data: $scope.filtdata,
+                    url: 'http://166.62.84.37/PetzCareWS/Appointments.svc/GetAppointmentsHistoryByFilter',
+                    headers: {
+                        "Content-Type": 'application/json',
+                    }
+                }).success(function (response) {
+                    for (var j = 0; j < response.length; j++) {
+
+                        response[j].pickup_date = integertodate(response[j].pickup_date);
+                    }
+                    $scope.appointdetails = response;
+
+                });
+
+            };
+        }) 
+            .finally(function(){
+                angular.element('#appointmentloader').css('display','none');
+            });
+        }, 2000);
+
+
+        //Sorting
+        $scope.AppointmentSort = function (asc, header) {
+
+            if (asc) {
+                $scope.appointdetails.sort(predicatByAsc(header));
+
+            }
+            if (!asc) {
+                $scope.appointdetails.sort(predicatByDes(header));
+
+            }
+        };
+        function predicatByAsc(prop) {
+            return function (a, b) {
+                if (a[prop] > b[prop]) {
+                    return 1;
+                } else if (a[prop] < b[prop]) {
+                    return -1;
+                }
+                return 0;
+            }
+        }
+
+        function predicatByDes(prop) {
+            return function (a, b) {
+                if (a[prop] < b[prop]) {
+                    return 1;
+                } else if (a[prop] > b[prop]) {
+                    return -1;
+                }
+                return 0;
+            }
+        }
+
+
+
+
+
+        $scope.clearAppointment = function () {
+            $scope.date = "";
+            $scope.custnam = "";
+            $scope.petnm = "";
+            $scope.statustype1 = "";
+            $scope.remin = "";
+            $scope.stttdt = "";
+            $scope.nndate = "";
+            $scope.pick = "";
+            $scope.pickdate = "";
+            $scope.delvry = "";
+            $scope.delrydate = "";
+            $scope.chrgdas = "";
+            $scope.bokwhlrun = "";
+            $scope.stus1 = "";
+            $scope.adnotes = "";
+            $scope.servetype = "";
+        };
+      
+
+
+        function integertodate(pickup_date) {
+
+            var res = pickup_date.substring(pickup_date.indexOf("(") + 1, pickup_date.lastIndexOf(")"));
+
+            var myDate = new Date(parseInt(res));
+            return myDate.toLocaleString();
+        }
+        function integertodate(appointment_date) {
+
+            var res = appointment_date.substring(appointment_date.indexOf("(") + 1, appointment_date.lastIndexOf(")"));
+
+            var myDate = new Date(parseInt(res));
+            return myDate.toLocaleString();
+        }
+        function integertodate(delivery_date) {
+
+            var res = delivery_date.substring(delivery_date.indexOf("(") + 1, delivery_date.lastIndexOf(")"));
+
+            var myDate = new Date(parseInt(res));
+            return myDate.toLocaleString();
+        }
+
+        
+
+
+
+        
+
+
+        //Pagination 
+
+
+        $scope.itemsPerPage = 10;
+        $scope.currentPage = 0;
+
+        $scope.range = function () {
+            var rangeSize = $scope.pageCount();
+            if (rangeSize >= 6) {
+                rangeSize = 5;
+            }
+            var ps = [];
+            var start;
+
+            start = $scope.currentPage;
+            if (start > $scope.pageCount() - rangeSize) {
+                start = $scope.pageCount() - rangeSize + 1;
+            }
+
+            for (var i = start; i < start + rangeSize; i++) {
+                ps.push(i);
+            }
+            return ps;
+        };
+
+        $scope.prevPage = function () {
+            if ($scope.currentPage > 0) {
+                $scope.currentPage--;
+            }
+        };
+
+        $scope.DisablePrevPage = function () {
+            return $scope.currentPage === 0 ? "disabled" : "";
+        };
+
+        $scope.pageCount = function () {
+            return Math.ceil($scope.appointdetails.length / $scope.itemsPerPage) - 1;
+        };
+
+        $scope.nextPage = function () {
+            if ($scope.currentPage < $scope.pageCount()) {
+                $scope.currentPage++;
+            }
+        };
+
+        $scope.DisableNextPage = function () {
+            return $scope.currentPage === $scope.pageCount() ? "disabled" : "";
+        };
+
+        $scope.setPage = function (n) {
+            $scope.currentPage = n;
+        };
+
+        //Get Groomers
+
+        var groome = [];
+
+        $http({
+            method: 'GET',
+            url: 'http://166.62.84.37/PetzCareWS/Employee.svc/GetAllEmployees',
+            headers: {
+                "Content-Type": 'application/json',
+            }
+        }).success(function (response) {
+           
+            for (var j = 0; j < response.length; j++) {
+                groome[j] = _.pick(JSON.parse(JSON.stringify(response[j])), 'first_name', 'employee_id');
+            }
+            $scope.groomers = groome;
+
+        });
+
+
+
+        //Get Customers
+
+        var custdetails = [];
+
+        $http({
+            method: 'GET',
+            url: 'http://166.62.84.37/PetzCareWS/Customer.svc/GetAllCustomers',
+            headers: {
+                "Content-Type": 'application/json',
+            }
+        }).success(function (response) {
+            for (var j = 0; j < response.length; j++) {
+                custdetails[j] = _.pick(JSON.parse(JSON.stringify(response[j])), 'first_name', 'customer_id');
+            }
+            $scope.customrids = custdetails;
+
+            
+        });
+
+
+        // Get Pets By Customer
+
+        var petcustomer = [];
+        $scope.pets = function (id) {
+            $scope.custmid = id;
+            $http({
+                method: 'POST',
+                data: { "customer_id": id },
+                url: 'http://166.62.84.37/PetzCareWS/Pets.svc/GetPetsByCustomer',
+                headers: {
+                    "Content-Type": 'application/json',
+                }
+            }).success(function (response) {
+               
+                for (var j = 0; j < response.length; j++) {
+                    petcustomer[j] = _.pick(JSON.parse(JSON.stringify(response[j])), 'pet_name', 'pet_id');
+                }
+                $scope.petcustomers = petcustomer;
+
+            });
+
+        };
+
+      
+
+        
+
+
+        
+        //Get Service, Groom Style and Status
+
+        var groomstl = [];
+        var servicetype = [];
+        var status = [];
+        $http({
+            method: 'GET',
+            url: 'http://166.62.84.37/PetzCareWS/Lookup.svc/GetAllLookupDetails',
+            headers: {
+                "Content-Type": 'application/json',
+            }
+        }).success(function (data) {
+            $scope.servicenamevalue = false;
+            var len = data.length;
+            for (var i = 0; i < len; i++) {
+
+                if (data[i].lm_name == 'Service Type' && data[i].parent_id == '0') {
+                    servicetype.push(data[i]);
+
+                }
+                if (data[i].lm_name == 'Status') {
+                    status.push(data[i]);
+                    
+                }
+                if (data[i].lm_name == 'Groom Style') {
+                    groomstl.push(data[i]);
+
+                }
+              }
+            $scope.groomstyle = groomstl;
+            $scope.statusval = status;
+            $scope.svctype = servicetype;
+           
+
+
+            //Get Service Type
+
+            $scope.modify = function () {
+
+                var ser1type = [];
+                var stype = [];
+                var len = data.length;
+
+                $scope.serviceText = $scope.servetype.ld_name;
+                for (var i = 0; i < len; i++) {
+                    if (data[i].lm_name == 'Service Type' && data[i].parent_id == $scope.servetype.ld_id) {
+                        stype.push(data[i]);
+                      
+                    }
+                }
+                
+                var lenth = stype.length;
+               
+                for (var i = 0; i < lenth; i++) {
+                   
+
+                    $http({
+                        method: 'POST',
+                        data: { "service_typeid": stype[i].ld_id },
+                        url: 'http://166.62.84.37/PetzCareWS/PetServices.svc/GetServiceByType',
+                        headers: {
+                            "Content-Type": 'application/json',
+                        }
+                    }).success(function (data1) {
+                       
+                        $scope.serviceTypeName = false;
+                        var len = data1.length;
+                        for (var i = 0; i < len; i++) {
+                            ser1type.push(_.pick(JSON.parse(JSON.stringify(data1[i])), 'service_name', 'service_id'));
+                        }
+                        $scope.sertype = ser1type;
+                       
+                    });
+                }
+            };
+
+
+        });
+      
+
+
+        // Appointment Filter
+
+        
+        $scope.appoinfltr = function (aptname, idno, custmrid, apids) {
+            var ser11type = [];
+            var servtyp = [];
+            var ser1type2 = [];
+            var mat = [];
+            $scope.pets(custmrid);
+            $scope.serstatustype3 = apids;
+            $scope.sesids = idno;
+           
+           $scope.Confrmid1 = { "appointment_name": aptname, "appointment_id": idno };
+            var seids = { "service_id": apids };
+            $scope.sername = aptname;
+            var id1 = { "appointment_name": aptname, "appointment_id": idno };
+
+            $http({
+                method: 'POST',
+                data: { "ld_name": $scope.sername },
+                url: 'http://166.62.84.37/PetzCareWS/Lookup.svc/GetAllLookupDetailByName',
+                headers: {
+                    "Content-Type": 'application/json',
+                }
+            }).success(function (data1) {
+
+                var len = data1.length;
+                for (var i = 0; i < len; i++) {
+                    ser1type2[i] = _.pick(JSON.parse(JSON.stringify(data1[i])), 'ld_id');
+                }
+
+                $scope.sertype2 = ser1type2;
+              
+            });
+
+
+            $http({
+                method: 'GET',
+                url: 'http://166.62.84.37/PetzCareWS/Lookup.svc/GetAllLookupDetails',
+                headers: {
+                    "Content-Type": 'application/json',
+                }
+            }).success(function (data) {
+               
+                var leth = data.length;
+               
+                for (var i = 0; i < leth; i++) {
+                   
+                if (data[i].lm_name == 'Service Type' && data[i].parent_id == $scope.sertype2[0].ld_id) {
+                    servtyp.push(data[i]);
+                   
+                }
+                 }
+               
+      
+            var lenth = servtyp.length;
+            for (var i = 0; i < lenth; i++) {
+              
+                $http({
+                    method: 'POST',
+                    data: { "service_typeid": servtyp[i].ld_id },
+                    url: 'http://166.62.84.37/PetzCareWS/PetServices.svc/GetServiceByType',
+                    headers: {
+                        "Content-Type": 'application/json',
+                    }
+                }).success(function (data1) {
+                   
+
+                    var len = data1.length;
+                    for (var i = 0; i < len; i++) {
+                        ser11type.push(_.pick(JSON.parse(JSON.stringify(data1[i])), 'service_name', 'service_id'));
+                    }
+                    $scope.sertype11 = ser11type;
+                   
+                });
+            }
+
+
+            });
+      
+            $http({
+                method: 'POST',
+                data: id1,
+                url: 'http://166.62.84.37/PetzCareWS/Appointments.svc/GetAppointmentsDetails',
+                headers: {
+                    "Content-Type": 'application/json',
+
+                }
+            }).success(function (response) {
+                for (var j = 0; j < response.length; j++) {
+
+                    response[j].pickup_date = integertodate(response[j].pickup_date);
+                }
+                for (var j = 0; j < response.length; j++) {
+
+                    response[j].delivery_date = integertodate(response[j].delivery_date);
+                }
+                for (var j = 0; j < response.length; j++) {
+                    mat[j] = JSON.parse(JSON.stringify(response[j]));
+                }
+                $scope.appointment = mat[0];
+
+            });
+
+
+            //Appointments Details
+           
+            $http({
+                method: 'POST',
+                data: { "br_appid": idno },
+                url: 'http://166.62.84.37/PetzCareWS/Appointments.svc/GetBoardingAppointmentServicesById',
+                headers: {
+                    "Content-Type": 'application/json',
+                }
+            }).success(function (response) {
+                for (var j = 0; j < response.length; j++) {
+                    if (response[j].is_pickup == "Y" || response[j].is_pickup == "y") {
+                        response[j].is_pickup = "Yes";
+                    }
+                    else {
+                        response[j].is_pickup = "No";
+                    }
+                }
+                for (var j = 0; j < response.length; j++) {
+                    if (response[j].is_delivery == "Y" || response[j].is_delivery == "y") {
+                        response[j].is_delivery = "Yes";
+                    }
+                    else {
+                        response[j].is_pickup = "No";
+                    }
+                }
+               
+                for (var j = 0; j < response.length; j++) {
+
+                    response[j].pickup_date = integertodate(response[j].pickup_date);
+                }
+                for (var j = 0; j < response.length; j++) {
+
+                    response[j].delivery_date = integertodate(response[j].delivery_date);
+                }
+                for (var j = 0; j < response.length; j++) {
+
+                    response[j].appointment_date = integertodate(response[j].appointment_date);
+                }
+                $scope.brdappsedetails = response;
+               
+            }).error(function (response) {
+                $scope.error = response.message;
+            });
+
+
+            $http({
+                method: 'POST',
+                data: { "gr_appid": idno },
+                url: 'http://166.62.84.37/PetzCareWS/Appointments.svc/GetGroomingAppointmentServicesById',
+                headers: {
+                    "Content-Type": 'application/json',
+                }
+            }).success(function (response) {
+                for (var j = 0; j < response.length; j++) {
+                    if (response[j].is_pickup == "Y" || response[j].is_pickup == "y") {
+                        response[j].is_pickup = "Yes";
+                    }
+                    else
+                    {
+                        response[j].is_pickup = "No";
+                    }
+                }
+                for (var j = 0; j < response.length; j++) {
+                    if (response[j].is_delivery == "Y" || response[j].is_delivery == "y") {
+                        response[j].is_delivery = "Yes";
+                    }
+                    else {
+                        response[j].is_pickup = "No";
+                    }
+                }
+                for (var j = 0; j < response.length; j++) {
+
+                    response[j].pickup_date = integertodate(response[j].pickup_date);
+                }
+                for (var j = 0; j < response.length; j++) {
+
+                    response[j].delivery_date = integertodate(response[j].delivery_date);
+                }
+                for (var j = 0; j < response.length; j++) {
+
+                    response[j].appointment_date = integertodate(response[j].appointment_date);
+                }
+              
+                $scope.grmappsedetails = response;
+               
+
+            }).error(function (response) {
+                $scope.error = response.message;
+            });
+
+        };
+
+            
+           
+
+        //Appointment Confirm
+
+        $scope.COnfrmAppoint=function()
+        {
+            console.log($scope.Confrmid1);
+            $http({
+                method: 'POST',
+                data: $scope.Confrmid1,
+                url: ' http://166.62.84.37/PetzCareWS/Appointments.svc/AppointmentConfirmations',
+                headers: {
+                    "Content-Type": 'application/json',
+                }
+            }).success(function (response) {
+
+                alert("Successfuly sent Appointment to your Email Id");
+                $scope.seinvdainvc = response;
+                console.log($scope.seinvdainvc);
+
+            });
+
+
+        };
+              
+          
+        
+        //Delete Appointment
+
+        $scope.deltdATA = function (IDno, idNO,serViceName) {
+            alert("Your Appointment Will be deleted");
+            if (IDno && serViceName == 'AdditionalBoarding') {
+               
+                $scope.delDATA = {
+                    "is_deleted": "y",
+                    "modified_by": 1,
+                    "modified_date": $scope.date,
+                    "br_appid": $scope.sesids,
+                    "asBr_appid": IDno
+                }
+                $http({
+                    method: 'POST',
+                    data: $scope.delDATA,
+                    url: 'http://166.62.84.37/PetzCareWS/Appointments.svc/DeleteAdditionalBoardingService',
+                    headers: {
+                        "Content-Type": 'application/json',
+                    }
+                }).success(function (response) {
+                    console.log(response);
+
+                }).error(function (response) {
+                    $scope.error = response.message;
+                });
+
+            }
+            else if (idNO && serViceName == 'AdditionalGrooming') {
+                
+                $scope.delDATA = {
+                    "is_deleted": "y",
+                    "modified_by": 1,
+                    "modified_date": $scope.date,
+                    "gr_appid": $scope.sesids,
+                    "asGr_appid": idNO
+                }
+
+                $http({
+                    method: 'POST',
+                    data: $scope.delDATA,
+                    url: 'http://166.62.84.37/PetzCareWS/Appointments.svc/DeleteAdditionalGroomingService',
+                    headers: {
+                        "Content-Type": 'application/json',
+                    }
+                }).success(function (response) {
+                    console.log(response);
+
+                }).error(function (response) {
+                    $scope.error = response.message;
+                });
+
+            }
+        };
+          
+
+
+
+
+    
+
+            
+        
+
+
+       
+
+
+
+
+
+    //Delete Appointments
+
+    var apptIDs = [];
+
+    $scope.AppointMent = function (appId1, chec,index) {
+        $scope.Datas = { 'appId11': appId1, 'chec1': chec, 'inDEx1': index }
+        apptIDs.push($scope.Datas);
+        $scope.aid = apptIDs;
+       
+    };
+            
+    $scope.APPOINTdelete = function () {
+           
+        console.log($scope.aid);
+        for (var i = 0; i < $scope.aid.length; i++) {
+            $scope.Appointid = $scope.aid[i].appId11;
+            $scope.checkvalue = $scope.aid[i].chec1;
+           
+           
+
+            if ($scope.checkvalue == 'Boarding') {
+                var inDEx = apptIDs[i].inDEx1;
+                $scope.Data = {
+                    "is_deleted": "y",
+                    "modified_by": 1,
+                    "modified_date": $scope.date,
+                    "br_appid": $scope.aid[i].appId11
+                }
+
+                  $http.post("http://166.62.84.37/PetzCareWS/Appointments.svc/DeleteBoardingAppointment", $scope.Data).success(function (response) {
+                    
+                $scope.refreshAppointments();
+                  
+                    console.log(response);
+
+                });
+            }
+            else if ($scope.checkvalue == 'Grooming') {
+                var inDEx = apptIDs[i].inDEx1;
+                $scope.Data = {
+                    "is_deleted": "y",
+                    "modified_by": 1,
+                    "modified_date": $scope.date,
+                    "gr_appid": $scope.aid[i].appId11
+                }
+
+                   $http.post("http://166.62.84.37/PetzCareWS/Appointments.svc/DeleteGroomingAppointment", $scope.Data).success(function (response) {
+   
+                    $scope.refreshAppointments();
+                    
+                    console.log(response);
+
+                });
+
+            }
+
+
+        }
+           
+    };
+       
+
+
+
+
+       
+
+       
+           
+
+
+
+
+        $scope.newAppoint = function (values) {
+            var timestamp = Number(new Date());
+            $scope.date = "\/Date(" + timestamp + ")\/";
+            var id = values.ld_name;
+            var timestamp = Number(new Date($scope.sttdat));
+            $scope.stttdt = "\/Date(" + timestamp + ")\/";
+
+            var timestamp = Number(new Date($scope.enndt));
+            $scope.nndate = "\/Date(" + timestamp + ")\/";
+            var timestamp = Number(new Date($scope.appnt));
+            $scope.appointdat = "\/Date(" + timestamp + ")\/";
+
+            var timestamp = Number(new Date($scope.pickupdat));
+            $scope.pickdate = "\/Date(" + timestamp + ")\/";
+
+            var timestamp = Number(new Date($scope.dedate));
+            $scope.delrydate = "\/Date(" + timestamp + ")\/";
+
+            if (id == 'Boarding') {
+
+                $scope.appoindata = {
+                    "created_by": 1,
+                    "created_date": $scope.date,
+                    "is_deleted": "n",
+                    "modified_by": 1,
+                    "modified_date": $scope.date,
+                    "customer_id": $scope.custnam,
+                    "pet_id": $scope.petnm,
+                    "service_id": $scope.statustype1,
+                    "is_reminder": $scope.remin || "N",
+                    "start_date": $scope.stttdt,
+                    "end_date": $scope.nndate,
+                    "is_pickup": $scope.pick || "N",
+                    "is_delivery": $scope.delvry || "N",
+                    "delivery_date": $scope.delrydate,
+                    "chargaeble_days": $scope.chrgdas,
+                    "is_bookwholerun": $scope.bokwhlrun || "N",
+                    "status_id": $scope.stus1,
+                    "notes": $scope.adnotes
+                }
+               
+                if($scope.pick =="Y" ) 
+                {
+                    var addPickupDate = { "pickup_date": $scope.pickdate };
+                    $scope.appoindata = $scope.appoindata.concat(addPickupDate);
+                }
+                   
+
+                    $http({
+                        method: 'POST',
+                        data: $scope.appoindata,
+                        url: 'http://166.62.84.37/PetzCareWS/Appointments.svc/AddBoardingAppointment',
+                        headers: {
+                            "Content-Type": 'application/json',
+                        }
+                }).success(function (response) {
+                    $scope.servetype = "";
+                    $scope.custnam = "";
+                    $scope.petnm = "";
+                    $scope.statustype1 = "";
+                    $scope.remin = "";
+                    $scope.sttdat = "";
+                    $scope.enndt = "";
+                    $scope.pick = "";
+                    $scope.pickupdat = "";
+                    $scope.delvry = "";
+                    $scope.dedate = "";
+                    $scope.chrgdas = "";
+                    $scope.bokwhlrun = "";
+                    $scope.stus1 = "";
+                    $scope.gromeval = "";
+                    $scope.appnt = "";
+                    $scope.estimat = "";
+                    $scope.gromstyl1 = "";
+                    $scope.recurr = "";
+                    $scope.adnotes = "";
+                    alert("Appointment added successfully");
+                   
+                
+                }).error(function (response) {
+                    $scope.error = response.message;
+                });
+
+            }
+            else {
+                $scope.appoingroomdata = {
+                    "created_by": 1,
+                    "created_date": $scope.date,
+                    "is_deleted": "n",
+                    "modified_by": 1,
+                    "modified_date": $scope.date,
+                    "service_id": $scope.statustype1,
+                    "customer_id": $scope.custnam,
+                    "pet_id": $scope.petnm,
+                    "groomer_Id": $scope.gromeval,
+                    "is_reminder": $scope.remin || "N",
+                    "appointment_date": $scope.appointdat,
+                    "estimated_duration": $scope.estimat,
+                    "is_pickup": $scope.pick || "N",
+                    "pickup_date": $scope.pickdate,
+                    "is_delivery": $scope.delvry || "N",
+                    "delivery_date": $scope.delrydate,
+                    "style_id": $scope.gromstyl1,
+                    "is_recurring": $scope.recurr || "N",
+                    "status_id": $scope.stus1,
+                    "notes": $scope.adnotes
+                }
+
+
+
+
+                $http({
+                    method: 'POST',
+                    data: $scope.appoingroomdata,
+                    url: 'http://166.62.84.37/PetzCareWS/Appointments.svc/AddGroomingAppointment',
+                    headers: {
+                        "Content-Type": 'application/json',
+                    }
+                }).success(function (response) {
+                    $scope.servetype = "";
+                    $scope.custnam = "";
+                    $scope.petnm = "";
+                    $scope.statustype1 = "";
+                    $scope.remin = "";
+                    $scope.sttdat = "";
+                    $scope.enndt = "";
+                    $scope.pick = "";
+                    $scope.pickupdat = "";
+                    $scope.delvry = "";
+                    $scope.dedate = "";
+                    $scope.chrgdas = "";
+                    $scope.bokwhlrun = "";
+                    $scope.stus1 = "";
+                    $scope.gromeval = "";
+                    $scope.appnt = "";
+                    $scope.estimat = "";
+                    $scope.gromstyl1 = "";
+                    $scope.recurr = "";
+                    $scope.adnotes = "";
+                    alert("Appointment added successfully");
+                   
+
+                }).error(function (response) {
+                    $scope.error = response.message;
+                });
+
+
+            }
+
+        };
+
+
+
+
+
+        $scope.additionalAppService = function () {
+
+           
+            var timestamp = Number(new Date($scope.serstartdate));
+            $scope.serstrt = "\/Date(" + timestamp + ")\/";
+
+            var timestamp = Number(new Date($scope.serenddate));
+            $scope.serndat = "\/Date(" + timestamp + ")\/";
+            var timestamp = Number(new Date($scope.serappindate));
+            $scope.serapdat = "\/Date(" + timestamp + ")\/";
+
+            var timestamp = Number(new Date($scope.serpickdate));
+            $scope.serpikdt = "\/Date(" + timestamp + ")\/";
+
+            var timestamp = Number(new Date($scope.serdeldate));
+            $scope.serdedat = "\/Date(" + timestamp + ")\/";
+
+
+
+
+            if ($scope.sername == 'Boarding') {
+
+                $scope.addservboarddata = {
+                    "created_by": 1,
+                    "created_date": $scope.date,
+                    "is_deleted": "n",
+                    "modified_by": 1,
+                    "modified_date": $scope.date,
+                    "customer_id": $scope.custmid,
+                    "pet_id": $scope.serpetnm,
+                    "service_id": $scope.serstatustype4,
+                    "is_reminder": $scope.serremin || "N",
+                    "start_date": $scope.serstrt,
+                    "end_date": $scope.serndat,
+                    "is_pickup": $scope.serpickup || "N",
+                    "pickup_date": $scope.serpikdt,
+                    "is_delivery": $scope.serdelivery || "N",
+                    "delivery_date": $scope.serdedat,
+                    "chargaeble_days": $scope.serchargeday,
+                    "is_bookwholerun": $scope.serbookrun || "N",
+                    "status_id": $scope.serstatus,
+                    "notes": $scope.sernotes,
+                    "br_appid": $scope.sesids
+                }
+
+                $http({
+                    method: 'POST',
+                    data: $scope.addservboarddata,
+                    url: 'http://166.62.84.37/PetzCareWS/Appointments.svc/AddAdditionalBoardingService',
+                    headers: {
+                        "Content-Type": 'application/json',
+                    }
+                }).success(function (response) {
+
+                    $scope.custmid = "";
+                    $scope.serpetnm = "";
+                    $scope.serstatustype4 = "";
+                    $scope.serremin = "";
+                    $scope.serstartdate = "";
+                    $scope.serenddate = "";
+                    $scope.serpickup = "";
+                    $scope.serpickdate = "";
+                    $scope.serdelivery = "";
+                    $scope.serdeldate = "";
+                    $scope.serchargeday = "";
+                    $scope.serbookrun = "";
+                    $scope.serstatus = "";
+                    $scope.sernotes = "";
+                    $scope.sesids = "";
+                    alert("Additional service added successfully");
+
+                }).error(function (response) {
+                    $scope.error = response.message;
+                });
+
+
+            }
+            else {
+
+                $scope.addservgroomddata = {
+                    "created_by": 1,
+                    "created_date": $scope.date,
+                    "is_deleted": "n",
+                    "modified_by": 1,
+                    "modified_date": $scope.date,
+                    "customer_id": $scope.custmid,
+                    "pet_id": $scope.serpetnm,
+                    "groomer_Id": $scope.sergroomer,
+                    "is_reminder": $scope.serremin || "N",
+                    "appointment_date": $scope.serapdat,
+                    "estimated_duration": $scope.serestimate,
+                    "is_pickup": $scope.serpickup || "N",
+                    "pickup_date": $scope.serpikdt,
+                    "is_delivery": $scope.serdelivery || "N",
+                    "delivery_date": $scope.serdedat,
+                    "style_id": $scope.sergroomstyl,
+                    "is_recurring": $scope.serrecurr || "N",
+                    "status_id": $scope.serstatus,
+                    "notes": $scope.sernotes,
+                    "gr_appid": $scope.sesids,
+                    "service_id": $scope.serstatustype4
+                }
+
+                $http({
+                    method: 'POST',
+                    data: $scope.addservgroomddata,
+                    url: 'http://166.62.84.37/PetzCareWS/Appointments.svc/AddAdditionalGroomingService',
+                    headers: {
+                        "Content-Type": 'application/json',
+                    }
+                }).success(function (response) {
+                    $scope.custmid = "";
+                    $scope.serpetnm = "";
+                    $scope.sergroomer = "";
+                    $scope.serremin = "";
+                    $scope.serappindate = "";
+                    $scope.serestimate = "";
+                    $scope.serpickup = "";
+                    $scope.serpickdate = "";
+                    $scope.serdelivery = "";
+                    $scope.serdeldate = "";
+                    $scope.sergroomstyl = "";
+                    $scope.serrecurr = "";
+                    $scope.serstatus = "";
+                    $scope.sernotes = "";
+                    $scope.sesids = "";
+                    $scope.serstatustype4 = "";
+                    alert("Additional service added successfully");
+
+                }).error(function (response) {
+                    $scope.error = response.message;
+                });
+
+
+            }
+
+        };
+
+
+
+
+
+
+
+
+
+
+
+
+
+    };
+
+    // Pagination filter
+    app.filter('pagination', function () {
+        return function (input, start) {
+            start = parseInt(start, 10);
+            return input.slice(start);
+        };
+    });
+})();

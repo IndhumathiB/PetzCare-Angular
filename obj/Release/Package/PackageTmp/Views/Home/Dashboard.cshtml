@@ -1,0 +1,169 @@
+﻿
+    <div class="scrollable container-fluid" id="widget-bg" ng-controller="DashboardController">
+        <div class="scrollable container-fluid bg-dark">
+            <div class=row>
+                <div class=col-sm-12>
+                    <div class="page-headers cus-panels-with-pad">
+                        <h3>My Dashboard</h3>
+                    </div>
+                    <!-- .page-header End -->
+                    <div class=contents>
+                        <div class=main-box>
+                            <div class=row>
+                                <div class=col-lg-12>
+                                    <div style=min-height:1220px>
+                                        <!-- Dashboard Header -->
+                                        <!-- For an image header add the class 'content-header-media' and an image as in the following example -->
+                                        <!-- END Dashboard Header -->
+                                        <!-- Datatables Content -->
+                                        @*Loader spinner for the Dashboard *@
+                                        <div id="dashboardloader" class="overlays" style="display: block;">
+                                            <img src="~/images/spinningcurser.gif" style="position:absolute;z-index: 99; top:40%; left:50%; margin-top:-70px; margin-left:-70px; height:50px;  width:50px;" />
+                                        </div>
+                                        <div class="row charts mar-top15" style="font-family:tahoma,arial,verdana,sans-serif !important">
+                                            <div class="row">
+                                                <div class=col-md-6>
+                                                    <div class=widget>
+                                                        <div class="widget-extra themed-background-dark">
+                                                            <h4 class=widget-content-light> <strong>Users</strong> </h4>
+                                                        </div>
+                                                        <div class=widget-extra-full>
+                                                            <div class="row text-center">
+                                                                <div class="col-xs-6 col-lg-6">
+                                                                    <h4> <strong> <span id=span_customers class=text-info>{{dashboarddetail.Users.active_customer_count}}</span></strong> <br> <small><i class="fa fa-user"></i>Active Customers </small> </h4>
+                                                                </div>
+                                                                <div class="col-xs-6 col-lg-6">
+                                                                    <h4> <strong><span id=span_staff class=text-danger>{{dashboarddetail.Users.active_employee_count}}</span></strong> <br> <small><i class="fa fa-black-tie"></i>Active Employees </small> </h4>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <!-- END Widget -->
+                                                </div>
+                                                <div class=col-md-6>
+                                                    <div class=widget>
+                                                        <div class="widget-extra themed-background-dark">
+                                                            <h4 class=widget-content-light> <strong> Product Invoice</strong> </h4>
+                                                        </div>
+                                                        <div class=widget-extra-full>
+
+                                                            <div class="row text-center">
+                                                                <div class="col-xs-6 col-lg-6">
+                                                                    <h4> <strong> <span id=span_recievableUnbilled class=text-primary>{{dashboarddetail.ProductInvoiceList.paid_invoice_amt | currency}}</span></strong> <br> <small><i class="fa fa-folder-open-o"></i> Paid</small> </h4>
+                                                                </div>
+                                                                <div class="col-xs-6 col-lg-6">
+                                                                    <h4> <strong> <span id=span_UnPaidInvoice class=text-warning>{{dashboarddetail.ProductInvoiceList.unpaid_invoice_amt | currency}}</span></strong> <br> <small><i class="fa fa-exclamation-circle"></i> Un Paid</small> </h4>
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <!-- END Widget -->
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class=col-md-6>
+                                                    <div class=widget>
+                                                        <div class="widget-extra themed-background-dark">
+                                                            <h4 class=widget-content-light> <strong> Service Invoice</strong> </h4>
+                                                        </div>
+                                                        <div class=widget-extra-full>
+                                                            <div class="row text-center">
+                                                                <div class="col-xs-4 col-lg-4">
+                                                                    <h4> <strong> <span id=span_recievableUnbilled class=text-primary>{{dashboarddetail.ServiceInvoiceList.completed_invoice_amt | currency}}</span></strong> <br> <small><i class="fa fa-folder-open-o"></i> Completed Service Amount</small> </h4>
+                                                                </div>
+                                                                <div class="col-xs-4 col-lg-4">
+                                                                    <h4> <strong> <span id=span_UnPaidInvoice class=text-warning>{{dashboarddetail.ServiceInvoiceList.incomplete_invoice_amt | currency}}</span></strong> <br> <small><i class="fa fa-exclamation-circle"></i> In Progress Service Amount </small> </h4>
+                                                                </div>
+                                                                <div class="col-xs-4 col-lg-4">
+                                                                    <h4> <strong><span id=span_recievableInvoiced class=text-success>{{dashboarddetail.ServiceInvoiceList.unpaid_invoice_amt | currency}}</span></strong> <br> <small><i class="fa fa-money"></i> Unpaid Service Amount</small> </h4>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <!-- END Widget -->
+                                                </div>
+                                                <div class=col-md-6>
+                                                    <div class=widget>
+                                                        <div class="widget-extra themed-background-dark">
+                                                            <h4 class=widget-content-light> <strong>Total Appointments  </strong><span id=span_today> </span> </h4>
+                                                        </div>
+                                                        <div class=widget-extra-full>
+                                                            <div class="row text-center">
+                                                                <div class="col-xs-6 col-lg-4">
+                                                                    <h4> <strong><span id=span_TodayServices>{{dashboarddetail.TillAppointment.complete_app_count}}</span></strong> <br> <small><i class="fa fa-barcode"></i>Completed Appointments </small> </h4>
+                                                                </div>
+                                                                <div class="col-xs-6 col-lg-4">
+                                                                    <h4> <strong><span id=span_TodayStaff>{{dashboarddetail.TillAppointment.incomplete_app_count}}</span></strong> <br> <small><i class="fa fa-black-tie"></i></small> <small>Pending Appointments </small> </h4>
+                                                                    <select id=comboStaff name=comboStaff style=display:none></select>
+                                                                </div>
+                                                                <div class="col-xs-6 col-lg-4">
+                                                                    <h4> <strong> <span id=span_TodayRevenue>{{dashboarddetail.TillAppointment.progress_app_count}}</span> </strong> <br> <small> <i class="fa fa-hdd-o"></i>In Progress Appointments </small> </h4>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class=col-md-6>
+                                                    <div class=widget>
+                                                        <div class="widget-extra themed-background-dark">
+                                                            <h4 class=widget-content-light> <strong> Today Appointments as on</strong> <span id=span_today>  {{date | date:'MMMM dd,yyyy'}}</span> <!-- <small><a href="page_ready_pricing_tables.html"><strong>Upgrade</strong></a></small>--> </h4>
+                                                        </div>
+                                                        <div class=widget-extra-full>
+                                                            <div class="row text-center">
+                                                                <div class="col-xs-6 col-lg-6" id=fishing>
+                                                                    <h4> <strong> <span id=span_Inprogress_AppointmentsToday class=text-success>{{dashboarddetail.TodayAppointment.today_app_count}}</span></strong> <br> <small><i class="fa fa-calendar sidebar-nav-icon"></i>Today Appointments </small> </h4>
+                                                                </div>
+                                                                <div class="col-xs-6 col-lg-6">
+                                                                    <h4> <strong> <span id=span_TodayRevenue>{{dashboarddetail.TodayAppointment.today_sum_amount | currency}}</span> </strong> <br> <small><i class="fa fa-money"></i>Today Sum Amount</small> </h4>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
+                                                <div class=col-md-6>
+                                                    <div class=widget>
+                                                        <div class="widget-extra themed-background-dark">
+                                                            <h4 class=widget-content-light> <strong> Tomorrow Appointments as on</strong> <span id=span_tommarow>   {{tomorrow | date:'MMMM dd,yyyy'}}</span> <!-- <small><a href="page_ready_pricing_tables.html"><strong>Upgrade</strong></a></small>--> </h4>
+                                                        </div>
+                                                        <div class=widget-extra-full>
+                                                            <div class="row text-center">
+                                                                <div class="col-xs-6 col-lg-6">
+                                                                    <h4> <strong><span id=span_TommarowServices>{{dashboarddetail.TomorrowAppointment.tmrw_app_count}}</span></strong> <br> <small><i class="fa fa-barcode"></i>Tomorrow Appointments</small> </h4>
+                                                                </div>
+                                                                <div class="col-xs-6 col-lg-6">
+                                                                    <h4> <strong><span id=span_TommarowRevenue>{{dashboarddetail.TomorrowAppointment.tmrw_sum_amount | currency}}</span></strong> <br> <small><i class="fa fa-money"></i> Tomorrow Sum Amount</small> </h4>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
+                                            </div>
+
+
+                                        </div>
+                                        <!-- END Datatables Content -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- .content End -->
+                </div>
+            </div>
+        </div>
+        </div>
+        <footer class=footer-wrapper>
+            <div class=row>
+                <div class="col-sm-12 col-md-8">
+                    <p class=mar-0-10>© Copyright 2015 <a href=#>Petzcare</a>. All Rights Reserved.</p>
+                </div>
+            </div>
+        </footer>

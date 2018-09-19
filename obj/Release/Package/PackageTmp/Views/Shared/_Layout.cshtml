@@ -1,0 +1,25 @@
+﻿<!DOCTYPE html>
+<html ng-app="petzCareSP">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    @*<meta http-equiv="Cache-Control" content="no-cache">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">*@ 
+    <title>@ViewBag.Title</title>
+    @*@Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")*@
+    <link rel="shortcut icon" type="image/png" href="~/images/favicon.png" />
+    <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600" rel=stylesheet type=text/css>
+    <link href="~/styles/be4ede52.main.css" rel="stylesheet" />
+    <link href="~/styles/cb88f8a0.vendor.css" rel="stylesheet" />    
+    <link href="~/Scripts/dropzone/dropzone.css" rel="stylesheet" />
+</head>
+<body>
+   
+    @RenderBody()
+
+    @*@Scripts.Render("~/bundles/jquery")*@
+    @RenderSection("scripts", required: false)
+</body>
+</html>

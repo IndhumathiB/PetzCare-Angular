@@ -1,0 +1,602 @@
+﻿<div class="scrollable container-fluid">
+    <div class=row>
+        <div class=col-sm-12>
+            <div class="page-headers cus-panels-with-pad">
+                <div class="block-options pull-right">
+                    <button type=button ng-hide="selin == 'appntivc'" class=sec-cus-buttons data-toggle=modal data-target=#createInvoice> <i class="fa fa-plus"></i> Create Invoice </button> 
+                    <!---- Create Invoice ----->
+                    <div class="modal fade" id=createInvoice tabindex=-1 role=dialog aria-labelledby=myModalLabel>
+                        <div class=modal-dialog role=document>
+                            <div class=modal-content>
+                                <div class="modal-header cus-bg ng-scope">
+                                    <button type=button class=close data-dismiss=modal aria-label=Close> <span aria-hidden=true>×</span> <span class=sr-only>Close</span> </button>
+                                    <h4 class="modal-title ng-binding">Create New Invoice</h4>
+                                </div>
+                                <div class=modal-body>
+                                    <form name="invoiceForm" novalidate>
+                                        <div class=row>
+                                            <div class="col-md-6 col-lg-6">
+                                                <div class=form-group>
+                                                    <label for="">Customer Name <span class=required> *</span></label>
+                                                    <div class="control-group" ng-class="{true: 'error'}[submitted && invoiceForm.cunaminc.$invalid]">
+                                                        <select class=form-control id=SelID name="cunaminc" ng-change="petinvcfltr()" ng-model="selectedcunaminc" required ng-options="cunaminc.customer_id as cunaminc.first_name for cunaminc in custinvcs">
+                                                            <option value="" disabled selected style='display:none;'>-- Select Customer Name --</option>
+                                                        </select>
+                                                        <span style="color:red" ng-show="submitted && invoiceForm.cunaminc.$error.required">Customer Name is required.</span>
+                                                    </div>
+
+                                                    </div>
+                                            </div>
+                                            <div class="col-md-6 col-lg-6">
+                                                <div class=form-group>
+                                                    <label for="">Pet Name <span class=required> *</span></label>
+                                                    <div class="control-group" ng-class="{true: 'error'}[submitted && invoiceForm.petinvoice.$invalid]">
+                                                        <select class="form-control test12" name="petinvoice" ng-model="selectedpetinvoice" required ng-options="petinvoice.pet_id as petinvoice.pet_name for petinvoice in petinvs">
+                                                            <option value="" disabled selected style='display:none;'>-- Select Pet Name --</option>
+                                                        </select>
+                                                        <span style="color:red" ng-show="submitted && invoiceForm.petinvoice.$error.required">Pet Name is required.</span>
+                                                    </div>
+                                                 </div>
+                                            </div>
+                                        </div>
+                                        <div class=row>
+                                            <div class="col-md-6 col-lg-6">
+                                                <div class=form-group>
+                                                    <label for="">Appointment<span class=required> *</span> </label>
+                                                    <div class="control-group" ng-class="{true: 'error'}[submitted && invoiceForm.appointment.$invalid]">
+                                                        <select class="form-control test12" name="appointment" ng-change="viewdats()" ng-model="selectedaptinvoice" required ng-options="aptinvoices as aptinvoices.appointment_name+'-'+aptinvoices.appointment_id for aptinvoices in appt2">
+                                                            <option value="" disabled selected style='display:none;'>-- Select Appointment --</option>
+
+                                                        </select>
+                                                        <span style="color:red" ng-show="submitted && invoiceForm.appointment.$error.required">Appointment is required.</span>
+                                                    </div>
+                                                    </div>
+                                            </div>
+                                            <div class="col-md-6 col-lg-6">
+                                                <div class=form-group>
+                                                    <label for="">Payment Type <span class=required> *</span></label>
+                                                    <div class="control-group" ng-class="{true: 'error'}[submitted && invoiceForm.Paytype.$invalid]">
+                                                        <select class="form-control test12" name="Paytype" ng-model="selectedPaytype" required ng-options="p.ld_id as p.ld_name for p in Paytype">
+                                                            <option value="" disabled selected style='display:none;'>-- Select Payment Type --</option>
+                                                        </select>
+                                                        <span style="color:red" ng-show="submitted && invoiceForm.Paytype.$error.required">Appointment is required.</span>
+                                                    </div>
+                                                    </div>
+                                            </div>
+                                        </div>
+                                        <div class=row>
+                                            <div class="col-md-6 col-lg-6">
+                                                <div class="inline-options mar-5-0">
+                                                    <button class=sec-cus-buttons type=button data-toggle=collapse data-target="#addserviceID" aria-expanded=false aria-controls=collapseExample><i class="fa fa-plus"></i>Add Service</button>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 col-lg-6">
+                                                <div class="inline-options mar-5-0">
+                                                    <button class=sec-cus-buttons type=button data-toggle=collapse data-target="#collapseExample" aria-expanded=false aria-controls=collapseExample>View Detail</button>
+                                                </div>
+                                            </div>
+                                            <div class=row>
+                                                <div class=col-sm-12>
+                                                    <div class=collapse id=collapseExample style="height: 0px">
+                                                        <div class=well>
+                                                            <div class=row>
+                                                                <div class="col-xs-2 col-sm-2 text-center"> <strong>Pet Name</strong> </div>
+                                                                <div class="col-xs-5 col-sm-5"> <strong>Service Detail</strong> </div>
+                                                                <div class="col-xs-2 col-sm-2 single-w-lh text-center"> <strong>Duration</strong> </div>
+                                                                <div class="col-xs-3 col-sm-3 single-w-lh text-center"> <strong>Amount</strong> </div>
+                                                            </div>
+                                                            <div class=row ng-repeat="view in viein">
+
+                                                                <div class="col-xs-2 col-sm-2 single-w-lh margin-t-b text-center"> <span>{{view.pet_name}}</span> </div>
+                                                                <div class="col-xs-5 col-sm-5 single-w-lh margin-t-b"> <span>{{view.service_type_name }}</span> </div>
+                                                                <div class="col-xs-2 col-sm-2 single-w-lh margin-t-b text-center"> <span>{{view.chargaeble_days }}</span> </div>
+                                                                <div class="col-xs-3 col-sm-3 single-w-lh margin-t-b text-center"> <span>{{view.service_rate }}</span> </div>
+
+                                                            </div>
+
+                                                            <div class=row>
+                                                                <div class="col-xs-3 col-sm-3 col-md-offset-6 single-w-lh text-center">
+
+                                                                    <div class=margin-t-b> <span>Sub Total</span> </div>
+                                                                </div>
+                                                                <div class="col-xs-3 col-sm-3 single-w-lh text-center">
+                                                                    <div class=margin-t-b> <span>{{totalAmout | number}}</span> </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+
+                                                                <div class="col-xs-3 col-sm-3 col-md-offset-6 single-w-lh  text-center">
+                                                                    <div class="margin-t-b">
+                                                                        <span class="margin-t-b">Tax Amount</span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-xs-3 col-sm-3 single-w-lh text-center">
+                                                                    <div class="margin-t-b">
+                                                                        <span>{{taxamt | number}}</span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+
+                                                                <div class="col-xs-3 col-sm-3 col-md-offset-6 single-w-lh  text-center">
+                                                                    <div class="margin-t-b">
+                                                                        <span class="margin-t-b">Discount Amount</span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-xs-3 col-sm-3 single-w-lh text-center">
+                                                                    <div class="margin-t-b">
+                                                                        <span>{{disamt | number}}</span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+
+                                                                <div class="col-xs-3 col-sm-3 col-md-offset-6 single-w-lh  text-center">
+                                                                    <div class="margin-t-b">
+                                                                        <span class="margin-t-b">Total</span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-xs-3 col-sm-3 single-w-lh text-center">
+                                                                    <div class="margin-t-b">
+                                                                        <span>{{maintotal | number}}</span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>                                   
+
+                                                            <div class="row">
+
+                                                                <div class="col-xs-4 col-sm-4  single-w-lh ">
+                                                                    <div class="margin-t-b">
+                                                                        <div class="clearfix">
+                                                                            <div class="pull-left mar-5-0">
+                                                                                <strong>Tax ( % )</strong>
+                                                                            </div>
+                                                                            <div class="pull-right mar-0-15">
+                                                                                <select class="form-control  test12" name="tax" ng-model="selectedtax" ng-change="sTaxCalculater()" required ng-options="t as t.ld_name for t in tax"></select>
+                                                                            </div>
+                                                                        </div>
+
+                                                                    </div>
+                                                                </div>
+
+                                                            </div>
+                                                            <div class="row">
+
+                                                                <div class="col-xs-6 col-sm-6  single-w-lh ">
+                                                                    <div class="">
+
+                                                                        <div class="checkbox">
+                                                                            <label>
+                                                                                <input type=checkbox ng-model="disamt1"> <strong> Discount ( % )</strong>
+                                                                                <span>
+                                                                                    <input type="text" ng-show="disamt1" ng-change="sdiscountCalculater()" name="disperst" ng-model="disperst" />
+                                                                                </span>
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class=row>
+                                                <div class=col-sm-12>
+                                                    <div class=collapse id=addserviceID style="height: 0px">
+                                                        <div class=well>
+                                                            <div class=row>
+                                                                <div class="col-md-6 col-lg-6">
+                                                                    <div class=form-group>
+                                                                        <label for="">Services </label>
+                                                                        <select class="form-control test12" name="pservc" ng-click="petrates()" ng-model="selectedpservc" required ng-options="pservc as pservc.service_name for pservc in petservcs">
+                                                                            <option value="" disabled selected style='display:none;'>-- Select Services --</option>
+
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-6 col-lg-6">
+                                                                    <div class=form-group>
+                                                                        <label for="">Service Description</label>
+                                                                        <input class=form-control readonly="readonly" name="descs" ng-model="descs" required>
+                                                                    </div>
+                                                                </div>
+
+                                                            </div>
+                                                            <div class=row>
+                                                                <div class="col-md-6 col-lg-6">
+                                                                    <div class=form-group>
+                                                                        <label for="">Rate</label>
+                                                                        <input class=form-control readonly="readonly" name="rates" ng-model="rates" required>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-6 col-lg-6">
+                                                                    <div class=form-group>
+                                                                        <label for="">Duration</label>
+                                                                        <input type="number" class=form-control name="duratin" ng-model="duratin" required>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class=row>
+                                                                <div class="col-xs-3 col-sm-3 col-md-offset-9 single-w-lh text-center">
+                                                                    <button type=button class="btn btn-primary" ng-click="adtnlser()" @*data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample"*@>Add </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class=row>
+                                            <div class="col-md-12 margin-t-b">
+                                                <div role="form">
+                                                    <label class=radio-inline ng-repeat="p in Paystatus">
+                                                        <input type="radio" name=optradio ng-model="f1.selectedPaysts1" required value={{p.ld_id}}>{{p.ld_name}}
+
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class=modal-footer>
+                                    <button type=button class="btn btn-default" data-dismiss=modal>Close</button>
+                                    <button type=button class="btn btn-primary" ng-click="submitted=true; newservcinvce()" data-dismiss="modal">Generate Invoice</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <h3>Manage Service Invoice</h3>
+            <!-- .page-header End -->
+            <div class=contents>
+                <div class=main-box>
+                    <div class=row>
+                        <div class=col-lg-12>
+                            <div style=min-height:1220px>
+                                <!-- Dashboard Header -->
+                                <!-- For an image header add the class 'content-header-media' and an image as in the following example -->
+                                <!-- END Dashboard Header -->
+                                <!-- Datatables Content -->
+                                <div class="block full mar-top15 cus-panels-with-pad lisiting">
+                                    <div class="table-responsive mar-top15">
+                                        <div id=TblStaff_wrapper class=dataTables_wrapper role=grid>
+                                            <div class=row>
+                                                <div class="col-sm-3 col-xs-4">
+                                                    <div class=dataTables_length>
+                                                        <label>
+                                                            <select name=TblStaff_length aria-controls=TblStaff class="form-control" ng-model="selin" ng-options="lis for lis in LISTvalues"></select>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-offset-6 col-md-3 col-sm-6 col-xs-7">
+                                                    <div class=dataTables_filter id=TblStaff_filter>
+                                                        <label style=width:100%>
+                                                            <div class=input-group>
+                                                                <input aria-controls=TblStaff class=form-control placeholder=Search ng-model="find" name="find"> <span class=input-group-addon><i class="fa fa-search"></i></span>
+                                                            </div>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            @*Loader spinner for the ServiceInvoice *@
+                                            <div id="serviceInvoiceloader" class="overlays" style="display: block;">
+                                                <img src="~/images/spinningcurser.gif" style="position:absolute;z-index: 99; top:50%; left:50%; margin-top:-70px; margin-left:-70px; height:60px;  width:60px;" />
+                                            </div>
+                                            <!---- Table Content Start ----->
+                                            <table ng-hide="selin != 'Invoicelist'" id=TblStaff class="table table-vcenter table-condensed table-bordered dataTable center" aria-describedby=TblStaff_info>
+                                                <thead>
+                                                    <tr role=row>
+                                                        <th style="display: none; width: 0px" class="text-center sorting_asc" role=columnheader tabindex=0 aria-controls=TblStaff rowspan=1 colspan=1 aria-sort=ascending aria-label="
+                                                                : activate to sort column descending">
+                                                        <th width=15% role=columnheader style="width: 150px" ng-click="ServiceinvoiceSort(asc=!asc,'customer_name');"> Customer Name  <i class="fa fa-sort"></i>
+                                                        <th width="" role=columnheader style="width: 188px" ng-click="ServiceinvoiceSort(asc=!asc,'service_name');"> Service  <i class="fa fa-sort"></i>
+                                                        <th role=columnheader style="width: 188px" ng-click="ServiceinvoiceSort(asc=!asc,'appoitment_type_name');"> Appointment Type  <i class="fa fa-sort"></i>
+                                                        <th width="" role=columnheader style="width: 188px"> Invoice Number
+                                                        <th width="" class=sorting_disabled role=columnheader style="width: 140px"> Status
+                                                        <th width="" class=sorting_disabled role=columnheader style="width: 250px"> Action
+                                                <tbody id=tbody-staff role=alert aria-live=polite aria-relevant=all>
+                                                    <tr class="odd invoice-hide" ng-repeat="servinvce in servcinvicdetl | orderBy:orderByField:reverseSort | filter:find | pagination : currentPage*itemsPerPage | limitTo: itemsPerPage" ng-click="getserinvoice(servinvce.invoice_number)">
+                                                        {{servinvce.invoice_number}}
+                                                        <td style=display:none class="text-center sorting_1">
+                                                        <td>{{servinvce.customer_name}}
+                                                        <td>{{servinvce.appoitment_type_name}}
+                                                        <td>{{servinvce.service_name}}
+                                                        <td>{{servinvce.invoice_number}}
+                                                        <td>{{servinvce.status_name}}
+
+                                                        <td>
+                                                            <ul class="user-select-enable reset">
+                                                                <li data-toggle=modal data-target=#invoiceID>
+                                                                    <button type=button class="btn btn-hove" data-toggle=tooltip title="View Invoice Detail"><i class="fa fa-money"></i></button>
+                                                                </li>
+                                                            </ul>
+                                                   
+                                            </table>
+                                            <div class="pagination-div text-right" ng-hide="selin != 'Invoicelist'">
+                                                <ul class="pagination">
+                                                    <li ng-class="DisablePrevPage()">
+                                                        <a href="" ng-click="prevPage()">« Prev</a>
+                                                    </li>
+                                                    <li ng-repeat="n in range()" ng-class="{active: n == currentPage}" ng-click="setPage(n)">
+                                                        <a href="">{{n+1}}</a>
+                                                    </li>
+                                                    <li ng-class="DisableNextPage()">
+                                                        <a href="" ng-click="nextPage()">Next »</a>
+
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                           
+                                            <table ng-show="selin != 'Invoicelist'" id=TblStaff class="table table-vcenter table-condensed table-bordered dataTable center" aria-describedby=TblStaff_info>
+                                                <thead>
+                                                    <tr role=row>
+                                                        <th style="display: none; width: 0px" class="text-center sorting_asc" role=columnheader tabindex=0 aria-controls=TblStaff rowspan=1 colspan=1 aria-sort=ascending aria-label="
+                                                                : activate to sort column descending">
+                                                        <th width=15% role=columnheader style="width: 150px" ng-click="ServiceinvoiceSort(asc=!asc,'customer_name');"> Customer Name  <i class="fa fa-sort"></i>
+                                                        <th width="" role=columnheader style="width: 188px" ng-click="ServiceinvoiceSort(asc=!asc,'service_name');"> Service  <i class="fa fa-sort"></i>
+                                                        <th role=columnheader style="width: 188px" ng-click="ServiceinvoiceSort(asc=!asc,'appoitment_type_name');"> Appointment Type  <i class="fa fa-sort"></i>
+                                                        <th width="" role=columnheader style="width: 188px"> Invoice Number
+                                                        <th width="" class=sorting_disabled role=columnheader style="width: 140px"> Status
+                                                        <th width="" class=sorting_disabled role=columnheader style="width: 250px"> Action
+                                                <tbody id=tbody-staff role=alert aria-live=polite aria-relevant=all>
+                                                    <tr class="odd invoice-hide" ng-repeat="appnnservinvce in appservcinvicdetl | orderBy:orderByField:reverseSort | filter:find | pagination : currentPage*itemsPerPage | limitTo: itemsPerPage" ng-click="getserinvoice(appnnservinvce.invoice_number)">
+                                                        <td style=display:none class="text-center sorting_1">
+                                                        <td>{{appnnservinvce.customer_name}}
+                                                        <td>{{appnnservinvce.appoitment_type_name}}
+                                                        <td>{{appnnservinvce.service_name}}
+                                                        <td>{{appnnservinvce.invoice_number}}
+                                                        <td>{{appnnservinvce.status_name}}
+
+                                                        <td>
+                                                            <ul class="user-select-enable reset">
+                                                                <li data-toggle=modal data-target=#invoiceID>
+                                                                    <button type=button class="btn btn-hove" data-toggle=tooltip title="View Invoice Detail"><i class="fa fa-money"></i></button>
+                                                                </li>
+                                                            </ul>
+                                                    
+                                            </table>
+                                            <div ng-show="selin != 'Invoicelist'" class="pagination-div text-right">
+                                                <ul class="pagination">
+                                                    <li ng-class="DisablePrevPage()">
+                                                        <a href="" ng-click="prevPage()">« Prev</a>
+                                                    </li>
+                                                    <li ng-repeat="n in range()" ng-class="{active: n == currentPage}" ng-click="setPage(n)">
+                                                        <a href="">{{n+1}}</a>
+                                                    </li>
+                                                    <li ng-class="DisableNextPage()">
+                                                        <a href="" ng-click="nextPage()">Next »</a>
+
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                          </div>
+                                    </div>
+                                </div>
+                                <!-- END Datatables Content -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- .content End -->
+        </div>
+    </div>
+</div>
+    </div>
+
+ 
+ <!-- Inoice generated Modal -->
+<div class="modal fade" id=invoiceID tabindex=-1 role=dialog aria-labelledby=myModalLabel>
+    <div class="modal-dialog modal-lg" role=document>
+        <div class=modal-content>
+            <div class=modal-body>
+                <form ng-repeat="seinvda in seinvdainvc">
+                    <fieldset ng-repeat="iNvoice in seinvda.ServiceList">
+                        <legend>
+                            <div class="row clearfix">
+                                <div class="col-md-6 col-lg-6">
+                                    <div class="pull-left img-mar-l">
+                                        <a class=logo title=Petzcare href=#><img src=~/images/9a9e2fdc.petzcare.png style="width:110%; height:60px" alt=Petzcare></a>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-6">
+                                    <div class="pull-right pad-0-10">
+                                        <h3 class=text-uppercase>Invoice</h3>
+                                    </div>
+                                </div>
+                            </div>
+                        </legend>
+                        <div class="row clearfix">
+                            <div class="col-md-6 col-lg-6">
+                                <div class="pull-left pad-0-10"> <address> <strong>{{seinvda.customer_name}}</strong><br>{{seinvda.address_1}} <br> <abbr title=Phone>P:</abbr><a href=tel:14087276302>{{seinvda.phone_1}}</a><br> </address> </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6">
+                                <div class=pull-right>
+                                    <div><strong>Invoice No :</strong>{{seinvda.invoice_number}}</div>
+                                    <div class=pad-5-0><strong>Invoice Date :</strong>{{seinvda.invoice_date}}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row pad-0-15">
+                            <div class="col-md-3 col-lg-3"> <strong>Pet Name :</strong> <span>{{seinvda.pet_name}}</span> </div>
+                            <div class="col-md-4 col-lg-4"> <strong>Service Name :</strong> <span>{{iNvoice.appoitment_type_name}}</span> </div>
+                            <div class="col-md-4 col-lg-4"> <strong>Appointment Date :</strong> <span>{{iNvoice.appointment_date}}</span> </div>
+                        </div>
+                        <div class="table-responsive mar-top15">
+                            <div id=TblStaff_wrapper class=dataTables_wrapper role=grid>
+                                <table id=TblStaff class="table table-vcenter table-condensed table-bordered dataTable" aria-describedby=TblStaff_info>
+                                    <thead>
+                                        <tr role="row text-center">
+                                            <th class="text-center sorting_disabled" role=columnheader style="width: 110px"> Service No
+                                            <th width=15% class=sorting role=columnheader style="width: 330px"> Service Description
+                                            <th width="" class=sorting_disabled role=columnheader style="width: 132px">Duration
+                                            <th class=sorting_disabled role=columnheader style="width: 129px">
+                                            <th>Total
+                                    </thead>
+                                    <tbody id=tbody-staff role=alert aria-live=polite aria-relevant=all>
+                                        <tr class=odd>
+                                            <td>{{iNvoice.service_id}}
+                                            <td class=text-left>{{iNvoice.service_name}}
+                                            <td>{{iNvoice.chargaeble_days}}
+                                            <td>
+                                             <td>{{iNvoice.service_rate}}
+                                      </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td> 
+
+                                        </tr>
+                                        <tr class=odd>
+                                            <td>
+                                            <td>
+                                            <td>
+                                            <td>Sub Total
+                                            <td>{{seinvda.gross_amount | number}}
+                                        <tr class=odd>
+                                            <td>
+                                            <td>
+                                            <td>
+                                            <td>Tax({{seinvda.taxpercent_name}} %)
+                                            <td>{{seinvda.tax_amount | number}}
+                                        <tr class=odd>
+                                            <td>
+                                            <td>
+                                            <td>
+                                            <td>Discount({{seinvda.discount_percent}} %)
+                                            <td>{{seinvda.discount_amount | number}}
+                                        <tr class=odd>
+                                            <td>
+                                            <td>
+                                            <td>
+                                            <td>Total Amount
+                                            <td>{{seinvda.total_amount | number}}
+</tbody>
+
+
+
+</table>
+                            </div>
+                        </div>
+                        <div class="row pad-0-15">
+                            <div class=col-sm-12> <i class="fa fa-check-square sky-blue"></i> <strong>Payment Methode :</strong> <span>{{seinvda.payment_type_name}}</span> </div>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+            <div class=modal-footer>
+                <button type=button class="btn btn-default" ng-click="ConfrmEmail()" data-dismiss=modal>Email</button>
+                <button type=button class="btn btn-default" data-dismiss=modal>Close</button>
+                <button type=button class="btn btn-primary">Print</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Invoice Genrate Modal -->
+<div class="modal fade" id=appointmentID tabindex=-1 role=dialog aria-labelledby=myModalLabel>
+    <div class=modal-dialog role=document>
+        <div class=modal-content>
+            <div class="modal-header cus-bg ng-scope">
+                <button type=button class=close data-dismiss=modal aria-label=Close> <span aria-hidden=true>×</span> <span class=sr-only>Close</span> </button>
+                <h4 class="modal-title ng-binding">Generate Invoice</h4>
+            </div>
+            <div class=modal-body>
+                <form>
+                    <div class=row>
+                        <div class="col-md-6 col-lg-6">
+                            <div class=form-group>
+                                <label for="">Customer Name</label>
+                                <input class=form-control placeholder="" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6">
+                            <div class=form-group>
+                                <label for="">Pet Name</label>
+                                <input class=form-control placeholder="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class=row>
+                        <div class="col-md-6 col-lg-6">
+                            <div class=form-group>
+                                <label for="">Customer ID</label>
+                                <input class=form-control placeholder="" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6">
+                            <div class=form-group>
+                                <label for="">Pet ID</label>
+                                <input class=form-control>
+                            </div>
+                        </div>
+                    </div>
+                    <div class=row>
+                        <div class="col-md-6 col-lg-6">
+                            <div class=form-group>
+                                <label for="">Service</label>
+                                <input class=form-control placeholder="" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6">
+                            <div class=form-group>
+                                <label for="">Service Type</label>
+                                <input class=form-control>
+                            </div>
+                        </div>
+                    </div>
+                    <div class=row>
+                        <div class="col-md-6 col-lg-6">
+                            <div class=form-group>
+                                <label for="">Address</label>
+                                <input class=form-control placeholder="" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6">
+                            <div class=form-group>
+                                <label for="">Phonenumber</label>
+                                <input type=tel class=form-control>
+                            </div>
+                        </div>
+                    </div>
+                    <div class=row>
+                        <div class="col-md-6 col-lg-6">
+                            <div class=form-group>
+                                <label for="">Appointment</label>
+                                <input class=form-control required>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6">
+                            <div class=form-group>
+                                <label for=i-no>Invoice Number</label>
+                                <input class=form-control id=i-no required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class=row>
+                        <div class=col-md-12>
+                            <form role= form>
+                                <label class=radio-inline>
+                                    <input type=radio name=optradio><i class="fa fa-cc-paypal fa-2x"></i>
+                                </label>
+                                <label class=radio-inline>
+                                    <input type=radio name=optradio><i class="fa fa-cc-visa fa-2x"></i>
+                                </label>
+                            </form>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class=modal-footer>
+                <button type=button class="btn btn-default" data-dismiss=modal>Close</button>
+                <button type=button class="btn btn-primary success" id=showtoast>Generate</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src=bower_components/toastr/js/toastr.min.js></script>
+

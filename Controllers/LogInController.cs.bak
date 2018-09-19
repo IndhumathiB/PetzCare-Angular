@@ -1,0 +1,142 @@
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Runtime.Serialization;
+using System.Text;
+using System.Web;
+using System.Web.Mvc;
+using PetzCareEntities;
+using System.Web.Script.Serialization;
+
+namespace PetzCareSP.Controllers
+{
+    public class LogInController : Controller
+    {
+        //
+        // GET: /LogIn/
+
+        public ActionResult SignIn()       
+        {
+           // UserConfiguration
+            return View();
+        }
+
+        [AcceptVerbs(HttpVerbs.Post)]
+        public ActionResult LoggedIn()
+        {
+            Session["UserName"] = "karthikeyanM";
+            Session["Role"] = "Groomer";
+            //CallPostMethod1();
+            //CallPostMethod();
+            //var client = new RestClient();
+            //client.EndPoint = @"http:\\myRestService.com\api\"; ;
+            //client.Method = HttpVerb.POST;
+            //client.PostData = "{postData: value}";
+            //var json = client.MakeRequest();
+
+            return RedirectToAction("Index", "Home");
+        }
+
+        void CallPostMethod()
+        {
+            try
+            {
+                UserEntity userENT = new UserEntity()
+                {
+                    user_name = "lavanarul",
+                    password = "Lavanarul@2"
+                };
+                // Restful service URL
+                string url = "http://166.62.84.37/PetzCareWS/LogInService.svc/LogInServiceAuth";
+
+                // declare ascii encoding
+                ASCIIEncoding encoding = new ASCIIEncoding();
+                string strResult = string.Empty;
+                // sample xml sent to Service & this data is sent in POST
+               // string SampleXml = @"{'user_name':'lavanarul', 'password':'Lavanarul@2'}";
+                string postData = userENT.ToString();
+                // convert xmlstring to byte using ascii encoding
+                byte[] data = encoding.GetBytes(postData);
+                // declare httpwebrequet wrt url defined above
+                HttpWebRequest webrequest = (HttpWebRequest)WebRequest.Create(url);
+                // set method as post
+                webrequest.Method = "POST";
+                // set content type
+                webrequest.ContentType = "application/json";
+                // set content length
+                webrequest.ContentLength = data.Length;
+                // get stream data out of webrequest object
+                Stream newStream = webrequest.GetRequestStream();
+                newStream.Write(data, 0, data.Length);
+                newStream.Close();
+                // declare & read response from service
+                HttpWebResponse webresponse = (HttpWebResponse)webrequest.GetResponse();
+
+                // set utf8 encoding
+                Encoding enc = System.Text.Encoding.GetEncoding("utf-8?");
+                // read response stream from response object
+                StreamReader loResponseStream =
+                    new StreamReader(webresponse.GetResponseStream(), enc);
+                // read string from stream data
+                strResult = loResponseStream.ReadToEnd();
+                // close the stream object
+                loResponseStream.Close();
+                // close the response object
+                webresponse.Close();
+                // below steps remove unwanted data from response string
+                strResult = strResult.Replace("</string>", "");
+            }
+            catch (Exception ex)
+            {
+                
+                throw ex;
+            }
+        }
+
+        void CallPostMethod1()
+        {
+            Session["UserCookie"] = null;
+             string URL = "http://166.62.84.37/PetzCareWS/LogInService.svc/LogInServiceAuth";
+             string DATA = "{'user_name': 'lavanarul' , 'password': 'Lavanarul@2'}";
+             UserEntity userENT = new UserEntity()
+             {
+                 user_name = "lavanarul",
+                 password = "Lavanarul@2"
+             };
+
+             var data1 = new JavaScriptSerializer().Serialize(userENT);
+
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(URL);
+            request.Method = "POST";
+            request.ContentType = "application/json";
+            request.ContentLength = data1.Length;
+            StreamWriter requestWriter = new StreamWriter(request.GetRequestStream(), System.Text.Encoding.ASCII);
+            requestWriter.Write(data1);
+            requestWriter.Close();
+
+            try
+            {
+                WebResponse webResponse = request.GetResponse();
+                Stream webStream = webResponse.GetResponseStream();
+                StreamReader responseReader = new StreamReader(webStream);
+                string response = responseReader.ReadToEnd();               
+                responseReader.Close();
+
+                if(Convert.ToBoolean(response))
+                {
+                    Session["UserCookie"] = webResponse.Headers["Set-Cookie"];
+                }
+                
+                
+            }
+            catch (Exception e)
+            {
+                Console.Out.WriteLine("-----------------");
+                Console.Out.WriteLine(e.Message);
+            }
+        }
+
+    }
+}

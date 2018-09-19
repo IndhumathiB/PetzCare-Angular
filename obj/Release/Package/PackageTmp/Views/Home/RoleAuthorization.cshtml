@@ -1,0 +1,366 @@
+﻿
+<div class="scrollable container-fluid" ng-controller="ManageRoleAuthController">
+    <div class=row>
+        <div class=col-sm-12>
+            <div class="page-headers cus-panels-with-pad">
+                <h3>Manage Roles</h3>
+            </div>
+            <!-- .page-header End -->
+            <div class=contents>
+                <div class=main-box>
+                    <div class=row>
+                        <div class=col-lg-12>
+                            <div style=min-height:1220px>
+                                <!-- Dashboard Header -->
+                                <!-- For an image header add the class 'content-header-media' and an image as in the following example -->
+                                <!-- END Dashboard Header -->
+                                <!-- Datatables Content -->
+                                <div class="block full mar-top15 cus-panels-with-pad lisiting">
+                                    <div class="table-responsive mar-top15">
+                                        <div id=TblStaff_wrapper class=dataTables_wrapper role=grid>
+                                            <div class=row>
+                                                <div class="col-sm-6 col-xs-5">
+                                                    <div class=block-options>
+                                                        <div class=dropdown>
+                                                            <button class="primarary-cus-btn dropdown-toggle" type=button id=dropdownMenu1 data-toggle=dropdown aria-haspopup=true aria-expanded=true> <span><i class="fa fa-plus"></i></span> Create New <span class=caret></span> </button>
+                                                            <ul class=dropdown-menu aria-labelledby=dropdownMenu1>
+                                                                <li><a ng-click="clearRoleMap()" ng-if="multivalue != 0" data-toggle=modal data-target="#myModal"><span><i class="fa fa-user-plus"></i></span>Add New Role Mapping</a></li>
+                                                                <li><a ng-if="multivalue == 0" ng-click="errormessage1()"><span><i class="fa fa-user-plus"></i></span>Add New Role Mapping</a></li>
+                                                                <li><a ng-if="multivalue != 0" ng-click="errormessage()"><span><i class="fa fa-pencil-square"></i></span> Edit Role Mapping</a></li>
+                                                                <li><a ng-if="multivalue == 0" ng-disabled="onehides" data-toggle=modal data-target="#myModal3"><span><i class="fa fa-pencil-square"></i></span> Edit Role Mapping</a></li>
+                                                                
+                                                                @*<li><a ng-disabled="onehides" data-toggle=modal data-target="#myModal3"><span><i class="fa fa-pencil-square"></i></span> Edit Role Mapping</a></li>*@
+                                                                <li><a ng-if="multivalue != 0" ng-click="errormessage()"><span><i class="fa fa-eye"></i></span>View Role Mapping</a></li>
+                                                                <li><a ng-if="multivalue == 0" ng-disabled="onehides" data-toggle=modal data-target="#myModal2"><span><i class="fa fa-eye"></i></span>View Role Mapping</a></li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <!-- Modal -->
+                                                <div class="modal fade" id="myModal" tabindex=-1 role=dialog aria-labelledby=myModalLabel ng-hide="multivalue == 0">
+                                                    <div class=modal-dialog role=document>
+                                                        <div class=modal-content>
+                                                            <div class="modal-header cus-bg ng-scope">
+                                                                <button type=button class=close data-dismiss=modal aria-label=Close> <span aria-hidden=true>×</span> <span class=sr-only>Close</span> </button>
+                                                                <h4 class="modal-title ng-binding">Add New Role Authorization</h4>
+                                                            </div>
+                                                            <div class=modal-body>
+                                                                <form name="roleForm">
+                                                                    <div class=row>
+                                                                        <div class=col-sm-12>
+                                                                            <div class=form-group>
+                                                                                <label for="">Select Role<span class=required> *</span></label>
+                                                                                <div class="control-group" ng-class=" {true: 'error'}[submitted &&  roleForm.erole.$invalid]">
+                                                                                    <select class=form-control name="erole" ng-model="selectederole1" required ng-options="d.ld_id as d.ld_name for d in erole">
+                                                                                        <option value="" disabled selected style='display:none;'>
+                                                                                            -- Select Role --
+                                                                                        </option>
+                                                                                    </select><span style="color:red" ng-show=" submitted && roleForm.erole.$error.required">Select Role.</span>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class=col-sm-12>
+                                                                            <div class=form-group>
+                                                                                <label for="">Select Permission<span class=required> *</span></label>
+                                                                                <div class="control-group" ng-class=" {true: 'error'}[submitted &&  roleForm.selecteditems.$invalid]">
+                                                                                    <dropdown-multiselect pre-selected="member.nam2" name="selecteditems" ng-model="selected_items1" model="selected_items1" options="nam2" required></dropdown-multiselect>
+                                                                                    <span style="color:red" ng-show=" submitted && roleForm.selecteditems.$error.required">Select Permission.</span>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class=row>
+                                                                        <div class=col-md-3>
+                                                                            <div class=checkbox>
+                                                                                <label>
+                                                                                    <input type=checkbox ng-model="read1"
+                                                                                           ng-true-value="'Y'" ng-false-value="'N'">Read
+                                                                                </label>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class=col-md-3>
+                                                                            <div class=checkbox>
+                                                                                <label>
+                                                                                    <input type=checkbox ng-model="write1"
+                                                                                           ng-true-value="'Y'" ng-false-value="'N'">Write
+                                                                                </label>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class=col-md-3>
+                                                                            <div class=checkbox>
+                                                                                <label>
+                                                                                    <input type=checkbox ng-model="print1"
+                                                                                           ng-true-value="'Y'" ng-false-value="'N'">Print
+                                                                                </label>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class=col-md-3>
+                                                                            <div class=checkbox>
+                                                                                <label>
+                                                                                    <input type=checkbox ng-model="download1"
+                                                                                           ng-true-value="'Y'" ng-false-value="'N'">Download
+                                                                                </label>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class=col-md-3>
+                                                                            <div class=checkbox>
+                                                                                <label>
+                                                                                    <input type=checkbox ng-model="schedule1"
+                                                                                           ng-true-value="'Y'" ng-false-value="'N'">Schedule
+                                                                                </label>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class=col-md-3>
+                                                                            <div class=checkbox>
+                                                                                <label>
+                                                                                    <input type=checkbox ng-model="share1"
+                                                                                           ng-true-value="'Y'" ng-false-value="'N'">Share
+                                                                                </label>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </form>
+                                                            </div>
+                                                            <div class=modal-footer>
+                                                                <button type=button class="btn btn-default" data-dismiss=modal>Close</button>
+                                                                <button type=button class="btn btn-primary" ng-click="add()">Add</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
+                                                <!--- Edit Role Map -->
+
+                                                <div class="modal fade" id="myModal3" tabindex=-1 role=dialog aria-labelledby=myModalLabel ng-show="multivalue == 0">
+                                                    <div class=modal-dialog role=document>
+                                                        <div class=modal-content>
+                                                            <div class="modal-header cus-bg ng-scope">
+                                                                <button type=button class=close data-dismiss=modal aria-label=Close> <span aria-hidden=true>×</span> <span class=sr-only>Close</span> </button>
+                                                                <h4 class="modal-title ng-binding">Edit Role Authorization</h4>
+                                                            </div>
+                                                            <div class=modal-body>
+                                                                <form name="editForm">
+                                                                    <div class=row>
+                                                                        <div class=col-sm-12>
+                                                                            <div class=form-group>
+
+                                                                                <label for="">Select Role<span class=required> *</span></label>
+                                                                                <div class="control-group" ng-class=" {true: 'error'}[submitted &&  editForm.erole.$invalid]">
+                                                                                    <select class="form-control" name="erole" ng-model="selectederole" required ng-options="d.ld_id as d.ld_name for d in erole"> </select>
+                                                                                    <span style="color:red" ng-show=" submitted && editForm.erole.$error.required">Select Role</span>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class=col-sm-12>
+                                                                            <div class=form-group>
+                                                                                <label for="">Select Permission<span class=required> *</span></label>
+                                                                                <div class="control-group" ng-class=" {true: 'error'}[submitted &&  editForm.selecteditems.$invalid]">
+                                                                                    <dropdown-multiselect pre-selected="member.nam2" name="selecteditems" model="selected_items1" options="nam2" required></dropdown-multiselect>
+                                                                                    <span style="color:red" ng-show=" submitted && editForm.selecteditems.$error.required">Select Permission.</span>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class=row>
+                                                                        <div class=col-md-3>
+                                                                            <div class=checkbox>
+                                                                                <label>
+                                                                                    <input checked type=checkbox ng-model="read"
+                                                                                           ng-true-value="'Y'" ng-false-value="'N'">Read
+                                                                                </label>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class=col-md-3>
+                                                                            <div class=checkbox>
+                                                                                <label>
+                                                                                    <input checked type=checkbox ng-model="write"
+                                                                                           ng-true-value="'Y'" ng-false-value="'N'">Write
+                                                                                </label>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class=col-md-3>
+                                                                            <div class=checkbox>
+                                                                                <label>
+                                                                                    <input checked type=checkbox ng-model="print"
+                                                                                           ng-true-value="'Y'" ng-false-value="'N'">Print
+                                                                                </label>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class=col-md-3>
+                                                                            <div class=checkbox>
+                                                                                <label>
+                                                                                    <input checked type=checkbox ng-model="download"
+                                                                                           ng-true-value="'Y'" ng-false-value="'N'">Download
+                                                                                </label>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class=col-md-3>
+                                                                            <div class=checkbox>
+                                                                                <label>
+                                                                                    <input type=checkbox ng-model="schedule"
+                                                                                           ng-true-value="'Y'" ng-false-value="'N'">Schedule
+                                                                                </label>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class=col-md-3>
+                                                                            <div class=checkbox>
+                                                                                <label>
+                                                                                    <input type=checkbox ng-model="share"
+                                                                                           ng-true-value="'Y'" ng-false-value="'N'">Share
+                                                                                </label>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </form>
+                                                            </div>
+                                                            <div class=modal-footer>
+                                                                <button type=button class="btn btn-default" data-dismiss=modal>Close</button>
+                                                                <button type=button class="btn btn-primary" ng-click="add1()">Update</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- View Role Map -->
+
+                                                <div class="modal fade" id="myModal2" tabindex=-1 role=dialog aria-labelledby=myModalLabel ng-show="multivalue == 0">
+                                                    <div class=modal-dialog role=document>
+                                                        <div class=modal-content>
+                                                            <div class="modal-header cus-bg ng-scope">
+                                                                <button type=button class=close data-dismiss=modal aria-label=Close> <span aria-hidden=true>×</span> <span class=sr-only>Close</span> </button>
+                                                                <h4 class="modal-title ng-binding">Permissions Available</h4>
+                                                            </div>
+                                                            <div class=modal-body>
+                                                                <form>
+                                                                    <div class=row>
+                                                                        <div class="table-responsive mar-top15">
+                                                                            <table id=tbl_profile class="table table-borderless bordernone table-striped">
+                                                                                <tbody>
+                                                                                    <tr>
+                                                                                        <td style=width:25%><b>Role Name</b>
+                                                                                        <td>{{viewroles.role_name}}</td>
+                                                                                    <tr>
+                                                                                        <td><b>Permissions</b></td>
+
+                                                                                        <td>
+                                                                                            <div class=mar-5>
+                                                                                                <div class=row>
+                                                                                                    <div class=col-sm-3><input type="checkbox" ng-model="viewroles.can_read" onclick="return false" ng-true-value="'Y'" />Read</div>
+                                                                                                    <div class=col-sm-3><input type="checkbox" ng-model="viewroles.can_write" onclick="return false" ng-true-value="'Y'" />Write</div>
+                                                                                                    <div class=col-sm-3><input type="checkbox" ng-model="viewroles.can_print" onclick="return false" ng-true-value="'Y'" />Print</div>
+                                                                                                    <div class=col-sm-3><input type="checkbox" ng-model="viewroles.can_download" onclick="return false" ng-true-value="'Y'" />Download</div>
+                                                                                                    <div class=col-sm-3><input type="checkbox" ng-model="viewroles.can_schedule" onclick="return false" ng-true-value="'Y'" />Schedule</div>
+                                                                                                    <div class=col-sm-3><input type="checkbox" ng-model="viewroles.can_share" onclick="return false" ng-true-value="'Y'" />Share</div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </td>
+                                                                                    </tr>
+
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>
+                                                                </form>
+                                                            </div>
+                                                            <div class=modal-footer>
+                                                                <button type=button class="btn btn-default" data-dismiss=modal>Close</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
+
+                                                <div class="col-md-offset-3 col-md-3 col-sm-6 col-xs-7">
+                                                    <div class=dataTables_filter id=TblStaff_filter>
+                                                        <label style=width:100%>
+                                                            <div class=input-group>
+                                                                <input aria-controls=TblStaff class=form-control placeholder=Search ng-model="searchingvalue"> <span class=input-group-addon><i class="fa fa-search"></i></span>
+                                                            </div>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            @*Loader spinner for the Role Authorization *@
+
+                                            <div id="roleAuthloader" class="overlays" style="display: block;">
+                                                <img src="~/images/spinningcurser.gif" style="position:absolute;z-index: 99; top:30%; left:50%; margin-top:-70px; margin-left:-70px; height:50px;  width:50px;" />
+                                            </div>
+
+                                            <table id=TblStaff class="table table-vcenter table-condensed table-bordered dataTable table-striped" aria-describedby=TblStaff_info>
+                                                <thead>
+                                                    <tr role=row>
+                                                        <th width="" class="sorting text-center" style=width:10% role=columnheader tabindex=0 aria-controls=TblStaff rowspan=1 colspan=1 aria-label="
+                                                                Name
+                                                            : activate to sort column ascending">Select
+                                                        <th class="sorting text-center" style=width:20% role=columnheader tabindex=0 aria-controls=TblStaff rowspan=1 colspan=1 aria-label="
+                                                                Email
+                                                            : activate to sort column ascending" ng-click="RolesSort(asc=!asc,'role_name');">Name<i class="fa fa-sort"></i>
+                                                        <th class="sorting text-center" style=width:20% role=columnheader tabindex=0 aria-controls=TblStaff rowspan=1 colspan=1 aria-label="
+                                                                Email
+                                                            : activate to sort column ascending">Authorization<i class="fa fa-sort"></i>
+                                                        <th width="" class="sorting_disabled text-center" role=columnheader rowspan=1 colspan=1 aria-label="
+                                                                Phone Number
+                                                            ">Privileges
+                                                </thead>
+                                                <tbody id=tbody-staff role=alert aria-live=polite aria-relevant=all>
+                                                    <tr class=odd ng-repeat="x in names | filter:searchingvalue | pagination : currentPage*itemsPerPage | limitTo: itemsPerPage">
+                                                        <td class="sorting_1 text-center">
+
+
+                                                            <input type=checkbox ng-model="x.selects" ng-click="edit(x.mapping_id,x.selects)" ng-change="Onehide(x.selects)">
+                                                        </td>
+
+
+                                                        <td class=text-center>{{ x.role_name }}</td>
+                                                        <td class=text-center>{{ x.authorization_name }}</td>
+                                                        <td>
+                                                            <div class=mar-5>
+                                                                <div class=row>
+                                                                    <div class=col-sm-3 ng-if="x.can_read == 'Y'"><i class="fa fa-check-square"></i>Read</div>
+                                                                    <div class=col-sm-3 ng-if="x.can_write == 'Y'"><i class="fa fa-check-square"></i>Write</div>
+                                                                    <div class=col-sm-3 ng-if="x.can_print == 'Y'"><i class="fa fa-check-square"></i>Print</div>
+                                                                    <div class=col-sm-3 ng-if="x.can_download == 'Y'"><i class="fa fa-check-square"></i>Download</div>
+                                                                    <div class=col-sm-3 ng-if="x.can_schedule == 'Y'"><i class="fa fa-check-square"></i>Schedule</div>
+                                                                    <div class=col-sm-3 ng-if="x.can_share == 'Y'"><i class="fa fa-check-square"></i>Share</div>
+                                                                </div>
+
+                                                            </div>
+                                                        </td>
+</tbody>
+                                            </table>
+                                             <div class="pagination-div text-right">
+                                                <ul class="pagination">
+                                                    <li ng-class="DisablePrevPage()">
+                                                        <a href="" ng-click="prevPage()">« Prev</a>
+                                                    </li>
+                                                    <li ng-repeat="n in range()" ng-class="{active: n == currentPage}" ng-click="setPage(n,selects)">
+                                                        <a href="">{{n+1}}</a>
+                                                    </li>
+                                                    <li ng-class="DisableNextPage()">
+                                                        <a href="" ng-click="nextPage()">Next »</a>
+
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- .content End -->
+        </div>
+    </div>
+</div>
+<footer class=footer-wrapper>
+    <div class=row>
+        <div class="col-sm-12 col-md-8">
+            <p class=mar-0-10>© Copyright 2015 <a href=#>Petzcare</a>. All Rights Reserved.</p>
+        </div>
+    </div>
+</footer>

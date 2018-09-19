@@ -1,0 +1,408 @@
+﻿<div class="scrollable container-fluid" ng-controller="ManageProductsController">
+    <div class=row>
+        <div class=col-sm-12>
+            <div class="page-headers cus-panels-with-pad">
+                <div class="block-options pull-right">
+                    <button type=button class=sec-cus-buttons data-toggle=modal data-target="#myModal"> <i class="fa fa-plus"></i> New Product </button>
+                    <!-- Modal -->
+                    <div class="modal fade" id="myModal" tabindex=-1 role=dialog aria-labelledby=myModalLabel>
+                        <div class=modal-dialog role=document>
+                            <div class=modal-content>
+                                <div class="modal-header cus-bg ng-scope">
+                                    <button type=button class=close data-dismiss=modal aria-label=Close> <span aria-hidden=true>×</span> <span class=sr-only>Close</span> </button>
+                                    <h4 class="modal-title ng-binding">Add a New Product</h4>
+                                </div>
+                                <div class=modal-body>
+                                    <div class="row">
+                                        <div class="col-sm-3">
+                                            <div class="dz-default"><img ng-src="{{data}}" height="150" width="100" /> </div>
+                                            <div class="text-center pad-5">
+                                                <input type="file" id="file" name="file">
+                                                <br>
+                                                <button type="button" ng-click="addproducphoto()" class="pri-cus-buttons">Upload</button>
+
+                                            </div>
+                                        </div>
+                                        <div class="col-md-9">
+                                            <form>
+                                                <div class=row>
+                                                    <div class="col-md-6 col-lg-6">
+                                                        <div class=form-group>
+                                                            <label for="">Product Name<span class=required> *</span></label>
+                                                            <input name="prname" ng-model="prname" class=form-control required>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6 col-lg-6">
+                                                        <div class=form-group>
+                                                            <label for="">Batch No</label>
+                                                            <input name="batchno" ng-model="batchno" class=form-control>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class=row>
+                                                    <div class="col-md-6 col-lg-6">
+                                                        <div class=form-group>
+                                                            <label for="">Company Name<span class=required> *</span></label>
+                                                            <select class=form-control name="selectedcompany" ng-model="selectedcompany" ng-options="company.company_id as company.company_name for company in vendorlist"></select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6 col-lg-6">
+                                                        <div class=form-group>
+                                                            <label for="">Product ID</label>
+                                                            <input name="producid" ng-model="producid" class=form-control>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class=row>
+                                                    <div class="col-md-6 col-lg-6">
+                                                        <div class=form-group>
+                                                            <label for="">Retail Cost<span class=required> *</span></label>
+                                                            <input name="retilcost" ng-model="retilcost" class=form-control required>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6 col-lg-6">
+                                                        <div class=form-group>
+                                                            <label for="">Notes</label>
+                                                            <input name="pronotes" ng-model="pronotes" class=form-control>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class=row>
+                                                    <div class="col-md-6 col-lg-6">
+                                                        <div class=form-group>
+                                                            <label for="">Product Cost</label>
+                                                            <input name="producost" ng-model="producost" class=form-control required>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6 col-lg-6">
+                                                        <div class=form-group>
+                                                            <label for="">Quantity</label>
+                                                            <input name="prduqty" ng-model="prduqty" class=form-control>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class=row>
+                                                    <div class="col-md-6 col-lg-6">
+                                                        <div class=form-group>
+                                                            <label for="">Reorder Quantity<span class=required> *</span></label>
+                                                            <input name="reordrqty" ng-model="reordrqty" class=form-control required>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6 col-lg-6">
+                                                        <div class=form-group>
+                                                            <label for="">Serial</label>
+                                                            <input name="prducseno" ng-model="prducseno" class=form-control>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class=row>
+                                                    <div class="col-md-12 col-lg-12">
+                                                        <div class=form-group>
+                                                            <label for="">Description</label>
+                                                            <textarea name="prdudesc" ng-model="prdudesc" class=form-control rows=3></textarea>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class=modal-footer>
+                                    <button type=button class="btn btn-default" data-dismiss=modal>Close</button>
+                                    <button type=button class="btn btn-primary" ng-click="AddProduct()" data-dismiss="modal">Add</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <h3>Manage Product</h3>
+            </div>
+            <!-- .page-header End -->
+            <div class=contents>
+                <div class=main-box>
+                    <div class=row>
+                        <div class=col-lg-12>
+                            <div style=min-height:1220px>
+                                <!-- Dashboard Header -->
+                                <!-- For an image header add the class 'content-header-media' and an image as in the following example -->
+                                <!-- END Dashboard Header -->
+                                <!-- Datatables Content -->
+                                <div class="block full mar-top15 cus-panels-with-pad lisiting">
+                                    <div class="table-responsive mar-top15">
+                                        <div id=TblStaff_wrapper class=dataTables_wrapper role=grid>
+                                            <div class=row>
+                                                <div class="col-sm-3 col-xs-4">
+                                                    <div class="dataTables_length" id=TblStaff_length>
+                                                        <label>
+                                                            <select name=TblStaff_length aria-controls=TblStaff class=form-control ng-model="itemsPerPage" ng-change="pageCount()" ng-options="valuE for valuE in Vaalues"></select>
+                                                        </label>
+                                                        <button href=#target type=button class="btn btn-hove" data-toggle=collapse><i class="fa fa-filter"></i></button>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-offset-6 col-md-3 col-sm-6 col-xs-7">
+                                                    <div class=dataTables_filter id=TblStaff_filter>
+                                                        <label style=width:100%>
+                                                            <div class=input-group>
+                                                                <input aria-controls=TblStaff class=form-control ng-model="findproduct" placeholder=Search> <span class=input-group-addon><i class="fa fa-search"></i></span>
+                                                            </div>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            @*Loader spinner for the ManageProducts *@
+                                            <div id="manageProductsloader" class="overlays" style="display: block;">
+                                                <img src="~/images/spinningcurser.gif" style="position:absolute;z-index: 99; top:50%; left:50%; margin-top:-70px; margin-left:-70px; height:60px;  width:60px;" />
+                                            </div>
+                                            <!---- Table Content Start ----->
+                                            <table id=TblStaff class="table table-vcenter table-condensed table-bordered dataTable center" aria-describedby=TblStaff_info>
+                                                <thead>
+                                                    <tr role=row>
+                                                        <th style="display: none; width: 0px" class="text-center sorting_asc" role=columnheader tabindex=0 aria-controls=TblStaff rowspan=1 colspan=1 aria-sort=ascending aria-label=": activate to sort column descending">
+                                                            </th><th class="text-center sorting_disabled" role=columnheader rowspan=1 colspan=1 aria-label="" style="width: 110px"><i class="fa fa-user"></i>
+                                                        <th width=15% role=columnheader style="width: 320px" ng-click="ManageproductSort(asc=!asc,'company_type_name');"> Product Name  <i class="fa fa-sort"></i>
+                                                        <th width="" role=columnheader style="width: 188px"> Product Code 
+                                                        <th role=columnheader style="width: 150px">Cost
+                                                        <th width="" role=columnheader style="width: 135px"> In Stock
+                                                        <th width="" class=sorting_disabled role=columnheader style="width: 250px"> Action
+                                                     <tr id="target" class=collapse>
+                                                        <td>
+                                                            <div>
+                                                                <input placeholder="Product Name"  ng-model="prodctsnames" class=form-control>
+                                                            </div>
+                                                        <td>
+                                                            <div>
+                                                                <input placeholder="Product Code" ng-model="productcodes" class=form-control>
+                                                            </div>
+                                                       
+                                                        <td>
+                                                            <div>
+                                                                <input placeholder="Rate" ng-model="ratevalues" class=form-control>
+                                                            </div>
+                                                        <td>
+                                                <tbody id=tbody-staff role=alert aria-live=polite aria-relevant=all>
+                                                    <tr class="odd invoice-hide" ng-repeat="ProdUCTS in ProductsLists | pagination : currentPage*itemsPerPage | limitTo: itemsPerPage | filter:findproduct | filter:{product_name:prodctsnames,product_code:productcodes,retail_cost:ratevalues}" ng-click="CompanyFilter(ProdUCTS.product_id)">
+                                                        <td style=display:none class="text-center sorting_1">
+
+                                                        <td class=text-center>
+                                                            <img ng-src="data:image/JPEG;base64,{{ProdUCTS.file_data}}" alt=avatar style=width:50px class=img-circle ng-show="ProdUCTS.file_data.length != 0">
+                                                            <img src=~/images/default_product.jpg alt=avatar style=width:50px class=img-circle ng-show="ProdUCTS.file_data.length == 0">
+                                                        <td class="" style="text-align:left;">{{ProdUCTS.product_name}}
+                                                        <td>{{ProdUCTS.product_code}}
+                                                        <td>{{ProdUCTS.retail_cost}}
+                                                        <td>{{ProdUCTS.reorder_quantity}}
+                                                        <td>
+
+                                                            <ul class="user-select-enable reset">
+                                                                <li data-toggle=modal data-target="#productview">
+                                                                    <button type=button class="btn btn-hove" data-toggle=tooltip title="View Product Details"><i class="fa fa-eye"></i></button>
+                                                                </li>
+                                                                <li data-toggle=modal data-target=#productID>
+                                                                    <button type=button class="btn btn-hove" data-toggle=tooltip title="View Invoice Detail"><i class="fa fa-pencil"></i></button>
+                                                                </li>
+                                                                <li data-toggle=modal data-target=#>
+                                                                    <button type=button class="btn btn-hove" data-toggle=tooltip title="View Invoice Detail" ng-click="productsdelete(ProdUCTS.product_id,$index)"><i class="fa fa-times"></i></button>
+                                                                </li>
+                                                            </ul>
+</table>
+                                            <div class="pagination-div text-right">
+                                                <ul class="pagination">
+                                                    <li ng-class="DisablePrevPage()">
+                                                        <a href="" ng-click="prevPage()">« Prev</a>
+                                                    </li>
+                                                    <li ng-repeat="n in range()" ng-class="{active: n == currentPage}" ng-click="setPage(n)">
+                                                        <a href="">{{n+1}}</a>
+                                                    </li>
+                                                    <li ng-class="DisableNextPage()">
+                                                        <a href="" ng-click="nextPage()">Next »</a>
+
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- END Datatables Content -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+            <!---- Company View ---->
+            <div class="modal fade" id="productview" tabindex=-1 role=dialog aria-labelledby=myModalLabel>
+                <div class=modal-dialog role=document>
+                    <div class=modal-content>
+                        <div class="modal-header cus-bg ng-scope">
+                            <button type=button class=close data-dismiss=modal aria-label=Close> <span aria-hidden=true>×</span> <span class=sr-only>Close</span> </button>
+                            <h4 class="modal-title ng-binding">Product Details</h4>
+                        </div>
+                        <div class=modal-body>
+                            <div class="table-responsive mar-top15">
+                                <table id=tbl_profile class="table table-borderless table-striped">
+                                  
+                                    <tbody>
+                                        <tr><td><label>Product Image</label>
+                                                <img ng-src="data:image/JPEG;base64,{{productValues.file_data}}" class="img-circle" style="width:120px;height:90px;" alt="User image">
+                                            </td></tr>
+                                        <tr>
+                                            <td>
+                                                <label>Product Code</label>
+                                            <td><a id=a_name>{{productValues.product_code}}</a>
+                                        <tr>
+                                            <td>
+                                                <label>Product Name</label>
+                                            <td><a id=a_name>{{productValues.product_name}}</a>
+                                        <tr>
+                                            <td>
+                                                <label>Product Description</label>
+                                            <td> <span id=u_name>{{productValues.product_desc}}</span>
+                                        <tr>
+                                            <td>
+                                                <label>Quantity</label>
+                                            <td> <span>{{productValues.quantity}}</span>
+                                        <tr>
+                                            <td>
+                                                <label>Reorder Quantity</label>
+                                            <td><a id=a_name>{{productValues.reorder_quantity}}</a>
+
+                                        <tr>
+                                            <td>
+                                                <label>Vendor ID</label>
+                                            <td> <span>{{productValues.vendor_id}}</span>
+                                        <tr>
+                                            <td>
+                                                <label>Vendor Name</label>
+                                            <td><a id=a_name>{{productValues.vendor_name}}</a>
+                                         
+                                        <tr>
+                                            <td>
+                                                <label>Notes</label>
+                                            <td><a id=a_name>{{productValues.notes}}</a>
+                                        
+                                       
+
+</table>
+                            </div>
+                        </div>
+                        <div class=modal-footer>
+                            <button type=button class="btn btn-default" data-dismiss=modal>Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- .content End -->
+        </div>
+    </div>
+</div>
+<footer class=footer-wrapper>
+    <div class=row>
+        <div class="col-sm-12 col-md-8">
+            <p class=mar-0-10>© Copyright 2015 <a href=#>Petzcare</a>. All Rights Reserved.</p>
+        </div>
+    </div>
+</footer>
+
+
+<!-- Modal -->
+
+<!---- Product Madel ---->
+<div class="modal fade" id=productID tabindex=-1 role=dialog aria-labelledby=myModalLabel>
+    <div class=modal-dialog role=document>
+        <div class=modal-content>
+            <div class="modal-header cus-bg ng-scope">
+                <button type=button class=close data-dismiss=modal aria-label=Close> <span aria-hidden=true>×</span> <span class=sr-only>Close</span> </button>
+                <h4 class="modal-title ng-binding">Product Details</h4>
+            </div>
+            <div class=modal-body>
+                <form>
+                    <div class=row>
+                        <div class="col-md-6 col-lg-6">
+                            <div class=form-group>
+                                <label for="">Product Name<span class=required> *</span></label>
+                                <input name="uPprname" ng-model="uPprname" class=form-control required>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6">
+                            <div class=form-group>
+                                <label for="">Batch No</label>
+                                <input name="uPbatchno" ng-model="uPbatchno" class=form-control>
+                            </div>
+                        </div>
+                    </div>
+                    <div class=row>
+                        <div class="col-md-6 col-lg-6">
+                            <div class=form-group>
+                                <label for="">Company Type<span class=required> *</span></label>
+                                <select class=form-control name="uPselectedcompany" ng-model="uPselectedcompany" ng-options="company.company_id as company.company_name for company in vendorlist"></select>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6">
+                            <div class=form-group>
+                                <label for="">Product ID</label>
+                                <input name="uPproducid" ng-model="uPproducid" class=form-control>
+                            </div>
+                        </div>
+                    </div>
+                    <div class=row>
+                        <div class="col-md-6 col-lg-6">
+                            <div class=form-group>
+                                <label for="">Retail Cost<span class=required> *</span></label>
+                                <input name="uPretilcost" ng-model="uPretilcost" class=form-control required>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6">
+                            <div class=form-group>
+                                <label for="">Notes</label>
+                                <input name="uPpronotes" ng-model="uPpronotes" class=form-control>
+                            </div>
+                        </div>
+                    </div>
+                    <div class=row>
+                        <div class="col-md-6 col-lg-6">
+                            <div class=form-group>
+                                <label for="">Product Cost</label>
+                                <input name="uPproducost" ng-model="uPproducost" class=form-control required>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6">
+                            <div class=form-group>
+                                <label for="">Quantity</label>
+                                <input name="uPprduqty" ng-model="uPprduqty" class=form-control>
+                            </div>
+                        </div>
+                    </div>
+                    <div class=row>
+                        <div class="col-md-6 col-lg-6">
+                            <div class=form-group>
+                                <label for="">Reorder Quantity<span class=required> *</span></label>
+                                <input name="uPreordrqty" ng-model="uPreordrqty" class=form-control required>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6">
+                            <div class=form-group>
+                                <label for="">Serial</label>
+                                <input name="uPprducseno" ng-model="uPprducseno" class=form-control>
+                            </div>
+                        </div>
+                    </div>
+                    <div class=row>
+                        <div class="col-md-12 col-lg-12">
+                            <div class=form-group>
+                                <label for="">Description</label>
+                                <textarea name="uPprdudesc" ng-model="uPprdudesc" class=form-control rows=3></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class=modal-footer>
+                <button type=button class="btn btn-default" data-dismiss=modal>Close</button>
+                <button type=button class="btn btn-primary" ng-click="UpdateProduct()" data-dismiss="modal">Update</button>
+            </div>
+        </div>
+    </div>
+</div>
+

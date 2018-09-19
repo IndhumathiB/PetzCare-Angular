@@ -1,0 +1,8 @@
+﻿
+  .overlays{
+background-color: rgba(256, 256, 256, 1);
+height:88vh;
+width:100%;
+position: absolute;
+z-index: 99999;}
+

@@ -1,0 +1,415 @@
+﻿@using System.Web.Helpers;
+@section scripts{
+<link href="~/styles/loader.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-2.1.4.js"></script>
+<script src="~/Scripts/jquery-ui-1.8.24.js"></script>
+<script src="~/Scripts/angular/angular.js"></script>
+<script src="~/Scripts/angular/angular-route.js"></script>
+<script src="~/Scripts/angular/angularjs-dropdown-multiselect.min.js"></script>
+<script src="~/Scripts/angular/underscore-min.js"></script>
+
+<script src="~/Scripts/vendor/fbe20327.modernizr.js"></script>
+<script src="~/Scripts/dc2f9ab9.vendor.js"></script>
+<script src="~/Scripts/ddb9e352.main.js"></script>
+<script src="~/Scripts/dropzone/dropzone.js"></script>
+<script src="~/App_Controllers/RouteConfig.js"></script>
+<script src="~/App_Controllers/MainController.js"></script>
+<script src="~/App_Controllers/DashboardController.js"></script>
+<script src="~/App_Controllers/ManageUsersController.js"></script>
+<script src="~/App_Controllers/ManageUserRoleContoller.js"></script>
+<script src="~/App_Controllers/ManageRoleAuthController.js"></script>
+<script src="~/App_Controllers/UserRoleMapController.js"></script>
+<script src="~/App_Controllers/ManageCustomers.js"></script>
+<script src="~/App_Controllers/AppointmentsController.js"></script>
+<script src="~/App_Controllers/ProductInvoiceController.js"></script>
+<script src="~/App_Controllers/ServiceInvoiceController.js"></script>
+<script src="~/App_Controllers/ManageServicesController.js"></script>
+<script src="~/App_Controllers/ManageProductsController.js"></script>
+<script src="~/App_Controllers/ManageCompanyController.js"></script>
+<script src="~/App_Controllers/App_Scripts/AuthorizationSettings.js"></script>
+<script src="~/Scripts/moment.js"></script>
+<script src="~/Scripts/daterangepicker.min.js"></script>
+<script src="~/Scripts/jquery.comiseo.daterangepicker.min.js"></script>
+<link href="~/styles/daterangepicker.min.css" rel="stylesheet" />
+
+
+    <script>
+        var loggedInEmpId = '@(ViewBag.EmployeeId)';  
+        var loggedInUserId = '@(ViewBag.UserId)';
+
+        var jsonList = '@Html.Raw(Json.Encode(ViewBag.AuthPermissions))'
+        var jsList = JSON.parse(jsonList);
+
+        if (jsList.length > 0) {            
+            ApplyAuthorization(jsList);
+        }
+        //console.log(jsList[0].rolename);
+
+        var sctualValue = document.getElementById("dashboard").style.pointerEvents;
+        if (sctualValue == "visible") {           
+
+            var href = $('#dashboard').attr('href');
+            window.location.href = href;
+        }
+        else {
+            // alert(sctualValue);
+        }
+
+        function GetSelection(element)
+        {            
+            $("li").removeClass("active");
+            $(element).parent().addClass("active");
+        }
+
+
+        function Test()
+        {
+            var url = '@Url.Action("SignIn", "LogIn")';
+            window.location.href = url;
+        }
+
+        $("#btnId").click(function(event){
+            event.preventDefault();
+        
+            var url = '@Url.Action("SignIn", "LogIn")';
+            window.location.href = url;
+
+
+        });
+</script>
+} 
+
+<div id=main-wrapper class="app-box theme-default" ng-controller="MainController">
+    <div class="preloader spinner"></div>
+    <div class=header-wrapper>
+        <header class=clearfix>
+            <div class=pull-left>
+                <a class=logo title=Petzcare href=#><img src="~/images/9a9e2fdc.petzcare.png" alt=Petzcare /></a>
+            </div>
+            <div class=pull-right>
+                <ul class="nav-right-options reset">
+                    <li class=bordernone>
+                        <div class=dropdown>
+                            <a class="dropdown-toggle border-left-none" id=dropdown-loginmenu data-toggle=dropdown>@ViewBag.UserName <i class="fa fa-caret-down"></i></a>
+                            <ul class="dropdown-menu-right dropdown-menu" role=menu aria-labelledby=dropdown-loginmenu>
+                                <li role=presentation>
+                                    <a role=menuitem tabindex=-1 ng-click="GettingUser()" data-toggle=modal data-target="#userprofile"> <i class="fa fa-user"></i> User Profile</a>
+                                </li>
+                                <li role=presentation>
+                                    <a role=menuitem id="settings" tabindex=-1 href=#/Settings> <i class="fa fa-cog"></i> Settings</a>
+                                </li>
+                                <li role=presentation>
+                                    <a role=menuitem tabindex=-1 href=#> <i class="fa fa-question"></i> Help</a>
+                                </li>
+                                <li role=presentation class=divider></li>
+                                <li role=presentation>
+                                    <a role=menuitem tabindex=-1 onclick="Test()" href=#/Logout> <i class="fa fa-power-off"></i> Logout</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </header>
+    </div>
+    <!-- .header-wrapper End -->
+    <div class="main main-height" role=main>
+        <aside class="sidebar sidebar-left">
+            <nav>
+                <ul class="nav nav-pills nav-stacked">
+                    <li class="nav-dropdown toggle-navigation toggle-left">
+                        <a class=sidebar-toggle id=toggle-left> <i class="fa fa-bars fa-lg"></i> <b class=menu-title>Menus</b> </a>
+                    </li>
+                    <li class=active>
+                        <a href=#/Dashboard id="dashboard" onclick="GetSelection(this)" style="pointer-events:visible;"> <i class="fa fa-tachometer"></i> <span class=menu-title>Dashboard</span> </a>
+                    </li>
+                    <li>
+                        <a href=#/ManageUsers id="manageUser" onclick="GetSelection(this)" style="pointer-events:none; color:#666666;"> <i class="fa fa-user"></i> <span class=menu-title>Manage Users</span> </a>
+                    </li>
+                    <li class=parent>
+                        <a href=#/RoleAuth data-target=#usermenu onclick="GetSelection(this)" data-toggle=collapse data-parent=#accordion> <i class="fa fa-lock"></i> <span class=menu-title>Manage Roles</span> </a>
+                        <ul id=usermenu class="collapse sub-navs">
+                            <li> <a href=#/RoleAuth style="pointer-events:none; color:#666666;" class="ChildNode" id="roleAuth" onclick="GetSelection(this)"><i class="fa fa-caret-right"></i>Role Authorization Mapping</a> </li>
+                            <li> <a href=#/UserRole style="pointer-events:none; color:#666666;" class="ChildNode" id="userAuth" onclick="GetSelection(this)"><i class="fa fa-caret-right"></i>User Authorization Mapping</a> </li>
+                            <li > <a href=#/UserRoleMap style="pointer-events:none; color:#666666;" class="ChildNode" id="userRole" onclick="GetSelection(this)"><i class="fa fa-caret-right"></i>User Role Mapping</a> </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href=#/Customers style="pointer-events:none; color:#666666;" id="manangeCustomer" onclick="GetSelection(this)"> <i class="fa fa-users"></i> <span class=menu-title>Manage Customers</span> </a>
+                    </li>
+                    <li>
+                        <a href=#/Appointments style="pointer-events:none; color:#666666;" id="appointments" onclick="GetSelection(this)"> <i class="fa fa-clock-o"></i> <span class=menu-title>Appointments</span> </a>
+                    </li>
+                    <li>
+                        <a href=#/ManageServices style="pointer-events:none; color:#666666;" id="manangeService" onclick="GetSelection(this)"> <i class="fa fa-bookmark"></i> <span class=menu-title>Manage Services</span> </a>
+                    </li>
+                    <li>
+                        <a href=#/ManageProducts style="pointer-events:none; color:#666666;" id="manangeProduct" onclick="GetSelection(this)"> <i class="fa fa-flag"></i> <span class=menu-title style="pointer-events:none">Manage Products</span> </a>
+                    </li>
+                    <li>
+                        <a href=#/ManageCompany style="pointer-events:none; color:#666666;" id="manangeCompany" onclick="GetSelection(this)"> <i class="fa fa-bookmark"></i> <span class=menu-title>Manage Company</span> </a>
+                    </li>
+                    <li>
+                        <a href=#/ServiceInvoice data-target=#invoice data-toggle=collapse data-parent=#accordion onclick="GetSelection(this)"> <i class="fa fa-book"></i> <span class=menu-title>Invoice detail</span> </a>
+                        <ul id=invoice class="collapse sub-navs">
+                            <li> <a href=#/ServiceInvoice style="pointer-events:none; color:#666666;" id="serviceInvoice" onclick="GetSelection(this)"><i class="fa fa-caret-right"></i>Service Invoice Detail</a> </li>
+                            <li> <a href=#/ProductInvoice style="pointer-events:none; color:#666666;" id="productInvoice" onclick="GetSelection(this)"><i class="fa fa-caret-right"></i>Product Invoice Detail</a> </li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+        <!-- #side-bar End -->
+        <div id=page-content>
+            <ng-view></ng-view>
+        </div>
+
+            <div class="modal fade" id="userprofile" tabindex=-1 role=dialog>
+                <div class=modal-dialog role=document>
+                    <div class=modal-content>
+                        <div class="modal-header cus-bg ng-scope">
+                            <button type=button class=close data-dismiss=modal aria-label=Close> <span aria-hidden=true>×</span> <span class=sr-only>Close</span> </button>
+                            <h4 class="modal-title">{{fname +" "+ lname}}</h4><sub>* indicate mandatory field</sub>
+                        </div>
+                        <form name="updateForm" novalidate>
+                            <div class=modal-body>
+
+                                <div class=row>
+                                    <div class="col-md-6 col-lg-6">
+                                        <div class=form-group>
+                                            <label for="">Title<span class=required> *</span></label>
+                                            <div class="control-group" ng-class=" {true: 'error'}[submitted &&  updateForm.title.$invalid]">
+                                                <select class=form-control ng-model="selectedutitle" name="title" ng-options="Title.ld_id as Title.ld_name for Title in utitle" required></select>
+                                                <span style="color:red" ng-show=" submitted && updateForm.title.$error.required">Title is required.</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-6">
+                                        <div class=form-group>
+                                            <label for=f-name>First Name<span class="required"> *</span></label>
+                                            <div class="control-group" ng-class=" {true: 'error'}[submitted &&  updateForm.fname.$invalid]">
+                                                <input type="text" class=form-control id=f-name ng-model="fname" name="fname" required> <span style="color:red" ng-show=" submitted && updateForm.fname.$error.required">First Name is required.</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class=row>
+                                    <div class="col-md-6 col-lg-6">
+                                        <div class=form-group>
+                                            <label for=m-name>Middle Name</label>
+                                            <div class="control-group" ng-class=" {true: 'error'}[submitted &&  updateForm.mname.$invalid]">
+                                                <input type="text" class=form-control id=m-name ng-model="mname" name="mname">@*<span style="color:red" ng-show=" submitted && updateForm.mname.$error.required">Middle Name is required.</span>*@
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-6">
+                                        <div class=form-group>
+                                            <label for=l-name>Last Name</label>
+                                            <div class="control-group" ng-class=" {true: 'error'}[submitted &&  updateForm.lname.$invalid]">
+                                                <input type="text" class=form-control id=l-name ng-model="lname" name="lname"> <span style="color:red" ng-show=" submitted && updateForm.lname.$error.required">Last Name is required.</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class=row>
+                                    <div class="col-md-6 col-lg-6">
+                                        <div class=form-group>
+                                            <label for="">Company Name<span class="required"> *</span></label>
+                                            <div class="control-group" ng-class=" {true: 'error'}[submitted &&  updateForm.cname.$invalid]">
+                                                <select class=form-control name="cname" ng-model="selectedcname" ng-options="company.company_id as company.company_name for company in ctype" required></select>
+                                                <span style="color:red" ng-show=" submitted && updateForm.cname.$error.required">Company Name is required.</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-6">
+                                        <div class=form-group>
+                                            <label for="">EmployeeCode<span class="required"> *</span></label>
+                                            <div class="control-group" ng-class=" {true: 'error'}[submitted &&  updateForm.ecode.$invalid]">
+                                                <input type="text" class=form-control name="ecode" ng-model="ecode" required>
+                                                <span style="color:red" ng-show=" submitted && updateForm.ecode.$error.required">EmployeeCode is required.</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class=row>
+                                    <div class="col-md-6 col-lg-6">
+                                        <div class=form-group>
+                                            <label for="">ID Cardnumber<span class="required"> *</span></label>
+                                            <div class="control-group" ng-class=" {true: 'error'}[submitted &&  updateForm.idcardno.$invalid]">
+                                                <input type="text" class=form-control name="idcardno" ng-model="idcardno" ng-pattern="/^[0-9 a-zA-Z]{4,}$/" required>
+                                                <span style="color:red" ng-show=" submitted && updateForm.idcardno.$error.required">IDCard Number is required.</span>
+                                                <span style="color:red" ng-show="updateForm.idcardno.$error.pattern">IDCard Number is Invalid.</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-6">
+                                        <div class=form-group>
+                                            <label for="">Select Designation<span class="required"> *</span></label>
+                                            <div class="control-group" ng-class=" {true: 'error'}[submitted &&  updateForm.design.$invalid]">
+                                                <select class=form-control ng-model="selecteddesign" name="design" ng-options="designation.ld_id as designation.ld_name for designation in design" required></select>
+                                                <span style="color:red" ng-show=" submitted && updateForm.department.$error.required">Department is required.</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class=row>
+                                    <div class="col-md-6 col-lg-6">
+                                        <div class=form-group>
+                                            <label for="">Select Department<span class="required"> *</span></label>
+                                            <div class="control-group" ng-class=" {true: 'error'}[submitted &&  updateForm.design.$invalid]">
+                                                <select class=form-control name="department" ng-model="selecteddepart"
+                                                        ng-options="c.ld_id as c.ld_name for c in depart" required></select>
+                                                <span style="color:red" ng-show=" submitted && updateForm.department.$error.required">Department is required.</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-6">
+                                        <div class=form-group>
+                                            <label for="">Date Of Birth<span class=required> *</span></label>
+                                            <div class="control-group" ng-class=" {true: 'error'}[submitted &&  updateForm.dob.$invalid]">
+                                                <input type="date" name="dob" ng-model="dob" class=form-control required>
+                                                <span style="color:red" ng-show=" submitted && updateForm.dob.$error.required">Department is required.</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class=row>
+                                    <div class="col-md-6 col-lg-6">
+                                        <div class=form-group>
+                                            <label for="">Date Of Joining<span class=required> *</span></label>
+                                            <div class="control-group" ng-class=" {true: 'error'}[submitted &&  updateForm.doj.$invalid]">
+                                                <input type="date" name="doj" ng-model="doj" class=form-control required>
+                                                <span style="color:red" ng-show=" submitted && updateForm.doj.$error.required">Department is required.</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-6">
+                                        <div class=form-group>
+                                            <label for="">Phonenumber<span class=required> *</span></label>
+                                            <div class="control-group" ng-class=" {true: 'error'}[submitted &&  updateForm.phno.$invalid]">
+                                                <input type="text" class=form-control name="phno" ng-model="phno" ng-pattern="/^[0-9]{10,11}$/" required>
+                                                <span style="color:red" ng-show=" submitted && updateForm.phno.$error.required">Phone Number is required.</span><span style="color:red" ng-show="updateForm.phno.$error.pattern">Phone Number is Invalid.</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class=row>
+                                    <div class="col-md-6 col-lg-6">
+                                        <div class=form-group>
+                                            <label for="">Permanent Address<span class=required> *</span></label>
+                                            <div class="control-group" ng-class=" {true: 'error'}[submitted &&  updateForm.design.$invalid]">
+                                                <input type="text" class=form-control name="paddr" ng-model="paddr" required>
+                                                <span style="color:red" ng-show=" submitted && updateForm.paddr.$error.required">Permanant Address is required.</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-6">
+
+                                        <div class=form-group>
+                                            <label for="">Temporary Address</label>
+                                            <input type="text" class=form-control name="taddr" ng-model="taddr">
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class=row>
+                                    <div class="col-md-6 col-lg-6">
+                                        <div class=form-group>
+                                            <label for="">Country<span class=required> *</span></label>
+                                            <div class="control-group" ng-class=" {true: 'error'}[submitted &&  updateForm.design.$invalid]">
+                                                <select class=form-control ng-model="selectedcountry" name="country" ng-options="d.ld_id as d.ld_name for d in country" required>
+                                                    <option>-- Select --
+                                                </select>
+                                                <span style="color:red" ng-show=" submitted && updateForm.country.$error.required">Country is required.</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-6">
+                                        <div class=form-group>
+                                            <label for="">State<span class=required> *</span></label>
+                                            <div class="control-group" ng-class=" {true: 'error'}[submitted &&  updateForm.design.$invalid]">
+                                                <select class=form-control ng-model="selectedstate" name="state" ng-options="sState.ld_id as sState.ld_name for sState in state" required>
+                                                    <option>-- Select --
+                                                </select>
+                                                <span style="color:red" ng-show=" submitted && updateForm.state.$error.required">State is required.</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class=row>
+                                    <div class="col-md-6 col-lg-6">
+                                        <div class=form-group>
+                                            <label for="">City<span class=required> *</span></label>
+                                            <div class="control-group" ng-class=" {true: 'error'}[submitted &&  updateForm.design.$invalid]">
+                                                <select class=form-control ng-model="selectedcity" name="city" ng-options="sCity.ld_id as sCity.ld_name for sCity in city" required>
+                                                    <option>-- Select --
+                                                </select>
+                                                <span style="color:red" ng-show=" submitted && updateForm.city.$error.required">City is required.</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-6">
+                                        <div class=form-group>
+                                            <label for="">Zipcode<span class=required> *</span></label>
+                                            <div class="control-group" ng-class=" {true: 'error'}[submitted &&  updateForm.design.$invalid]">
+                                                <input type="text" class=form-control name="zip" ng-model="zip" ng-pattern="/^[0-9]{2,}$/" required>
+                                                <span style="color:red" ng-show=" submitted && updateForm.zip.$error.required">Zipcode is required.</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class=row>
+                                    <div class="col-md-6 col-lg-6">
+
+                                        <div class=form-group>
+                                            <label for="">Email ID<span class="required"> *</span></label>
+                                            <div class="control-group" ng-class=" {true: 'error'}[submitted &&  updateForm.design.$invalid]">
+                                                <input type="email" name="email" ng-model="email" class=form-control required>
+                                                <span style="color:red" ng-show=" submitted && updateForm.email.$error.required">Email ID is required.</span>
+                                                <span style="color:red" ng-show="updateForm.email.$error.pattern">Emai ID is Invalid.</span>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="col-md-6 col-lg-6">
+                                        <div class=form-group>
+                                            <label for="">Fax</label>
+                                            <div class="control-group" ng-class=" {true: 'error'}[submitted &&  updateForm.design.$invalid]">
+                                                <input type="text" name="fax" ng-model="fax" class=form-control ng-pattern="/^[0-9]{2,}$/">
+                                                <span style="color:red" ng-show=" submitted && updateForm.fax.$error.required">Fax is required.</span>
+                                                <span style="color:red" ng-show="updateForm.fax.$error.pattern">Fax is Invalid.</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class=modal-footer>
+                                <button type=button class="btn btn-default" data-dismiss=modal>Close</button>
+                                <button type="button" class="btn btn-primary" ng-click="UpdateEmployee()">Save</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        
+        <!-- #page-content End -->
+
+    </div>
+</div>
+<!-- Modal -->
+
+
+<script type="text/javascript">
+    //var sctualValue = document.getElementById("manageUser").style.pointerEvents;
+    //if (sctualValue == "visible") {
+    //    window.onload = function () {
+
+    //        angular.element(document.getElementById('manageUser')).scope().RedirectSection();
+    //    }
+    //}
+    //else
+    //{
+    //   // alert(sctualValue);
+    //}
+</script>

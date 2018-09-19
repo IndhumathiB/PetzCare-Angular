@@ -1,0 +1,352 @@
+﻿<script>
+    function GetSelection(element) {
+        $("li").removeClass("active");
+        $(element).parent().addClass("active");
+        //$("li").parent(".parent").addClass("active");
+    }
+</script>
+
+
+<div class="scrollable container-fluid">
+    <div class=row>
+        <div class=col-sm-12>
+            <div class="page-headers cus-panels-with-pad">
+
+                <h3>Profile Settings </h3>
+            </div>
+            <!-- .page-header End -->
+            <div class=contents>
+                <div class=main-box>
+                    <div class=row>
+                        <div class="col-sm-12 col-lg-12">
+                            <div style="min-height: 1220px">
+                                <!-- Dashboard Header -->
+                                <!-- For an image header add the class 'content-header-media' and an image as in the following example -->
+                                <div class="block full mar-top15 cus-panels-with-pad">
+                                    <!-- tabs left -->
+                                    <div class="tabbable tabs-left clearfix">
+                                        <ul class="nav nav-tabs">
+                                            <li class=active><a data-target="#a" data-toggle=tab>Personal Settings</a></li>
+                                            <li><a data-target="#b" data-toggle=tab>Authorization Settings</a></li>
+                                            <li><a data-target="#c" data-toggle=tab>Lookup Settings</a></li>
+                                        </ul>
+                                        <div class=tab-content>
+                                            <div class="tab-pane active" id="a">
+                                                <div class="block-options pull-right">
+                                                    <button class=sec-cus-buttons data-ng-click="refreshPasswordsettings()" data-toggle=modal data-target="#userIDsetting"> <i class="fa fa-plus"></i> Edit Profile </button>
+                                                </div>
+
+                                                <!-- Settings Model -->
+                                                <div class="modal fade" id="userIDsetting" tabindex=-1 role=dialog aria-labelledby=myModalLabel>
+                                                    <div class=modal-dialog role=document>
+                                                        <div class=modal-content>
+                                                            <div class="modal-header cus-bg">
+                                                                <button type=button class=close data-dismiss=modal aria-label=Close> <span aria-hidden=true>×</span> <span class=sr-only>Close</span> </button>
+                                                                <h4 class="modal-title ng-binding">Update Settings</h4>
+                                                            </div>
+                                                            <div class=modal-body>
+                                                                <form name="settingsForm" novalidate>
+                                                                    <div class=row>
+                                                                        <div class="col-md-6 col-lg-6">
+                                                                            <div class=form-group>
+                                                                                <label for=uname>User Name<span class=required> *</span></label>
+                                                                                <div class="control-group" ng-class=" {true: 'error'}[submitted && settingsForm.uname.$invalid]">
+                                                                                    <input class=form-control id=uname name="uname" ng-model="uname" required>
+                                                                                    <span style="color:red" ng-show="submitted && settingsForm.uname.$error.required">Enter User Name</span>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-6 col-lg-6">
+                                                                            <div class=form-group>
+                                                                                <label for=pass>Current Password<span class=required> *</span></label>
+                                                                                <div class="control-group" ng-class=" {true: 'error'}[submitted && settingsForm.pass.$invalid]">
+                                                                                    <input type=password class=form-control name="pass" ng-model="pass" id=pass required>
+                                                                                    <span style="color:red" ng-show="submitted && settingsForm.pass.$error.required">Enter Old Password</span>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class=row>
+                                                                        <div class="col-md-6 col-lg-6">
+                                                                            <div class=form-group>
+                                                                                <label for=changpass>New Password<span class=required> *</span></label>
+                                                                                <div class="control-group" ng-class=" {true: 'error'}[submitted && settingsForm.changpass.$invalid]">
+                                                                                    <input type=password class=form-control id=changpass name="changpass" ng-model="changpass" required>
+                                                                                    <span style="color:red" ng-show="submitted && settingsForm.changpass.$error.required">Enter New Password</span>
+                                                                                    <span style="color:red">{{errormessage}}</span>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-6 col-lg-6">
+                                                                            <div class=form-group>
+                                                                                <label for=confimpass>Confirm Password<span class=required> *</span></label>
+                                                                                <div class="control-group" ng-class=" {true: 'error'}[submitted && settingsForm.confimpass.$invalid]">
+                                                                                    <input type=password class=form-control name="confimpass" ng-model="confimpass" ng-pattern="changpass" id=confimpass required>
+                                                                                    <span style="color:red" ng-show="submitted && settingsForm.confimpass.$error.required">Enter Confirm Password</span>
+                                                                                    <span style="color:red" ng-show="settingsForm.confimpass.$error.pattern">Confirm Password should be same!</span>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class=row>
+                                                                        <div class="col-md-6 col-lg-6">
+                                                                            <div class=form-group>
+                                                                                <label for=secure>Security Questions</label>
+                                                                                <div class="control-group" ng-class=" {true: 'error'}[submitted && settingsForm.secure.$invalid]">
+                                                                                    <select class="form-control" id="secure" name="secure" ng-model="secure" ng-options="secure for secure in secquestions" required></select>
+                                                                                    <span style="color:red" ng-show="submitted && settingsForm.secure.$error.required">Select Security Question</span>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-6 col-lg-6">
+                                                                            <div class=form-group>
+                                                                                <label for=answer>Answer</label>
+                                                                                <div class="control-group" ng-class=" {true: 'error'}[submitted && settingsForm.answer.$invalid]">
+                                                                                    <input class=form-control id=answer name="answer" ng-model="answer" required>
+                                                                                    <span style="color:red" ng-show="submitted && settingsForm.answer.$error.required"> Give the Answer</span>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </form>
+                                                            </div>
+                                                            <div class=modal-footer>
+                                                                <button type=button class="btn btn-default" data-dismiss=modal>Close</button>
+                                                                <button type=button class="btn btn-primary" ng-disabled="settingsForm.$invalid" ng-click="settings()">Save</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
+                                                <div class=table-responsive>
+                                                    <table id=tbl_profile class="table table-borderless table-striped table-width">
+                                                        <tbody>
+                                                            <tr>
+                                                                <td style="width: 20%"><strong>User Name</strong>
+                                                                <td><span>{{user.user_name}}</span>
+                                                            <tr>
+                                                                <td><strong>Question</strong>
+                                                                <td><span id=lbl_Email>{{user.question}}</span>
+                                                            <tr>
+                                                                <td><strong>Answer</strong>
+                                                                <td><span>{{user.answer}}</span>
+
+                                                    </table>
+                                                </div>
+                                            </div>
+                                            <div class=tab-pane id="b">
+                                                <div class=text-right>
+                                                    <button class=sec-cus-buttons ng-click="ClearAuthorize()" data-toggle=modal data-target=#authorizationID> <i class="fa fa-plus"></i> Add New </button>
+                                                </div>
+                                                <div class=row id=setting-align>
+                                                    <div class=" col-md-9 mar-top15">
+                                                        <div>
+                                                            <div class=contents>
+                                                                <div class="text-right">
+                                                                    <div class="dataTables_filter" id="TblStaff_filter">
+                                                                        <label style="width:30%;">
+                                                                            <div class="input-group">
+                                                                                <input type="text" aria-controls="TblStaff" class="form-control" placeholder="Search" ng-model="authorizeval">
+                                                                                <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                                                                            </div>
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+                                                                <table class="table table-vcenter table-condensed table-bordered dataTable center table-striped" style="width:100%;" aria-describedby=TblStaff_info>
+                                                                    <thead>
+                                                                        <tr role=row>
+                                                                            <th class=sorting style="width: 160px"> Authorization Type
+                                                                            <th width="" class=sorting_disabled style="width: 160px"> Authorization Name
+                                                                            <th class=sorting style="width: 280px"> Description
+                                                                    <tbody role=alert aria-live=polite aria-relevant=all>
+                                                                        <tr class="odd" ng-repeat="authorizationdata in authorize | pagination : currentPage*itemsPerPage | limitTo: itemsPerPage | filter:authorizeval">
+                                                                            <td style=display:none class="text-center sorting_1">
+                                                                            <td style="text-align:left;">{{authorizationdata.authorization_type}}
+                                                                            <td style="text-align:left;">{{authorizationdata.am_name}}
+                                                                            <td style="text-align:left;">{{authorizationdata.am_desc}}
+
+</table>
+
+
+                                                                <div class="pagination-div text-right">
+                                                                    <ul class="pagination">
+                                                                        <li ng-class="DisablePrevPage()">
+                                                                            <a href="" ng-click="prevPage()">« Prev</a>
+                                                                        </li>
+                                                                        <li ng-repeat="n in range()" ng-class="{active: n == currentPage}" ng-click="setPage(n)">
+                                                                            <a href="">{{n+1}}</a>
+                                                                        </li>
+                                                                        <li ng-class="DisableNextPage()">
+                                                                            <a href="" ng-click="nextPage()">Next »</a>
+
+                                                                        </li>
+                                                                    </ul>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class=tab-pane id="c">
+                                                <div class=text-right>
+                                                    <button class=sec-cus-buttons ng-click="Clearlookup()" data-toggle=modal data-target=#lookupID> <i class="fa fa-plus"></i> Add New </button>
+                                                </div>
+                                                <div class=row id=setting-align>
+                                                    <div class=" col-md-8">
+                                                        <div>
+                                                            <div class=contents>
+                                                                <div id=bg-select class="row text-center">
+                                                                    <div class="col-sm-12 col-md-5 text-center">
+
+                                                                        <div class="dropdown text-left table-striped">
+                                                                            <label class=mar-allign>Lookup Type</label>
+                                                                            <ul class="dropdown-menu">
+                                                                                <li ng-repeat="lmnames in lookupmaster | orderBy: 'lm_name' " tabindex=-1 class="" ng-class="{selected: lmnames == selectedlmname}" ng-click="getldname(lmnames);GetSelection(this)"><a href="">{{lmnames.lm_name}}</a></li>
+
+                                                                            </ul>
+
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-xs-6 col-md-5 col-sm-12 text-center">
+                                                                        <div class="dropdown text-left table-striped">
+                                                                            <label class=label-martop>Lookup Name</label>
+                                                                            <ul class=dropdown-menu >
+                                                                                <li ng-repeat="ldnames in lookupvalues | orderBy: 'ld_name'" class="table-striped"><a href="">{{ldnames.ld_name}}</a></li>
+
+
+                                                                            </ul>
+                                                                        </div>
+                                                                        <!--<textarea class="form-control" placeholder="Lorem ipsum dolor sit amet, consectetur adipisicing elit." rows="21"></textarea>-->
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- /tabs -->
+                                </div>
+                                <!-- END Dashboard Header -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- .content End -->
+            <!-- Authorization Model-->
+            <div class="modal fade" id=authorizationID tabindex=-1 role=dialog aria-labelledby=myModalLabel>
+                <div class=modal-dialog role=document>
+                    <div class=modal-content>
+                        <div class="modal-header cus-bg ng-scope">
+                            <button type=button class=close data-dismiss=modal aria-label=Close> <span aria-hidden=true>×</span> <span class=sr-only>Close</span> </button>
+                            <h4 class="modal-title ng-binding">Authorization</h4>
+                        </div>
+                        <div class=modal-body>
+                            <form name="authorizationForm" novalidate>
+                                <div class=row>
+                                    <div class="col-md-6 col-lg-6">
+                                        <div class=form-group>
+                                            <label for=uname>Authorization Type<span class=required> *</span></label>
+                                            <div class="control-group" ng-class=" {true: 'error'}[submitted && authorizationForm.authids.$invalid]">
+                                                <select class=form-control id=uname ng-model="authids" name="authids" ng-options="autype.ld_id as autype.ld_name for autype in authtype" required>
+                                                <option value="" selected style='display:none;'>-- Select Authorization Type --</option></select>
+                                                <span style="color:red" ng-show="submitted && authorizationForm.authids.$error.required">Enter Authorization Type</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-6">
+                                        <div class=form-group>
+                                            <label for=pass> Authorization Name</label>
+                                            <div class="control-group" ng-class=" {true: 'error'}[submitted && authorizationForm.authnames.$invalid]">
+                                                <input class=form-control id=pass ng-model="authnames" name="authnames" required>
+                                                <span style="color:red" ng-show="submitted && authorizationForm.authnames.$error.required">Enter Authorization Name</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class=row>
+                                    <div class="col-md-12 col-lg-12">
+                                        <div class=form-group>
+                                            <label for=changpass>Description</label>
+                                            <div class="control-group" ng-class=" {true: 'error'}[submitted && authorizationForm.authdescs.$invalid]">
+                                                <textarea class=form-control id=changpass placeholder="" rows=3 ng-model="authdescs" name="authdescs" required></textarea>
+                                                <span style="color:red" ng-show="submitted && authorizationForm.authdescs.$error.required">Give Description</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class=modal-footer>
+                            <button type=button class="btn btn-default" data-dismiss=modal>Close</button>
+                            <button type=button class="btn btn-primary" ng-click="authorizepAdd()">Save</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Lookup Model-->
+            <div class="modal fade" id=lookupID tabindex=-1 role=dialog aria-labelledby=myModalLabel>
+                <div class=modal-dialog role=document>
+                    <div class=modal-content>
+                        <div class="modal-header cus-bg ng-scope">
+                            <button type=button class=close data-dismiss=modal aria-label=Close> <span aria-hidden=true>×</span> <span class=sr-only>Close</span> </button>
+                            <h4 class="modal-title ng-binding">Lookup Details</h4>
+                        </div>
+                        <div class=modal-body>
+                            <form name="lookupForm" novalidate>
+                                <div class=row>
+                                    <div class="col-md-6 col-lg-6">
+                                        <div class=form-group>
+                                            <label for=uname>Lookup Type<span class=required> *</span></label>
+                                            <div class="control-group" ng-class=" {true: 'error'}[submitted && lookupForm.lmnames.$invalid]">
+                                                <select class=form-control id=uname ng-model="lmnames" name="lmnames" ng-options="lookups.lm_id as lookups.lm_name for lookups in lookupmaster" required><option value="" selected style='display:none;'>-- Select Lookup Type --</option></select>
+                                                <span style="color:red" ng-show="submitted && lookupForm.lmnames.$error.required">Enter Lookup Type</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-6">
+                                        <div class=form-group>
+                                            <label for=pass> Lookup Name</label>
+                                            <div class="control-group" ng-class=" {true: 'error'}[submitted && lookupForm.lookup.$invalid]">
+                                                <input class=form-control  id=pass ng-model="lookup" name="lookup" required>
+                                                <span style="color:red" ng-show="submitted && lookupForm.lookup.$error.required">Enter Lookup Name</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class=row>
+                                    <div class="col-md-12 col-lg-12">
+                                        <div class=form-group>
+                                            <label for=changpass>Description</label>
+                                            <div class="control-group" ng-class=" {true: 'error'}[submitted && lookupForm.lmdescs.$invalid]">
+                                                <textarea class=form-control id=changpass placeholder="" ng-model="lmdescs" name="lmdescs" rows=3 required></textarea>
+                                                <span style="color:red" ng-show="submitted && lookupForm.lmdescs.$error.required">Give Description</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class=modal-footer>
+                            <button type=button class="btn btn-default" data-dismiss=modal>Close</button>
+                            <button type=button class="btn btn-primary" ng-click="lookupAdd()">Save</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<footer class=footer-wrapper>
+    <div class=row>
+        <div class="col-sm-12 col-md-8">
+            <p class=mar-0-10>© Copyright 2015 <a href=#>Petzcare</a>. All Rights Reserved.</p>
+        </div>
+    </div>
+</footer>
+
+
+

@@ -1,0 +1,408 @@
+﻿<div class="scrollable container-fluid" ng-controller="ManageServicesController">
+    <div class=row>
+        <div class=col-sm-12>
+            <div class="page-headers cus-panels-with-pad">
+                <div class="block-options pull-right">
+                    <button type=button class=sec-cus-buttons data-toggle=modal data-target=#newserviceID> <i class="fa fa-plus"></i> New Service </button>
+                    <!-- Modal -->
+                    <div class="modal fade" id="newserviceID" tabindex=-1 role=dialog aria-labelledby=myModalLabel>
+                        <div class=modal-dialog role=document>
+                            <div class=modal-content>
+                                <div class="modal-header cus-bg ng-scope">
+                                    <button type=button class=close data-dismiss=modal aria-label=Close> <span aria-hidden=true>×</span> <span class=sr-only>Close</span> </button>
+                                    <h4 class="modal-title ng-binding">Add a New Service</h4>
+                                </div>
+                                <div class=modal-body>
+                                    <form>
+
+                                        <div class=row>
+                                            <div class="col-md-6 col-lg-6">
+                                                <div class=form-group>
+                                                    <label for="">Service <span class=required> *</span></label>
+                                                    <select class=form-control name="selectedservice" ng-change="modify()" ng-model="selecservicename" ng-options="c as c.ld_name for c in servicenames"></select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 col-lg-6">
+                                                <div class=form-group>
+                                                    <label for="">Service Type</label>
+                                                    <select class="form-control test12" ng-model="serviceTypes" name="servtyp" ng-options="servtype as servtype.ld_name for servtype in servicetypenames"></select>
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class=row>
+                                            <div class="col-md-6 col-lg-6">
+                                                <div class=form-group>
+                                                    <label for="">Rate<span class=required> *</span></label>
+                                                    <input type="number" name="rate" ng-model="servrate" class=form-control ng-minlength=1 ng-maxlength=50 required>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 col-lg-6">
+                                                <div class=form-group>
+                                                    <label for="">Effective Date</label>
+                                                    <input type="date" name="effdate" ng-model="effdate" class=form-control>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class=row>
+                                            <div class="col-md-12 col-lg-12">
+                                                <div class=form-group>
+                                                    <label for="">Description</label>
+                                                    <textarea name="desc" ng-model="desc" class="form-control" rows=3></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class=modal-footer>
+                                    <button type=button class="btn btn-default" data-dismiss=modal>Close</button>
+                                    <button type=button class="btn btn-primary" ng-click="Seradd()">Add</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <h3>Manage Service</h3>
+            </div>
+            <!-- .page-header End -->
+            <div class=contents>
+                <div class=main-box>
+                    <div class=row>
+                        <div class=col-lg-12>
+                            <div style=min-height:1220px>
+                                <!-- Dashboard Header -->
+                                <!-- For an image header add the class 'content-header-media' and an image as in the following example -->
+                                <!-- END Dashboard Header -->
+                                <!-- Datatables Content -->
+                                <div class="block full mar-top15 cus-panels-with-pad lisiting">
+                                    <div class="table-responsive mar-top15">
+                                        <div id=TblStaff_wrapper class=dataTables_wrapper role=grid>
+                                            <div class=row>
+                                                <div class="col-sm-3 col-xs-4">
+                                                    <div class="dataTables_length user-select-enable">
+                                                        <label>
+
+                                                            <select class=form-control ng-model="selin" ng-options="servces for servces in Servicvalues"></select>
+                                                        </label>
+                                                        <button href=#target ng-hide="selin != 'Grooming'" type=button class="btn btn-hove" data-toggle=collapse><i class="fa fa-filter"></i></button>
+                                                        <button href=#target2 ng-show="selin != 'Grooming'" type=button class="btn btn-hove" data-toggle=collapse><i class="fa fa-filter"></i></button>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-offset-6 col-md-3 col-sm-6 col-xs-7">
+                                                    <div class=dataTables_filter id=TblStaff_filter>
+                                                        <label style=width:100%>
+                                                            <div class=input-group>
+                                                                <input aria-controls=TblStaff class=form-control ng-model="findservice" placeholder=Search> <span class=input-group-addon><i class="fa fa-search"></i></span>
+                                                            </div>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            @*Loader spinner for the ManageServices *@
+                                            <div id="manageServicesloader" class="overlays" style="display: block;">
+                                                <img src="~/images/spinningcurser.gif" style="position:absolute;z-index: 99; top:50%; left:50%; margin-top:-70px; margin-left:-70px; height:60px;  width:60px;" />
+                                            </div>
+                                            <!---- Table Content Start  Service for Grooming----->
+                                            <table ng-hide="selin != 'Grooming'" id=TblStaff class="table table-vcenter table-condensed table-bordered dataTable center" aria-describedby=TblStaff_info>
+                                                <thead>
+                                                    <tr role=row>
+
+                                                        <th width=15% role=columnheader style="width: 150px" ng-click="ServiceinvoiceSort(asc=!asc,'service_name');"> Service Name  <i class="fa fa-sort"></i></th>
+                                                        <th width="" role=columnheader style="width: 188px" ng-click="ServiceinvoiceSort(asc=!asc,'service_type_name');"> Service Type  <i class="fa fa-sort"></i></th>
+                                                        <th role=columnheader style="width: 188px"> Duration</th>
+                                                        <th width="" role=columnheader style="width: 188px"> Rate</th>
+                                                        <th width="" class=sorting_disabled role=columnheader style="width: 250px"> Action</th>
+
+                                                    </tr>
+                                                    <tr id="target" class=collapse>
+                                                        <th>
+                                                            <div>
+                                                                <input placeholder="Service Name" ng-model="servnam" class=form-control>
+                                                            </div>
+                                                        </th>
+                                                        <th>
+                                                            <div>
+                                                                <input placeholder="Service Type" ng-model="sertype" class=form-control>
+                                                            </div>
+                                                        </th>
+                                                        <th></th>
+                                                        <th>
+                                                            <div>
+                                                                <input placeholder=Rate ng-model="serrat" class=form-control>
+                                                            </div>
+                                                        </th>
+                                                        <th></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id=tbody-staff role=alert aria-live=polite aria-relevant=all>
+                                                    <tr class="odd" ng-repeat="Servi in ServiceLists  | filter:findservice | pagination : currentPage*itemsPerPage | limitTo: itemsPerPage | filter:{service_name:servnam,service_type_name:sertype,service_rate:serrat}" ng-click="serviceId(Servi.service_id)">
+
+                                                        <td>{{Servi.service_name}}</td>
+                                                        <td>{{Servi.service_type_name}}</td>
+                                                        <td>{{Servi.service_typeid}}</td>
+                                                        <td>{{Servi.service_rate}}
+                                                        <td>
+                                                            <ul class="user-select-enable reset">
+                                                                <li data-toggle=modal data-target="#boardingserviceview">
+                                                                    <button type=button class="btn btn-hove" data-toggle=tooltip title="View Service Details"><i class="fa fa-eye"></i></button>
+                                                                </li>
+                                                                <li data-toggle=modal data-target="#groomingID">
+                                                                    <button type=button class="btn btn-hove" data-toggle=tooltip title="Edit Service Detail"><i class="fa fa-pencil"></i></button>
+                                                                </li>
+                                                                <li data-toggle=modal data-target=#invoiceID>
+                                                                    <button type=button class="btn btn-hove" data-toggle=tooltip ng-click="servicesdelete(Servi.service_id,$index)" title="Delete Detail"><i class="fa fa-times"></i></button>
+                                                                </li>
+                                                            </ul>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                            <div ng-hide="selin != 'Grooming'" class="pagination-div text-right">
+                                                <ul class="pagination">
+                                                    <li ng-class="DisablePrevPage()">
+                                                        <a href="" ng-click="prevPage()">« Prev</a>
+                                                    </li>
+                                                    <li ng-repeat="n in range()" ng-class="{active: n == currentPage}" ng-click="setPage(n)">
+                                                        <a href="">{{n+1}}</a>
+                                                    </li>
+                                                    <li ng-class="DisableNextPage()">
+                                                        <a href="" ng-click="nextPage()">Next »</a>
+
+                                                    </li>
+                                                </ul>
+                                            </div>
+
+                                            <!---- Table Content Start  service for Boarding----->
+                                            <table ng-show="selin != 'Grooming'" id=TblStaff class="table table-vcenter table-condensed table-bordered dataTable center" aria-describedby=TblStaff_info>
+                                                <thead>
+                                                    <tr role=row>
+
+                                                        <th width=15% role=columnheader style="width: 150px" ng-click="ServiceinvoiceSort(asc=!asc,'service_name');"> Service Name  <i class="fa fa-sort"></i></th>
+                                                        <th width="" role=columnheader style="width: 188px" ng-click="ServiceinvoiceSort(asc=!asc,'service_type_name');"> Service Type  <i class="fa fa-sort"></i></th>
+                                                        <th role=columnheader style="width: 188px"> Service Type ID</th>
+                                                        <th width="" role=columnheader style="width: 188px"> Rate</th>
+                                                        <th width="" class=sorting_disabled role=columnheader style="width: 250px"> Action</th>
+
+                                                    </tr>
+                                                    <tr id="target2" class=collapse>
+                                                        <th>
+                                                            <div>
+                                                                <input placeholder="Service Name" ng-model="servnam" class=form-control>
+                                                            </div>
+                                                        </th>
+                                                        <th>
+                                                            <div>
+                                                                <input placeholder="Service Type" ng-model="sertype" class=form-control>
+                                                            </div>
+                                                        </th>
+                                                        <th></th>
+                                                        <th>
+                                                            <div>
+                                                                <input placeholder=Rate ng-model="serrat" class=form-control>
+                                                            </div>
+                                                        </th>
+                                                        <th></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id=tbody-staff role=alert aria-live=polite aria-relevant=all>
+                                                    <tr class="odd" ng-repeat="Board in ServiceBoarding | filter:findservice | pagination : currentPage*itemsPerPage | limitTo: itemsPerPage | filter:{service_name:servnam,service_type_name:sertype,service_rate:serrat}" ng-click="serviceId(Board.service_id)">
+                                                        <td>{{Board.service_name}}</td>
+                                                        <td>{{Board.service_type_name}}</td>
+                                                        <td>{{Board.service_typeid}}</td>
+                                                        <td>{{Board.service_rate}}
+                                                        <td>
+                                                            <ul class="user-select-enable reset">
+                                                                <li data-toggle=modal data-target="#boardingserviceview">
+                                                                    <button type=button class="btn btn-hove" data-toggle=tooltip title="View Service Details"><i class="fa fa-eye"></i></button>
+                                                                </li>
+                                                                <li data-toggle=modal data-target=#groomingID>
+                                                                    <button type=button class="btn btn-hove" data-toggle=tooltip title="Edit Service Detail"><i class="fa fa-pencil"></i></button>
+                                                                </li>
+                                                                <li data-toggle=modal data-target=#invoiceID>
+                                                                    <button type=button class="btn btn-hove" ng-click="servicesdelete(Board.service_id)" data-toggle=tooltip title="Delete Detail"><i class="fa fa-times"></i></button>
+                                                                </li>
+                                                            </ul>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                            <div ng-show="selin != 'Grooming'" class="pagination-div text-right">
+                                                <ul class="pagination">
+                                                    <li ng-class="DisablePrevPage()">
+                                                        <a href="" ng-click="prevPage()">« Prev</a>
+                                                    </li>
+                                                    <li ng-repeat="n in range()" ng-class="{active: n == currentPage}" ng-click="setPage(n)">
+                                                        <a href="">{{n+1}}</a>
+                                                    </li>
+                                                    <li ng-class="DisableNextPage()">
+                                                        <a href="" ng-click="nextPage()">Next »</a>
+
+                                                    </li>
+                                                </ul>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- END Datatables Content -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- .content End -->
+            <!---- Boarding Service View ---->
+            <div class="modal fade" id="boardingserviceview" tabindex=-1 role=dialog aria-labelledby=myModalLabel>
+                <div class=modal-dialog role=document>
+                    <div class=modal-content>
+                        <div class="modal-header cus-bg ng-scope">
+                            <button type=button class=close data-dismiss=modal aria-label=Close> <span aria-hidden=true>×</span> <span class=sr-only>Close</span> </button>
+                            <h4 class="modal-title ng-binding">Boarding Service Details</h4>
+                        </div>
+                        <div class=modal-body>
+                            <div class="table-responsive mar-top15">
+                                <table id=tbl_profile class="table table-borderless table-striped">
+                                    <tbody>
+                                        <tr>
+                                            <td style=width:45%>
+                                                <label>Service Name</label>
+                                            <td>{{ServiceComp.service_name}}
+                                        <tr>
+                                            <td>
+                                                <label>Service Type</label>
+                                            <td>{{ServiceComp.service_type_name}}
+                                        <tr>
+                                            <td>
+                                                <label>Service Description</label>
+                                            <td> <span id=u_name>{{ServiceComp.service_desc}}</span>
+                                        <tr>
+                                            <td>
+                                                <label>Rate/Day</label>
+                                            <td> <span>${{ServiceComp.service_rate}}</span>
+
+                                </table>
+                            </div>
+                        </div>
+                        <div class=modal-footer>
+                            <button type=button class="btn btn-default" data-dismiss=modal>Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!---- Grooming Model ----->
+            <div class="modal fade" id="groomingID" tabindex=-1 role=dialog aria-labelledby=myModalLabel>
+                <div class=modal-dialog role=document>
+                    <div class=modal-content>
+                        <div class="modal-header cus-bg ng-scope">
+                            <button type=button class=close data-dismiss=modal aria-label=Close> <span aria-hidden=true>×</span> <span class=sr-only>Close</span> </button>
+                            <h4 class="modal-title ng-binding">Grooming Details</h4>
+                        </div>
+                        <div class=modal-body>
+                            <form>
+
+                                <div class=row>
+                                    <div class="col-md-6 col-lg-6">
+                                        <div class=form-group>
+                                            <label for="">Service <span class=required> *</span></label>
+                                            <input class=form-control type="text" name="selUpdatservice" readonly="readonly" ng-model="selectedservice">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-6">
+                                        <div class=form-group>
+                                            <label for="">Service Type</label>
+                                            <input type="text" class="form-control test12" ng-model="servUpdattyp" readonly="readonly" name="servUpdattyp">
+
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+                                <div class=row>
+                                    <div class="col-md-6 col-lg-6">
+                                        <div class=form-group>
+                                            <label for="">Rate<span class=required> *</span></label>
+                                            <input type="number" name="servUpdatrate" ng-model="servUpdatrate" class=form-control ng-minlength=1 ng-maxlength=50 required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-6">
+                                        <div class=form-group>
+                                            <label for="">Effective Date</label>
+                                            <input type="date" name="effUpdatdate" ng-model="effUpdatdate" class=form-control>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class=row>
+                                    <div class="col-md-12 col-lg-12">
+                                        <div class=form-group>
+                                            <label for="">Description</label>
+                                            <textarea name="Updatdesc" ng-model="Updatdesc" class="form-control" rows=3></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class=modal-footer>
+                            <button type=button class="btn btn-default" data-dismiss=modal>Close</button>
+                            <button type=button class="btn btn-primary" ng-click="UpdateGroom()" data-dismiss="modal">Update</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+<footer class=footer-wrapper>
+    <div class=row>
+        <div class="col-sm-12 col-md-8">
+            <p class=mar-0-10>© Copyright 2015 <a href=#>Petzcare</a>. All Rights Reserved.</p>
+        </div>
+    </div>
+</footer>
+<!---- Grooming Service Detail ---->
+<div class="modal fade" id=groomingservice-view tabindex=-1 role=dialog aria-labelledby=myModalLabel>
+    <div class=modal-dialog role=document>
+        <div class=modal-content>
+            <div class="modal-header cus-bg ng-scope">
+                <button type=button class=close data-dismiss=modal aria-label=Close> <span aria-hidden=true>×</span> <span class=sr-only>Close</span> </button>
+                <h4 class="modal-title ng-binding">Grooming Service Details</h4>
+            </div>
+            <div class=modal-body>
+                <div class="table-responsive mar-top15">
+                    <table id=tbl_profile class="table table-borderless table-striped">
+                        <tbody>
+                            <tr>
+                                <td style=width:45%>
+                                    <label>Service Name</label>
+                                <td>Grooming
+                            <tr>
+                                <td>
+                                    <label>Service Type</label>
+                                <td>Hair-Trim
+                            <tr>
+                                <td>
+                                    <label>Duration</label>
+                                <td> <span id=u_name>1 Hour</span>
+                            <tr>
+                                <td>
+                                    <label>Rate/Hour</label>
+                                <td> <span>$100</span>
+                            <tr>
+                                <td>
+                                    <label>Service ID</label>
+                                <td> <span>30</span>
+                    </table>
+                </div>
+            </div>
+            <div class=modal-footer>
+                <button type=button class="btn btn-default" data-dismiss=modal>Close</button>
+            </div>
+        </div>
+    </div>
+</div>

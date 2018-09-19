@@ -1,0 +1,480 @@
+﻿<div class="scrollable container-fluid">
+    <div class=row>
+        <div class=col-sm-12>
+            <div class="page-headers cus-panels-with-pad">
+                <div class="block-options pull-right">
+                    <button type=button class=sec-cus-buttons data-toggle=modal data-target=#generateID> <i class="fa fa-plus"></i> Generate Invoice </button>
+                </div>
+                <h3>Manage Product Invoice</h3>
+            </div>
+            <!-- .page-header End -->
+            <div class=contents>
+                <div class=main-box>
+                    <div class=row>
+                        <div class=col-lg-12>
+                            <div style=min-height:1220px>
+                                <!-- Dashboard Header -->
+                                <!-- For an image header add the class 'content-header-media' and an image as in the following example -->
+                                <!-- END Dashboard Header -->
+                                <!-- Datatables Content -->
+                                <div class="block full mar-top15 cus-panels-with-pad lisiting">
+                                    <div class="table-responsive mar-top15">
+                                        <div id=TblStaff_wrapper class=dataTables_wrapper role=grid>
+                                            <div class=row>
+                                                <div class="col-sm-3 col-xs-4">
+                                                    <div class=dataTables_length>
+                                                        <label>
+                                                            <select name=TblStaff_length aria-controls=TblStaff class="form-control" ng-model="itemsPerPage" ng-change="pageCount()" ng-options="val for val in svalues"></select>
+</label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-offset-6 col-md-3 col-sm-6 col-xs-7">
+                                                    <div class=dataTables_filter id=TblStaff_filter>
+                                                        <label style=width:100%>
+                                                            <div class=input-group>
+                                                                <input aria-controls=TblStaff class=form-control placeholder=Search ng-model="qury" name="qury"> <span class=input-group-addon><i class="fa fa-search"></i></span>
+                                                            </div>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            @*Loader spinner for the ProductInvoice *@
+                                            <div id="productInvoiceloader" class="overlays" style="display: block;">
+                                                <img src="~/images/spinningcurser.gif" style="position:absolute;z-index: 99; top:50%; left:50%; margin-top:-70px; margin-left:-70px; height:60px;  width:60px;" />
+                                            </div>
+                                            <!---- Table Content Start ----->
+                                            <table id=TblStaff class="table table-vcenter table-condensed table-bordered dataTable center" aria-describedby=TblStaff_info>
+                                                <thead>
+                                                    <tr role=row>
+                                                        <th style="display: none; width: 0px" class="text-center sorting_asc" role=columnheader tabindex=0 aria-controls=TblStaff rowspan=1 colspan=1 aria-sort=ascending aria-label="
+                                                                : activate to sort column descending">
+                                                        <th width=15% role=columnheader data-header="customer_name" style="width: 150px" ng-click="ProductinvoiceSort(asc=!asc,'customer_name');"> Customer Name  <i class="fa fa-sort"></i>
+                                                         <th width="" role=columnheader style="width: 188px"> Product Code 
+                                                        <th role=columnheader data-header="product_name" style="width: 188px" ng-click="ProductinvoiceSort(asc=!asc,'product_name');"> Product Name  <i class="fa fa-sort"></i>
+                                                         <th width="" role=columnheader style="width: 188px"> Invoice Number
+                                                        <th width="" class=sorting_disabled role=columnheader style="width: 140px"> Status
+                                                        <th width="" class=sorting_disabled role=columnheader style="width: 250px"> Action
+                                                <tbody id=tbody-staff role=alert aria-live=polite aria-relevant=all>
+                                                    <tr class=odd ng-repeat="prdtinvce in prdctinvicdetl | orderBy:orderByField:reverseSort | filter:qury | pagination : currentPage*itemsPerPage | limitTo: itemsPerPage" ng-click="getprcinvoice(prdtinvce.invoice_number)">
+                                                        <td style=display:none class="text-center sorting_1">
+                                                        <td>{{prdtinvce.customer_name}}
+                                                        <td>{{prdtinvce.product_code}}
+                                                        <td>{{prdtinvce.product_name}}
+                                                        <td>{{prdtinvce.invoice_number}}
+                                                        <td>
+                                                            <ul class="user-select-enable reset">
+                                                                <li> <span class=selected><i class="fa fa-check"></i></span> </li>
+                                                            </ul>
+                                                        <td>
+                                                            <ul class="user-select-enable reset">
+                                                                <li data-toggle=modal data-target=#invoiceID>
+                                                                    <button type=button class="btn btn-hove" data-toggle=tooltip title="View Invoice Detail"><i class="fa fa-money"></i></button>
+                                                                </li>
+                                                            </ul>
+</table>
+                                            <div class="pagination-div text-right">
+                                                <ul class="pagination">
+                                                    <li ng-class="DisablePrevPage()">
+                                                        <a href="" ng-click="prevPage()">« Prev</a>
+                                                    </li>
+                                                    <li ng-repeat="n in range()" ng-class="{active: n == currentPage}" ng-click="setPage(n)">
+                                                        <a href="">{{n+1}}</a>
+                                                    </li>
+                                                    <li ng-class="DisableNextPage()">
+                                                        <a href="" ng-click="nextPage()">Next »</a>
+
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- END Datatables Content -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- .content End -->
+        </div>
+    </div>
+</div>
+
+
+<!-- Inoice generated Modal -->
+<div class="modal fade" id=invoiceID tabindex=-1 role=dialog aria-labelledby=myModalLabel>
+    <div class="modal-dialog modal-lg" role=document>
+        <div class=modal-content>
+            <div class=modal-body>
+                <form>
+                    <fieldset>
+                        <legend>
+                            <div class="row clearfix">
+                                <div class="col-md-6 col-lg-6">
+                                    <div class="pull-left img-mar-l">
+                                        <a class=logo title=Petzcare href=#><img src="~/images/9a9e2fdc.petzcare.png" style="width:110%; height:60px" alt=Petzcare></a>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-6">
+                                    <div class="pull-right pad-0-10">
+                                        <h3 class=text-uppercase>Invoice</h3>
+                                    </div>
+                                </div>
+                            </div>
+                        </legend>
+                        <div ng-repeat="PRODUCTS in pcinvdaTA">
+                            <div class="row clearfix" ng-repeat="PRODUCTS in pcinvdaTA">
+                                <div class="col-md-6 col-lg-6">
+                                    <div class="pull-left pad-0-10"> <address> <strong>{{PRODUCTS.customer_name}}</strong><br>{{PRODUCTS.address_1}}<br> <abbr title=Phone>PhoneNo:</abbr><a href=tel:14087276302>{{PRODUCTS.phone_1}}</a><br> </address> </div>
+                                </div>
+                                <div class="col-md-6 col-lg-6">
+                                    <div class=pull-right>
+                                        <div><strong>Invoice No :</strong>{{PRODUCTS.invoice_number}}</div>
+                                        <div class=pad-5-0><strong>Invoice Date :</strong>{{PRODUCTS.invoice_date}}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                
+                                <div class="table-responsive mar-top15">
+                                    <div id=TblStaff_wrapper class=dataTables_wrapper role=grid>
+                                        <table id=TblStaff class="table table-vcenter table-condensed table-bordered dataTable" aria-describedby=TblStaff_info>
+                                            <thead>
+                                                <tr role="row text-center">
+                                                    <th class="text-center sorting_disabled" role=columnheader style="width: 110px"> Sl No
+                                                    <th width=15% class=sorting role=columnheader style="width: 330px"> Product List
+                                                    <th class=sorting role=columnheader style="width: 132px"> Unit Price
+                                                    <th width="" class=sorting_disabled role=columnheader style="width: 188px"> Quantity
+                                                    <th class=sorting_disabled role=columnheader style="width: 129px"> Total
+                                                </tr>
+                                            </thead>
+                                      <tbody id=tbody-staff role=alert aria-live=polite aria-relevant=all >
+                                                  <tr class=odd ng-repeat="PRiNvoice in PRODUCTS.ProductList">
+                                                    <td>{{PRiNvoice.product_id}}</td>
+                                                    <td class=text-left>{{PRiNvoice.product_name}}</td>
+                                                      <td class=text-right>{{PRiNvoice.retail_cost | currency:'&#8377;'}}</td>
+                                                    <td>{{PRiNvoice.quantity}}</td>
+                                                    <td class=text-right>{{PRiNvoice.invoice_amount | currency:'&#8377;'}}
+                                                    </td>
+                                                    </tr>
+                                           <tr>
+                                               <td></td>
+                                               <td></td>
+                                               <td></td>
+                                               <td></td>
+                                               <td></td>
+                                           </tr>     
+                                          <tr class=odd ng-repeat="PRODUCTS in pcinvdaTA">
+                                              <td></td>
+                                              <td></td>
+                                              <td></td>
+                                              <td>Sub Total</td>
+                                              <td class=text-right>{{PRODUCTS.gross_amount | currency:'&#8377;'}}</td>
+                                          </tr>
+                                          <tr class=odd ng-repeat="PRODUCTS in pcinvdaTA">
+                                              <td></td>
+                                              <td></td>
+                                              <td></td>
+                                              <td>Tax({{PRODUCTS.taxpercent_name}} %)</td>
+                                              <td class=text-right>{{PRODUCTS.tax_amount | currency:'&#8377;'}}</td>
+                                          </tr>
+                                          <tr class=odd ng-repeat="PRODUCTS in pcinvdaTA">
+                                              <td></td>
+                                              <td></td>
+                                              <td></td>
+                                              <td>Discount({{PRODUCTS.discount_percent}} %)</td>
+                                              <td class=text-right>{{PRODUCTS.discount_amount | currency:'&#8377;'}}</td>
+                                          </tr>
+                                          <tr class=odd ng-repeat="PRODUCTS in pcinvdaTA">
+                                              <td></td>
+                                              <td></td>
+                                              <td></td>
+                                              <td>Total Amount</td>
+                                              <td class=text-right>{{PRODUCTS.total_amount | currency:'&#8377;'}}</td>
+                                          </tr>
+    
+
+                                    </tbody>
+
+                                    </table>
+                                </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row pad-0-15" ng-repeat="PRODUCTS in pcinvdaTA">
+                            <div class=col-sm-12> <i class="fa fa-check-square sky-blue"></i> <strong>Payment Methode :</strong> <span>{{PRODUCTS.payment_type_name}}</span> </div>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+            <div class=modal-footer>
+                <button type=button class="btn btn-default" data-dismiss=modal>Close</button>
+                <button type=button class="btn btn-primary">Print</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="generateID" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header cus-bg ng-scope">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span> <span class="sr-only">Close</span>
+                </button>
+                <h4 class="modal-title ng-binding">
+                    Generate Product Invoice
+                </h4><sub>* indicate mandatory field</sub>
+
+            </div>
+            <div class="modal-body">
+                <form name="updateForm" novalidate>
+                    <div class="row">
+                        <div class="col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label for="">Customer Name <span class="required"> *</span></label>
+                                <div class="control-group" ng-class="{true: 'error'}[submitted && updateForm.cunaminc.$invalid]">
+                                    <select class="form-control" id="SelID" name="cunaminc" ng-change="productFltr()" ng-model="selectedcunampdtinc" required ng-options="cunpaminc.customer_id as cunpaminc.first_name for cunpaminc in custprcinvcs">
+                                        <option value="" disabled selected style='display:none;'>-- Select Customer Name --</option>
+                                    </select>                              
+                                    <span style="color:red" ng-show="submitted && updateForm.cunaminc.$error.required">Customer Name is required.</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label for="">Payment Type</label>
+                                <div class="control-group" ng-class="{true: 'error'}[submitted && updateForm.Paytype.$invalid]">
+                                    <select class="form-control test12" name="Paytype" ng-model="selectedPaypdtintype" required ng-options="prt.ld_id as prt.ld_name for prt in Paytype11">
+                                        <option value="" disabled selected style='display:none;'>-- Select Payment Type --</option></select>                                 
+                                    <span style="color:red" ng-show="submitted && updateForm.Paytype.$error.required">Payment Type is required.</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+                    <div class="row">
+                        <div class="col-md-6 col-lg-6">
+                            <div class="inline-options mar-5-0">
+                                <button class="sec-cus-buttons" type="button" data-toggle="collapse" data-target="#addserviceID" aria-expanded="false" aria-controls="collapseExample"><i class="fa fa-plus"></i>Add Item</button>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6">
+                            <div class="inline-options mar-5-0">
+                                <button class="sec-cus-buttons" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">View Detail</button>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="collapse" id="collapseExample" style="height: 0px;">
+                                    <div class="well">
+                                        <div class="row">
+                                            <div class="col-xs-2 col-sm-2 text-center">
+                                                <strong>Product ID</strong>
+                                            </div>
+                                            <div class="col-xs-4 col-sm-4 text-center">
+                                                <strong>Product Detail</strong>
+                                            </div>
+                                            <div class="col-xs-2 col-sm-2 single-w-lh text-center">
+                                                <strong>Quantity</strong>
+                                            </div>
+                                            <div class="col-xs-2 col-sm-2 single-w-lh text-center">
+                                                <strong>Rate</strong>
+                                            </div>
+                                            <div class="col-xs-2 col-sm-2 single-w-lh text-center">
+                                                <strong>Amount</strong>
+                                            </div>
+                                        </div>
+                                        <div class="row" ng-repeat="pr in pRoducts">
+                                            <div class="col-xs-2 col-sm-2 single-w-lh margin-t-b text-center">
+                                                <span class="">{{pr.product_id}}</span>
+                                            </div>
+                                            <div class="col-xs-4 col-sm-4 single-w-lh margin-t-b">
+                                                <span class="">{{pr.notes}}</span>
+                                            </div>
+                                            <div class="col-xs-2 col-sm-2 single-w-lh margin-t-b text-center">
+                                                <span class=text-right>{{pr.quantity}}</span>
+                                            </div>
+                                            <div class="col-xs-2 col-sm-2 single-w-lh margin-t-b text-center">
+                                                <span class=text-right>{{pr.rate | currency:'&#8377;'}}</span>
+                                            </div>
+                                            <div class="col-xs-2 col-sm-2 single-w-lh margin-t-b text-center">
+                                                <span class=text-right>{{ pr.invoice_amount | currency:'&#8377;'}}</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+
+                                            <div class="col-xs-4 col-sm-4 col-md-offset-6 single-w-lh  text-center">
+                                                <div class="margin-t-b">
+                                                    <span class="">Sub Total</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-2 col-sm-2 single-w-lh text-center">
+                                                <div class="margin-t-b">
+                                                    <span class=text-right>{{subTotal | currency:'&#8377;'}}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+
+                                            <div class="col-xs-4 col-sm-4 col-md-offset-6 single-w-lh  text-center">
+                                                <div class="margin-t-b">
+                                                    <span class="margin-t-b">Tax Amount</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-2 col-sm-2 single-w-lh text-center">
+                                                <div class="margin-t-b">
+                                                    <span class=text-right>{{taxvalue | currency:'&#8377;'}}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+
+                                            <div class="col-xs-4 col-sm-4 col-md-offset-6 single-w-lh  text-center">
+                                                <div class="margin-t-b">
+                                                    <span class="margin-t-b">Discount Amount</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-2 col-sm-2 single-w-lh text-center">
+                                                <div class="margin-t-b">
+                                                    <span class=text-right>{{discuntval | currency:'&#8377;'}}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+
+                                            <div class="col-xs-4 col-sm-4 col-md-offset-6 single-w-lh  text-center">
+                                                <div class="margin-t-b">
+                                                    <span class="margin-t-b">Total</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-2 col-sm-2 single-w-lh text-center">
+                                                <div class="margin-t-b">
+                                                    <span class=text-right>{{grosstotal | currency:'&#8377;'}}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+
+                                            <div class="col-xs-4 col-sm-4  single-w-lh ">
+                                                <div class="margin-t-b">
+                                                    <div class="clearfix">
+                                                        <div class="pull-left mar-5-0">
+                                                            <strong>Tax ( % )</strong>
+                                                        </div>
+                                                        <div class="pull-right mar-0-15">
+                                                            <select class="form-control  test12" name="tax" ng-model="prcttax" ng-change="TaxCalculater()" required ng-options="tpamt as tpamt.ld_name for tpamt in taxAmount"></select>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <div class="row">
+
+                                            <div class="col-xs-6 col-sm-6  single-w-lh ">
+                                                <div class="">
+
+                                                    <div class="checkbox">
+                                                        <label>
+                                                            <input type=checkbox ng-model="prtdis"> <strong> Discount ( % )</strong>
+                                                            <span>
+                                                                <input type="text" ng-show="prtdis" ng-change="discountCalculater()" name="disperst" ng-model="prodisperst" />
+                                                            </span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="collapse" id="addserviceID" style="height: 0px;">
+                                    <div class="well">
+
+                                        <div class="row">
+                                            <div class="col-md-6 col-lg-6">
+                                                <div class="form-group">
+                                                    <label for="">Product Name</label>
+                                                    <select class="form-control test12" ng-change="viewprdctdats()" ng-model="selectedpdatas" name="pdatas" ng-options="pdatas as pdatas.product_name for pdatas in viewprdctdatas">
+                                                       
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 col-lg-6">
+                                                <div class="form-group">
+                                                    <label for="">Description</label>
+                                                    <input type="text" class="form-control" readonly="readonly" ng-model="descrip" name="pdecrip">
+                                                </div>
+                                            </div>
+                                            
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 col-lg-6">
+                                                <div class="form-group">
+                                                    <label for="">Rate</label>
+                                                    <input type="number" class="form-control" ng-model="pRorate" name="pRorate">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 col-lg-6">
+                                                <div class="form-group">
+                                                    <label for="">Quantity</label>
+                                                    <input type="number" class="form-control" ng-model="pquants" name="pquants">
+                                                </div>
+                                            </div>
+                                            @*<div class="col-md-6 col-lg-6">
+                                                <div class="form-group">
+                                                    <label for="">Total</label> <label class="form-control" ng-model="pquants" ></label>
+                                                    <input type="number" class="form-control" ng-model="pquants" name="pquants">
+                                                </div>
+                                            </div>*@
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-xs-3 col-sm-3 col-md-offset-9 single-w-lh  text-center">
+                                                <button type="button" ng-model="viewDETAIL" class="btn btn-primary" ng-click="adProduct()" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">Add </button>
+                                            </div>
+                                        </div>
+
+
+
+
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 margin-t-b">
+                            <div role="form">
+                                <label class="radio-inline" ng-repeat="prt in Paystatus11">
+                                    <input type=radio name=optradio ng-model="f2.selectedPays" required value="{{prt.ld_id}}">{{prt.ld_name}}
+                                </label>
+
+                            </div>
+                        </div>
+                    </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" ng-click="submitted=true;newProductinvce()">Generate</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
